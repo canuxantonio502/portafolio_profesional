@@ -4,7 +4,7 @@
 Este proyecto es  mi portafolio personal en el cual plasmé mis habilidades, conocimientos y proyectos recientes. Fue desarrollado con el objetivo de mostrar mi crecimiento e interés en seguir aprendiendo sobre el área de programación y diseño Web.
 
 ## :rocket: Vista previa del Portafolio
-:point_right: https://canuxantonio502.github.io/Portafolio/
+:point_right: https://canuxantonio502.github.io/portafolio_profesional/
 
 ## :hammer_and_wrench: Tecnologías utilizadas
 - HTML5
