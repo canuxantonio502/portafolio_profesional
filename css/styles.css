@@ -290,7 +290,7 @@ input, select, textarea {
   height: 100%;
   object-fit: contain;
   opacity: 0;
-  animation: cambioIcono 8s infinite;
+  animation: cambioIcono 16s infinite;
 }
 .animation img:nth-child(1) {
   animation-delay: 0s;
@@ -307,11 +307,23 @@ input, select, textarea {
 .animation img:nth-child(4) {
   animation-delay: 6s;
 }
+.animation img:nth-child(5) {
+  animation-delay: 8s;
+}
+.animation img:nth-child(6) {
+  animation-delay: 10s;
+}
+.animation img:nth-child(7) {
+  animation-delay: 12s;
+}
+.animation img:nth-child(8) {
+  animation-delay: 14s;
+}
 @keyframes cambioIcono {
   0% { opacity: 0; }
   5% { opacity: 1; }
-  25% { opacity: 1; }
-  30% { opacity: 0; }
+  12.5% { opacity: 1; }
+  17.5% { opacity: 0; }
   100% { opacity: 0; }
 }
 #footer {

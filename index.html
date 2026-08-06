@@ -68,6 +68,10 @@
             <img src="./css/css.png" alt="CSS">
             <img src="./css/java.png" alt="JavaScript">
             <img src="./css/python.png" alt="Python">
+            <img src="./css/github.png" alt="GitHub">
+            <img src="./css/mysql.png" alt="MySQL">
+            <img src="./css/n8n.png" alt="N8N">
+            <img src="./css/docker.png" alt="Docker">
             </div>
         </div>
     </section>
@@ -97,7 +101,7 @@
             </div>
         </div>
         <div class="card">
-            <img src="./css/proyecto2.png" alt="Proyecto 1" id="p1i">
+            <img src="./css/proyecto2.png" alt="Proyecto 2" id="p2i">
             <div align="center" class="contenido">
                 <h3>Creación de portafolio profesional</h3>
                 <p>
@@ -153,5 +157,19 @@
     <footer>
         <p align="center" id="footer">© 2026 Antonio Canux. Todos los derechos reservados.</p>
     </footer>
+    <script>
+        document.querySelectorAll('.menu a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
