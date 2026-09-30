@@ -1,222 +1,227 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio - Antonio Canux</title>
+    <meta name="description" content="Portafolio de Antonio Canux, desarrollador web: HTML, CSS, JavaScript, Python, MySQL, Docker y automatización con n8n.">
+    <meta name="theme-color" content="#0b1220">
+    <title>Antonio Canux | Desarrollador Web</title>
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="icon" href="./css/logo1.png" type="image/png">
 </head>
 <body>
-    <div id="banner">
-        <img src="./css/foto.jpeg" alt="Foto de perfil de Antonio Canux" id="profile-pic">
-            <div align="center" class="name">
-                <h1>Antonio Canux</h1>
-                <h2>Portafolio</h2>
-            </div>
-        <img src="./css/logo1.png" alt="Logo de perfil de Antonio Canux" id="profile-pic"> 
-    </div>
-    <div id="welcome">
-        <nav id="links" align="center">
-            <div class="menu"><a href="#banner">Inicio</a></div>
-            <div class="menu"><a href="#presentacion">Presentación</a></div>
-            <div class="menu"><a href="#sobremi">Sobre mí</a></div>
-            <div class="menu"><a href="#habilidades">Habilidades</a></div>
-            <div class="menu"><a href="#proyectos">Proyectos</a></div>
-            <div class="menu"><a href="#contacto">Contacto</a></div>
-        </nav>
-    </div>
-    <br>
-    <section>
-        <div class="titles" id="presentacion"><h3>Presentación</h3></div>
-        <div class="present"><p align="center">¡Hola! Soy Antonio Canux, un apasionado desarrollador web con experiencia
-            en HTML, CSS y JavaScript. Me encanta crear sitios web atractivos y funcionales que brinden
-            una excelente experiencia de usuario. En este portafolio, encontrarás algunos de mis proyectos
-            más destacados, así como información sobre mis habilidades y logros. ¡Gracias por visitar mi portafolio!</p> </div>
-    </section>
-    <br>
-    <section>
-        <div class="titles" id="sobremi"><h3>Sobre mí</h3></div>
-        <div class="present">
-            <img src="./css/foto2.png" alt="Antonio Canux" id="sobremi-img">
-            <p align="center">Soy desarrollador web enfocado en crear experiencias digitales que no
-                solo funcionen bien, sino que también se vean bien. Trabajo con Python, HTML, CSS y JavaScript,
-                combinando lógica y creatividad en cada proyecto.
-                Fuera del código, me apasiona la música, la fotografía y el fútbol, cosas que influyen
-                bastante en mi forma de pensar y crear. Me gusta aprender constantemente, experimentar
-                y mejorar en cada proyecto que realizo.
-                Disfruto involucrarme en todo el proceso de desarrollo, desde la idea hasta el resultado
-                final, siempre buscando que cada sitio tenga calidad, estilo y una buena experiencia
-                para quien lo usa.</p>
+    <div id="progress" aria-hidden="true"></div>
+
+    <header id="header">
+        <div class="container header-inner">
+            <a href="#inicio" class="brand">AC<span>.</span></a>
+            <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav">
+                <span></span><span></span><span></span>
+            </button>
+            <nav id="nav" aria-label="Principal">
+                <a href="#inicio">Inicio</a>
+                <a href="#sobremi">Sobre mí</a>
+                <a href="#habilidades">Habilidades</a>
+                <a href="#proyectos">Proyectos</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
         </div>
-    </section>
-    <br>
-    <section>
-        <div class="titles" id="habilidades"><h3 align="center" id="skillt">Habilidades</h3></div>
-        <div class="present">
-            <div>
-                <ul>
-                <li><strong>HTML</strong>: Experiencia en la creación de estructuras web semánticas y accesibles.</li>
-                <li><strong>CSS</strong>: Habilidad para diseñar sitios web atractivos y responsivos utilizando CSS.</li>
-                <li><strong>JavaScript</strong>: Capacidad para agregar interactividad y funcionalidad a los sitios web con JavaScript.</li>
-                <li><strong>Python</strong>: Conocimientos en programación con Python, especialmente en el desarrollo web con frameworks como Django o Flask.</li>
-                <li><strong>Git</strong> Hub: Aplicación de buenas prácticas y control de versiones para el desarrollo de software.</li>
-                <li><strong>MySQL</strong>: Gestión y administración de bases de datos relacionales para el almacenamiento de datos.</li>
-                <li><strong>N8N</strong>: Creación de automatizaciones que facilitan la realización de procesos utilizando nodos y flujos.</li>
-                <li><strong>Docker:</strong> Conocimientos básicos sobre contenedores y levantado de servicios.</li>
-                </ul>
-            </div>
-            <div class="animation">
-            <img src="./css/html.png" alt="HTML">
-            <img src="./css/css.png" alt="CSS">
-            <img src="./css/java.png" alt="JavaScript">
-            <img src="./css/python.png" alt="Python">
-            <img src="./css/github.png" alt="GitHub">
-            <img src="./css/mysql.png" alt="MySQL">
-            <img src="./css/n8n.png" alt="N8N">
-            <img src="./css/docker.png" alt="Docker">
-            </div>
-        </div>
-    </section>
-    <br>
-    <section class="proyectos"></section>
-    <div class="titles" id="proyectos"><h3>Proyectos Destacados</h3></div>
-        <div class="card">
-            <img src="./css/proyecto3.png" alt="Proyecto 3" id="p1i">
-            <div align="center" class="contenido">
-                <h3>Gestión de CampusParking</h3>
-                <p>
-                    ParkingControl es un sistema web de gestión y control de parqueo desarrollado con tecnologías
-                    web modernas y frontend nativas. Está enfocado en la administración eficiente de vehículos,
-                    el control dinámico de espacios y el cálculo automático de cobros en tiempo real.
-                </p>
-                <div class="tecnologias">
-                    <span>HTML, CSS & JavaScript</span>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <div class="container hero-inner">
+                <div class="hero-text reveal">
+                    <p class="eyebrow">Hola, soy</p>
+                    <h1>Antonio Canux</h1>
+                    <p class="role"><span id="typed" data-roles="Desarrollador Web|Desarrollador Front-end|Entusiasta de la automatización"></span><span class="cursor">|</span></p>
+                    <p class="lead">Desarrollo sitios y aplicaciones web funcionales, claros y bien cuidados, desde la idea hasta el resultado final.</p>
+                    <div class="actions">
+                        <a href="#proyectos" class="btn btn-primary">Ver proyectos</a>
+                        <a href="#contacto" class="btn">Contáctame</a>
+                    </div>
                 </div>
-                <div class="botones">
-                    <a href="https://github.com/canuxantonio502/gestion_parqueo_javascript" target="_blank" class="button">
-                    Ver Código
-                    </a>
-                    <a href="https://canuxantonio502.github.io/gestion_parqueo_javascript/dashboard.html" target="_blank" class="button">
-                    Ver Proyecto
-                    </a>
+                <div class="hero-photo reveal">
+                    <img src="./css/foto.jpeg" alt="Foto de perfil de Antonio Canux" data-fallback="AC">
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <img src="./css/proyecto4.png" alt="Proyecto 4" id="p4i">
-            <div align="center" class="contenido">
-                <h3>Campus Movie Explorer</h3>
-                <p>
-                    Campus Movie Explorer es una aplicación web interactiva que permite explorar películas 
-                    populares, buscar películas por nombre, navegar entre categorías y visualizar información
-                    detallada de cada película mediante un modal dinámico.
-                </p>
-                <div class="tecnologias">
-                    <span>HTML, CSS, JavaScript & TMDB API</span>
-                </div>
-                <div class="botones">
-                    <a href="https://github.com/canuxantonio502/campus_movie_explorer" target="_blank" class="button">
-                    Ver Código
-                    </a>
-                    <a href="https://canuxantonio502.github.io/campus_movie_explorer/" target="_blank" class="button">
-                    Ver Proyecto
-                    </a>
+            <div class="container stats reveal">
+                <div><strong data-count="4">0</strong><span>Proyectos destacados</span></div>
+                <div><strong data-count="8">0</strong><span>Tecnologías</span></div>
+                <div><strong data-count="4">0</strong><span>Lenguajes y entornos</span></div>
+            </div>
+        </section>
+
+        <section id="sobremi" class="section">
+            <div class="container">
+                <h2 class="section-title reveal"><span>01</span> Sobre mí</h2>
+                <div class="about reveal">
+                    <img src="./css/foto2.png" alt="Antonio Canux" data-fallback="AC" class="about-img">
+                    <div>
+                        <p>Soy desarrollador web enfocado en crear experiencias digitales que no solo funcionen bien, sino que también se vean bien. Trabajo con Python, HTML, CSS y JavaScript, combinando lógica y creatividad en cada proyecto.</p>
+                        <p>Fuera del código, me apasionan la música, la fotografía y el fútbol, cosas que influyen bastante en mi forma de pensar y crear. Me gusta aprender constantemente, experimentar y mejorar en cada proyecto que realizo.</p>
+                        <p>Disfruto involucrarme en todo el proceso de desarrollo, buscando que cada sitio tenga calidad, estilo y una buena experiencia para quien lo usa.</p>
+                        <ul class="interests">
+                            <li>Música</li><li>Fotografía</li><li>Fútbol</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <img src="./css/proyecto1.jpg" alt="Proyecto 1" id="p1i">
-            <div align="center" class="contenido">
-                <h3>Página para festival de música</h3>
-                <p>
-                    La página presenta toda la información necesaria de forma clara
-                    y atractiva, incluyendo el line-up, horarios, ubicación y venta de entradas. El desarrollo
-                    de la página se realizó utilizando HTML y CSS, asegurando una experiencia de usuario fluida y visualmente atractiva.
-                </p>
-                <div class="tecnologias">
-                    <span>HTML & CSS</span>
-                </div>
-                <div class="botones">
-                    <a href="https://github.com/canuxantonio502/repaso/blob/master/index.html" target="_blank" class="button">
-                    Ver Código
-                    </a>
-                    <a href="https://canuxantonio502.github.io/festival_html_css/" target="_blank" class="button">
-                    Ver Proyecto
-                    </a>
+        </section>
+
+        <section id="habilidades" class="section alt">
+            <div class="container">
+                <h2 class="section-title reveal"><span>02</span> Habilidades</h2>
+                <div class="skills">
+                    <article class="skill reveal">
+                        <img src="./css/html.png" alt="" data-fallback="HTML">
+                        <h3>HTML</h3>
+                        <p>Estructuras web semánticas y accesibles.</p>
+                    </article>
+                    <article class="skill reveal">
+                        <img src="./css/css.png" alt="" data-fallback="CSS">
+                        <h3>CSS</h3>
+                        <p>Sitios atractivos y responsivos.</p>
+                    </article>
+                    <article class="skill reveal">
+                        <img src="./css/java.png" alt="" data-fallback="JS">
+                        <h3>JavaScript</h3>
+                        <p>Interactividad y funcionalidad en la web.</p>
+                    </article>
+                    <article class="skill reveal">
+                        <img src="./css/python.png" alt="" data-fallback="PY">
+                        <h3>Python</h3>
+                        <p>Desarrollo web con Django o Flask.</p>
+                    </article>
+                    <article class="skill reveal">
+                        <img src="./css/github.png" alt="" data-fallback="GH">
+                        <h3>Git &amp; GitHub</h3>
+                        <p>Control de versiones y buenas prácticas.</p>
+                    </article>
+                    <article class="skill reveal">
+                        <img src="./css/mysql.png" alt="" data-fallback="SQL">
+                        <h3>MySQL</h3>
+                        <p>Gestión de bases de datos relacionales.</p>
+                    </article>
+                    <article class="skill reveal">
+                        <img src="./css/n8n.png" alt="" data-fallback="n8n">
+                        <h3>n8n</h3>
+                        <p>Automatizaciones con nodos y flujos.</p>
+                    </article>
+                    <article class="skill reveal">
+                        <img src="./css/docker.png" alt="" data-fallback="DK">
+                        <h3>Docker</h3>
+                        <p>Contenedores y levantado de servicios (nivel básico).</p>
+                    </article>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <img src="./css/proyecto2.png" alt="Proyecto 2" id="p2i">
-            <div align="center" class="contenido">
-                <h3>Creación de portafolio profesional</h3>
-                <p>
-                En este proyecto, desarrollé un portafolio profesional utilizando HTML y CSS.
-                El portafolio está diseñado para mostrar mis habilidades, proyectos y logros de manera clara y atractiva.
-                Implementé un diseño responsivo para asegurar que el portafolio se vea bien en dispositivos móviles y de escritorio.
-                </p>
-                <div class="tecnologias">
-                    <span>HTML & CSS</span>
+        </section>
+
+        <section id="proyectos" class="section">
+            <div class="container">
+                <h2 class="section-title reveal"><span>03</span> Proyectos destacados</h2>
+                <div class="filters reveal" role="group" aria-label="Filtrar proyectos">
+                    <button class="filter active" data-filter="all">Todos</button>
+                    <button class="filter" data-filter="js">JavaScript</button>
+                    <button class="filter" data-filter="css">HTML &amp; CSS</button>
                 </div>
-                <div class="botones">
-                    <a href="https://github.com/canuxantonio502/Portafolio/blob/main/index.html" target="_blank" class="button">
-                    Ver Código
-                    </a>
-                    <a href="#banner" target="_blank" class="button">
-                    Ver Proyecto
-                    </a>
+                <div class="projects">
+                    <article class="card reveal" data-cat="js">
+                        <img src="./css/proyecto3.png" alt="Captura de Gestión de CampusParking" data-fallback="Parking">
+                        <div class="card-body">
+                            <h3>Gestión de CampusParking</h3>
+                            <p>Sistema web de gestión y control de parqueo: administración de vehículos, control dinámico de espacios y cálculo automático de cobros en tiempo real.</p>
+                            <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+                            <div class="actions">
+                                <a href="https://github.com/canuxantonio502/gestion_parqueo_javascript" target="_blank" rel="noopener" class="btn">Ver código</a>
+                                <a href="https://canuxantonio502.github.io/gestion_parqueo_javascript/dashboard.html" target="_blank" rel="noopener" class="btn btn-primary">Ver proyecto</a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="card reveal" data-cat="js">
+                        <img src="./css/proyecto4.png" alt="Captura de Campus Movie Explorer" data-fallback="Movies">
+                        <div class="card-body">
+                            <h3>Campus Movie Explorer</h3>
+                            <p>Aplicación interactiva para explorar películas populares, buscar por nombre, navegar por categorías y ver el detalle de cada una en un modal dinámico.</p>
+                            <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>TMDB API</li></ul>
+                            <div class="actions">
+                                <a href="https://github.com/canuxantonio502/campus_movie_explorer" target="_blank" rel="noopener" class="btn">Ver código</a>
+                                <a href="https://canuxantonio502.github.io/campus_movie_explorer/" target="_blank" rel="noopener" class="btn btn-primary">Ver proyecto</a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="card reveal" data-cat="css">
+                        <img src="./css/proyecto1.jpg" alt="Captura de la página del festival de música" data-fallback="Festival">
+                        <div class="card-body">
+                            <h3>Página para festival de música</h3>
+                            <p>Presenta line-up, horarios, ubicación y venta de entradas de forma clara y atractiva, con una experiencia de usuario fluida.</p>
+                            <ul class="tags"><li>HTML</li><li>CSS</li></ul>
+                            <div class="actions">
+                                <a href="https://github.com/canuxantonio502/repaso/blob/master/index.html" target="_blank" rel="noopener" class="btn">Ver código</a>
+                                <a href="https://canuxantonio502.github.io/festival_html_css/" target="_blank" rel="noopener" class="btn btn-primary">Ver proyecto</a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="card reveal" data-cat="css">
+                        <img src="./css/proyecto2.png" alt="Captura del portafolio profesional" data-fallback="Portafolio">
+                        <div class="card-body">
+                            <h3>Portafolio profesional</h3>
+                            <p>Portafolio para mostrar habilidades, proyectos y logros, con diseño responsivo para dispositivos móviles y de escritorio.</p>
+                            <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+                            <div class="actions">
+                                <a href="https://github.com/canuxantonio502/Portafolio/blob/main/index.html" target="_blank" rel="noopener" class="btn">Ver código</a>
+                                <a href="#inicio" class="btn btn-primary">Ver proyecto</a>
+                            </div>
+                        </div>
+                    </article>
                 </div>
             </div>
-        </div>
-    </section>
-    <br>
-    <section id="contacto">
-        <div class="social-links" id="follow"><h3>Contacto</h3>
-            <a href="https://github.com/canuxantonio502" target="_blank">
-                <img src="./css/github.png" alt="GitHub" class="social-icon"> GitHub
-            </a> |
-            <a href="https://www.linkedin.com/in/marco-antonio-canux-raquec-153519402/" target="_blank">
-                <img src="./css/linkedin.png" alt="LinkedIn" class="social-icon"> LinkedIn
-            </a> |
-            <a href="https://www.instagram.com/antoniocanux/" target="_blank">
-                <img src="./css/instagram.png" alt="Instagram" class="social-icon"> Instagram
-            </a> |
-            <a href="https://wa.me/+50231007720" target="_blank">
-                <img src="./css/whatsapp.png" alt="WhatsApp" class="social-icon"> WhatsApp
-            </a>
-        </div>
-        <div class="contact-form">
-            <form action="#">
-                <label for="name">Nombre:</label>
-                <input type="text" id="name" name="name" placeholder="Tu nombre" required>
-                
-                <label for="email">Correo Electrónico:</label>
-                <input type="email" id="email" name="_replyto" placeholder="Tu correo electrónico" required>
-                
-                <label for="message">Mensaje:</label>
-                <textarea id="message" name="message" rows="5" placeholder="Escribe tu mensaje aquí" required></textarea>
-                
-                <button type="submit" class="button">Enviar</button>
-            </form>
-        </div>
-    </section>
+        </section>
+
+        <section id="contacto" class="section alt">
+            <div class="container">
+                <h2 class="section-title reveal"><span>04</span> Contacto</h2>
+                <div class="contact reveal">
+                    <div class="contact-info">
+                        <p>¿Tienes un proyecto o una oportunidad en mente? Escríbeme y conversemos.</p>
+                        <ul class="socials">
+                            <li><a href="https://github.com/canuxantonio502" target="_blank" rel="noopener"><img src="./css/github.png" alt="" data-fallback="GH">GitHub</a></li>
+                            <li><a href="https://www.linkedin.com/in/marco-antonio-canux-raquec-153519402/" target="_blank" rel="noopener"><img src="./css/linkedin.png" alt="" data-fallback="in">LinkedIn</a></li>
+                            <li><a href="https://www.instagram.com/antoniocanux/" target="_blank" rel="noopener"><img src="./css/instagram.png" alt="" data-fallback="IG">Instagram</a></li>
+                            <li><a href="https://wa.me/50231007720" target="_blank" rel="noopener"><img src="./css/whatsapp.png" alt="" data-fallback="WA">WhatsApp</a></li>
+                        </ul>
+                    </div>
+                    <form id="contact-form" novalidate>
+                        <div class="field">
+                            <label for="name">Nombre</label>
+                            <input type="text" id="name" name="name" placeholder="Tu nombre" required minlength="2" autocomplete="name">
+                            <small class="error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="email">Correo electrónico</label>
+                            <input type="email" id="email" name="_replyto" placeholder="tu@correo.com" required autocomplete="email">
+                            <small class="error"></small>
+                        </div>
+                        <div class="field">
+                            <label for="message">Mensaje <em id="counter">0/500</em></label>
+                            <textarea id="message" name="message" rows="5" maxlength="500" placeholder="Escribe tu mensaje aquí" required minlength="10"></textarea>
+                            <small class="error"></small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar por WhatsApp</button>
+                        <p id="form-status" role="status"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <footer>
-        <p align="center" id="footer">© 2026 Antonio Canux. Todos los derechos reservados.</p>
+        <div class="container">
+            <p>© <span id="year">2026</span> Antonio Canux. Todos los derechos reservados.</p>
+        </div>
     </footer>
-    <script>
-        document.querySelectorAll('.menu a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
 
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-    </script>
+    <button id="to-top" class="to-top" aria-label="Volver arriba">↑</button>
+    <script src="./js/main.js" defer></script>
 </body>
 </html>
