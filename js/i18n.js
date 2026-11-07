@@ -14,6 +14,8 @@ window.I18N = {
     'nav.projects': 'Proyectos',
     'nav.contact': 'Contacto',
     'lang.switch': 'Switch to English',
+    'theme.toLight': 'Cambiar a tema claro',
+    'theme.toDark': 'Cambiar a tema oscuro',
 
     'hero.hi': 'Hola, soy',
     'hero.roles': ['Desarrollador Web', 'Desarrollador Front-end', 'Entusiasta de la automatización'],
@@ -101,6 +103,8 @@ window.I18N = {
     'nav.projects': 'Projects',
     'nav.contact': 'Contact',
     'lang.switch': 'Cambiar a español',
+    'theme.toLight': 'Switch to light theme',
+    'theme.toDark': 'Switch to dark theme',
 
     'hero.hi': "Hi, I'm",
     'hero.roles': ['Web Developer', 'Front-end Developer', 'Automation enthusiast'],

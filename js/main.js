@@ -37,6 +37,29 @@
     applyLang();
   });
 
+  /* Tema claro / oscuro (el tema inicial lo aplica el script del <head>) */
+  const root = document.documentElement, themeBtn = $('#theme-toggle');
+  const themeMeta = $('meta[name="theme-color"]');
+  const systemLight = window.matchMedia('(prefers-color-scheme: light)');
+  const applyTheme = (theme) => {
+    root.dataset.theme = theme;
+    themeMeta.content = theme === 'light' ? '#eceff3' : '#0b1220';
+    const label = t(theme === 'light' ? 'theme.toDark' : 'theme.toLight');
+    themeBtn.setAttribute('aria-label', label);
+    themeBtn.title = label;
+  };
+  themeBtn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    store.set('theme', next);
+    applyTheme(next);
+  });
+  // Si el visitante no eligió un tema, sigue el del sistema
+  systemLight.addEventListener('change', (e) => {
+    const saved = store.get('theme');
+    if (saved !== 'light' && saved !== 'dark') applyTheme(e.matches ? 'light' : 'dark');
+  });
+  langListeners.push(() => applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark'));
+
   /* Imágenes con respaldo: si una imagen falta, muestra un marcador con texto */
   const applyFallback = (img) => {
     if (img.dataset.done) return;
