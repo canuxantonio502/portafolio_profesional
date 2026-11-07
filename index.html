@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portafolio de Antonio Canux, desarrollador web: HTML, CSS, JavaScript, Python, MySQL, Docker y automatización con n8n.">
+    <meta name="description" content="Portafolio de Antonio Canux, desarrollador web: HTML, CSS, JavaScript, Python, MySQL, Docker y automatización con n8n." data-i18n-attr="content:meta.description">
     <meta name="theme-color" content="#0b1220">
-    <title>Antonio Canux | Desarrollador Web</title>
+    <title data-i18n="meta.title">Antonio Canux | Desarrollador Web</title>
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="icon" href="./css/logo1.png" type="image/png">
 </head>
@@ -14,19 +14,28 @@
 
     <header id="header">
         <div class="container header-inner">
-            <a href="#inicio" class="brand" aria-label="Inicio - Antonio Canux">
+            <a href="#inicio" class="brand" aria-label="Inicio - Antonio Canux" data-i18n-attr="aria-label:nav.homeLabel">
                 <img src="./css/logo1.png" alt="">
             </a>
-            <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav">
-                <span></span><span></span><span></span>
-            </button>
-            <nav id="nav" aria-label="Principal">
-                <a href="#inicio">Inicio</a>
-                <a href="#sobremi">Sobre mí</a>
-                <a href="#habilidades">Habilidades</a>
-                <a href="#proyectos">Proyectos</a>
-                <a href="#contacto">Contacto</a>
+            <nav id="nav" aria-label="Principal" data-i18n-attr="aria-label:nav.label">
+                <a href="#inicio" data-i18n="nav.home">Inicio</a>
+                <a href="#sobremi" data-i18n="nav.about">Sobre mí</a>
+                <a href="#habilidades" data-i18n="nav.skills">Habilidades</a>
+                <a href="#proyectos" data-i18n="nav.projects">Proyectos</a>
+                <a href="#contacto" data-i18n="nav.contact">Contacto</a>
             </nav>
+            <div class="header-tools">
+                <button type="button" class="cv-btn" data-cv-open aria-haspopup="dialog">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+                    <span>CV</span>
+                </button>
+                <button type="button" id="lang-toggle" class="lang-toggle" aria-label="Switch to English">
+                    <span data-lang="es">ES</span><span data-lang="en">EN</span>
+                </button>
+                <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú" data-i18n-attr="aria-label:nav.menu" aria-expanded="false" aria-controls="nav">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -34,38 +43,43 @@
         <section id="inicio" class="hero">
             <div class="container hero-inner">
                 <div class="hero-text reveal">
-                    <p class="eyebrow">Hola, soy</p>
+                    <p class="eyebrow" data-i18n="hero.hi">Hola, soy</p>
                     <h1>Antonio Canux</h1>
-                    <p class="role"><span id="typed" data-roles="Desarrollador Web|Desarrollador Front-end|Entusiasta de la automatización"></span><span class="cursor">|</span></p>
-                    <p class="lead">Desarrollo sitios y aplicaciones web funcionales, claros y bien cuidados, desde la idea hasta el resultado final.</p>
+                    <p class="role"><span id="typed"></span><span class="cursor">|</span></p>
+                    <p class="lead" data-i18n="hero.lead">Desarrollo sitios y aplicaciones web funcionales, claros y bien cuidados, desde la idea hasta el resultado final.</p>
                     <div class="actions">
-                        <a href="#proyectos" class="btn btn-primary">Ver proyectos</a>
-                        <a href="#contacto" class="btn">Contáctame</a>
+                        <a href="#proyectos" class="btn btn-primary" data-i18n="hero.projects">Ver proyectos</a>
+                        <button type="button" class="btn" data-cv-open aria-haspopup="dialog" data-i18n="hero.cv">Ver mi CV</button>
+                        <a href="#contacto" class="btn" data-i18n="hero.contact">Contáctame</a>
                     </div>
                 </div>
                 <div class="hero-photo reveal">
-                    <img src="./css/foto.jpeg" alt="Foto de perfil de Antonio Canux" data-fallback="AC">
+                    <img src="./css/foto.jpeg" alt="Foto de perfil de Antonio Canux" data-i18n-attr="alt:hero.photoAlt" data-fallback="AC">
                 </div>
             </div>
             <div class="container stats reveal">
-                <div><strong data-count="4">0</strong><span>Proyectos destacados</span></div>
-                <div><strong data-count="8">0</strong><span>Tecnologías</span></div>
-                <div><strong data-count="4">0</strong><span>Lenguajes y entornos</span></div>
+                <div><strong data-count="4">0</strong><span data-i18n="stats.projects">Proyectos destacados</span></div>
+                <div><strong data-count="8">0</strong><span data-i18n="stats.tech">Tecnologías</span></div>
+                <div><strong data-count="4">0</strong><span data-i18n="stats.langs">Lenguajes y entornos</span></div>
             </div>
         </section>
 
         <section id="sobremi" class="section">
             <div class="container">
-                <h2 class="section-title reveal"><span>01</span> Sobre mí</h2>
+                <h2 class="section-title reveal"><span>01</span> <b data-i18n="about.title">Sobre mí</b></h2>
                 <div class="about reveal">
                     <img src="./css/foto2.png" alt="Antonio Canux" data-fallback="AC" class="about-img">
                     <div>
-                        <p>Soy desarrollador web enfocado en crear experiencias digitales que no solo funcionen bien, sino que también se vean bien. Trabajo con Python, HTML, CSS y JavaScript, combinando lógica y creatividad en cada proyecto.</p>
-                        <p>Fuera del código, me apasionan la música, la fotografía y el fútbol, cosas que influyen bastante en mi forma de pensar y crear. Me gusta aprender constantemente, experimentar y mejorar en cada proyecto que realizo.</p>
-                        <p>Disfruto involucrarme en todo el proceso de desarrollo, buscando que cada sitio tenga calidad, estilo y una buena experiencia para quien lo usa.</p>
+                        <p data-i18n="about.p1">Soy desarrollador web enfocado en crear experiencias digitales que no solo funcionen bien, sino que también se vean bien. Trabajo con Python, HTML, CSS y JavaScript, combinando lógica y creatividad en cada proyecto.</p>
+                        <p data-i18n="about.p2">Fuera del código, me apasionan la música, la fotografía y el fútbol, cosas que influyen bastante en mi forma de pensar y crear. Me gusta aprender constantemente, experimentar y mejorar en cada proyecto que realizo.</p>
+                        <p data-i18n="about.p3">Disfruto involucrarme en todo el proceso de desarrollo, buscando que cada sitio tenga calidad, estilo y una buena experiencia para quien lo usa.</p>
                         <ul class="interests">
-                            <li>Música</li><li>Fotografía</li><li>Fútbol</li>
+                            <li data-i18n="about.music">Música</li><li data-i18n="about.photo">Fotografía</li><li data-i18n="about.football">Fútbol</li>
                         </ul>
+                        <div class="actions about-cv">
+                            <button type="button" class="btn btn-primary" data-cv-open aria-haspopup="dialog" data-i18n="cv.view">Ver CV</button>
+                            <a class="btn" data-cv-download download data-i18n="cv.download">Descargar CV</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,47 +87,47 @@
 
         <section id="habilidades" class="section alt">
             <div class="container">
-                <h2 class="section-title reveal"><span>02</span> Habilidades</h2>
+                <h2 class="section-title reveal"><span>02</span> <b data-i18n="skills.title">Habilidades</b></h2>
                 <div class="skills">
                     <article class="skill reveal">
                         <img src="./css/html.png" alt="" data-fallback="HTML">
                         <h3>HTML</h3>
-                        <p>Estructuras web semánticas y accesibles.</p>
+                        <p data-i18n="skills.html">Estructuras web semánticas y accesibles.</p>
                     </article>
                     <article class="skill reveal">
                         <img src="./css/css.png" alt="" data-fallback="CSS">
                         <h3>CSS</h3>
-                        <p>Sitios atractivos y responsivos.</p>
+                        <p data-i18n="skills.css">Sitios atractivos y responsivos.</p>
                     </article>
                     <article class="skill reveal">
                         <img src="./css/java.png" alt="" data-fallback="JS">
                         <h3>JavaScript</h3>
-                        <p>Interactividad y funcionalidad en la web.</p>
+                        <p data-i18n="skills.js">Interactividad y funcionalidad en la web.</p>
                     </article>
                     <article class="skill reveal">
                         <img src="./css/python.png" alt="" data-fallback="PY">
                         <h3>Python</h3>
-                        <p>Desarrollo web con Django o Flask.</p>
+                        <p data-i18n="skills.py">Desarrollo web con Django o Flask.</p>
                     </article>
                     <article class="skill reveal">
                         <img src="./css/github.png" alt="" data-fallback="GH">
                         <h3>Git &amp; GitHub</h3>
-                        <p>Control de versiones y buenas prácticas.</p>
+                        <p data-i18n="skills.git">Control de versiones y buenas prácticas.</p>
                     </article>
                     <article class="skill reveal">
                         <img src="./css/mysql.png" alt="" data-fallback="SQL">
                         <h3>MySQL</h3>
-                        <p>Gestión de bases de datos relacionales.</p>
+                        <p data-i18n="skills.sql">Gestión de bases de datos relacionales.</p>
                     </article>
                     <article class="skill reveal">
                         <img src="./css/n8n.png" alt="" data-fallback="n8n">
                         <h3>n8n</h3>
-                        <p>Automatizaciones con nodos y flujos.</p>
+                        <p data-i18n="skills.n8n">Automatizaciones con nodos y flujos.</p>
                     </article>
                     <article class="skill reveal">
                         <img src="./css/docker.png" alt="" data-fallback="DK">
                         <h3>Docker</h3>
-                        <p>Contenedores y levantado de servicios (nivel básico).</p>
+                        <p data-i18n="skills.docker">Contenedores y levantado de servicios (nivel básico).</p>
                     </article>
                 </div>
             </div>
@@ -121,58 +135,58 @@
 
         <section id="proyectos" class="section">
             <div class="container">
-                <h2 class="section-title reveal"><span>03</span> Proyectos destacados</h2>
-                <div class="filters reveal" role="group" aria-label="Filtrar proyectos">
-                    <button class="filter active" data-filter="all">Todos</button>
+                <h2 class="section-title reveal"><span>03</span> <b data-i18n="projects.title">Proyectos destacados</b></h2>
+                <div class="filters reveal" role="group" aria-label="Filtrar proyectos" data-i18n-attr="aria-label:projects.filterLabel">
+                    <button class="filter active" data-filter="all" data-i18n="projects.all">Todos</button>
                     <button class="filter" data-filter="js">JavaScript</button>
                     <button class="filter" data-filter="css">HTML &amp; CSS</button>
                 </div>
                 <div class="projects">
                     <article class="card reveal" data-cat="js">
-                        <img src="./css/proyecto3.png" alt="Captura de Gestión de CampusParking" data-fallback="Parking">
+                        <img src="./css/proyecto3.png" alt="Captura de Gestión de CampusParking" data-i18n-attr="alt:projects.p1.alt" data-fallback="Parking">
                         <div class="card-body">
-                            <h3>Gestión de CampusParking</h3>
-                            <p>Sistema web de gestión y control de parqueo: administración de vehículos, control dinámico de espacios y cálculo automático de cobros en tiempo real.</p>
+                            <h3 data-i18n="projects.p1.title">Gestión de CampusParking</h3>
+                            <p data-i18n="projects.p1.desc">Sistema web de gestión y control de parqueo: administración de vehículos, control dinámico de espacios y cálculo automático de cobros en tiempo real.</p>
                             <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
                             <div class="actions">
-                                <a href="https://github.com/canuxantonio502/gestion_parqueo_javascript" target="_blank" rel="noopener" class="btn">Ver código</a>
-                                <a href="https://canuxantonio502.github.io/gestion_parqueo_javascript/dashboard.html" target="_blank" rel="noopener" class="btn btn-primary">Ver proyecto</a>
+                                <a href="https://github.com/canuxantonio502/gestion_parqueo_javascript" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
+                                <a href="https://canuxantonio502.github.io/gestion_parqueo_javascript/dashboard.html" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="projects.live">Ver proyecto</a>
                             </div>
                         </div>
                     </article>
                     <article class="card reveal" data-cat="js">
-                        <img src="./css/proyecto4.png" alt="Captura de Campus Movie Explorer" data-fallback="Movies">
+                        <img src="./css/proyecto4.png" alt="Captura de Campus Movie Explorer" data-i18n-attr="alt:projects.p2.alt" data-fallback="Movies">
                         <div class="card-body">
                             <h3>Campus Movie Explorer</h3>
-                            <p>Aplicación interactiva para explorar películas populares, buscar por nombre, navegar por categorías y ver el detalle de cada una en un modal dinámico.</p>
+                            <p data-i18n="projects.p2.desc">Aplicación interactiva para explorar películas populares, buscar por nombre, navegar por categorías y ver el detalle de cada una en un modal dinámico.</p>
                             <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>TMDB API</li></ul>
                             <div class="actions">
-                                <a href="https://github.com/canuxantonio502/campus_movie_explorer" target="_blank" rel="noopener" class="btn">Ver código</a>
-                                <a href="https://canuxantonio502.github.io/campus_movie_explorer/" target="_blank" rel="noopener" class="btn btn-primary">Ver proyecto</a>
+                                <a href="https://github.com/canuxantonio502/campus_movie_explorer" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
+                                <a href="https://canuxantonio502.github.io/campus_movie_explorer/" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="projects.live">Ver proyecto</a>
                             </div>
                         </div>
                     </article>
                     <article class="card reveal" data-cat="css">
-                        <img src="./css/proyecto1.jpg" alt="Captura de la página del festival de música" data-fallback="Festival">
+                        <img src="./css/proyecto1.jpg" alt="Captura de la página del festival de música" data-i18n-attr="alt:projects.p3.alt" data-fallback="Festival">
                         <div class="card-body">
-                            <h3>Página para festival de música</h3>
-                            <p>Presenta line-up, horarios, ubicación y venta de entradas de forma clara y atractiva, con una experiencia de usuario fluida.</p>
+                            <h3 data-i18n="projects.p3.title">Página para festival de música</h3>
+                            <p data-i18n="projects.p3.desc">Presenta line-up, horarios, ubicación y venta de entradas de forma clara y atractiva, con una experiencia de usuario fluida.</p>
                             <ul class="tags"><li>HTML</li><li>CSS</li></ul>
                             <div class="actions">
-                                <a href="https://github.com/canuxantonio502/repaso/blob/master/index.html" target="_blank" rel="noopener" class="btn">Ver código</a>
-                                <a href="https://canuxantonio502.github.io/festival_html_css/" target="_blank" rel="noopener" class="btn btn-primary">Ver proyecto</a>
+                                <a href="https://github.com/canuxantonio502/repaso/blob/master/index.html" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
+                                <a href="https://canuxantonio502.github.io/festival_html_css/" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="projects.live">Ver proyecto</a>
                             </div>
                         </div>
                     </article>
                     <article class="card reveal" data-cat="css">
-                        <img src="./css/proyecto2.png" alt="Captura del portafolio profesional" data-fallback="Portafolio">
+                        <img src="./css/proyecto2.png" alt="Captura del portafolio profesional" data-i18n-attr="alt:projects.p4.alt" data-fallback="Portafolio">
                         <div class="card-body">
-                            <h3>Portafolio profesional</h3>
-                            <p>Portafolio para mostrar habilidades, proyectos y logros, con diseño responsivo para dispositivos móviles y de escritorio.</p>
+                            <h3 data-i18n="projects.p4.title">Portafolio profesional</h3>
+                            <p data-i18n="projects.p4.desc">Portafolio para mostrar habilidades, proyectos y logros, con diseño responsivo para dispositivos móviles y de escritorio.</p>
                             <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
                             <div class="actions">
-                                <a href="https://github.com/canuxantonio502/Portafolio/blob/main/index.html" target="_blank" rel="noopener" class="btn">Ver código</a>
-                                <a href="#inicio" class="btn btn-primary">Ver proyecto</a>
+                                <a href="https://github.com/canuxantonio502/Portafolio/blob/main/index.html" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
+                                <a href="#inicio" class="btn btn-primary" data-i18n="projects.live">Ver proyecto</a>
                             </div>
                         </div>
                     </article>
@@ -182,34 +196,35 @@
 
         <section id="contacto" class="section alt">
             <div class="container">
-                <h2 class="section-title reveal"><span>04</span> Contacto</h2>
+                <h2 class="section-title reveal"><span>04</span> <b data-i18n="contact.title">Contacto</b></h2>
                 <div class="contact reveal">
                     <div class="contact-info">
-                        <p>¿Tienes un proyecto o una oportunidad en mente? Escríbeme y conversemos.</p>
+                        <p data-i18n="contact.text">¿Tienes un proyecto o una oportunidad en mente? Escríbeme y conversemos.</p>
                         <ul class="socials">
                             <li><a href="https://github.com/canuxantonio502" target="_blank" rel="noopener"><img src="./css/github.png" alt="" data-fallback="GH">GitHub</a></li>
                             <li><a href="https://www.linkedin.com/in/marco-antonio-canux-raquec-153519402/" target="_blank" rel="noopener"><img src="./css/linkedin.png" alt="" data-fallback="in">LinkedIn</a></li>
                             <li><a href="https://www.instagram.com/antoniocanux/" target="_blank" rel="noopener"><img src="./css/instagram.png" alt="" data-fallback="IG">Instagram</a></li>
                             <li><a href="https://wa.me/50231007720" target="_blank" rel="noopener"><img src="./css/whatsapp.png" alt="" data-fallback="WA">WhatsApp</a></li>
+                            <li><a data-cv-download download><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span data-i18n="cv.download">Descargar CV</span></a></li>
                         </ul>
                     </div>
                     <form id="contact-form" novalidate>
                         <div class="field">
-                            <label for="name">Nombre</label>
-                            <input type="text" id="name" name="name" placeholder="Tu nombre" required minlength="2" autocomplete="name">
+                            <label for="name" data-i18n="form.name">Nombre</label>
+                            <input type="text" id="name" name="name" placeholder="Tu nombre" data-i18n-attr="placeholder:form.namePh" required minlength="2" autocomplete="name">
                             <small class="error"></small>
                         </div>
                         <div class="field">
-                            <label for="email">Correo electrónico</label>
-                            <input type="email" id="email" name="_replyto" placeholder="tu@correo.com" required autocomplete="email">
+                            <label for="email" data-i18n="form.email">Correo electrónico</label>
+                            <input type="email" id="email" name="_replyto" placeholder="tu@correo.com" data-i18n-attr="placeholder:form.emailPh" required autocomplete="email">
                             <small class="error"></small>
                         </div>
                         <div class="field">
-                            <label for="message">Mensaje <em id="counter">0/500</em></label>
-                            <textarea id="message" name="message" rows="5" maxlength="500" placeholder="Escribe tu mensaje aquí" required minlength="10"></textarea>
+                            <label for="message"><span data-i18n="form.message">Mensaje</span> <em id="counter">0/500</em></label>
+                            <textarea id="message" name="message" rows="5" maxlength="500" placeholder="Escribe tu mensaje aquí" data-i18n-attr="placeholder:form.messagePh" required minlength="10"></textarea>
                             <small class="error"></small>
                         </div>
-                        <button type="submit" class="btn btn-primary">Enviar por WhatsApp</button>
+                        <button type="submit" class="btn btn-primary" data-i18n="form.send">Enviar por WhatsApp</button>
                         <p id="form-status" role="status"></p>
                     </form>
                 </div>
@@ -219,11 +234,32 @@
 
     <footer>
         <div class="container">
-            <p>© <span id="year">2026</span> Antonio Canux. Todos los derechos reservados.</p>
+            <p>© <span id="year">2026</span> Antonio Canux. <span data-i18n="footer.rights">Todos los derechos reservados.</span></p>
         </div>
     </footer>
 
-    <button id="to-top" class="to-top" aria-label="Volver arriba">↑</button>
+    <button id="to-top" class="to-top" aria-label="Volver arriba" data-i18n-attr="aria-label:toTop">↑</button>
+
+    <!-- Visor del CV -->
+    <div id="cv-modal" class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="cv-title" hidden>
+        <div class="cv-backdrop" data-cv-close></div>
+        <div class="cv-dialog">
+            <div class="cv-head">
+                <h2 id="cv-title" data-i18n="cv.title">Curriculum Vitae</h2>
+                <div class="cv-head-actions">
+                    <a class="btn btn-primary" data-cv-download download data-i18n="cv.download">Descargar CV</a>
+                    <a class="btn cv-newtab" data-cv-newtab target="_blank" rel="noopener" data-i18n="cv.newTab">Abrir en pestaña nueva</a>
+                    <button type="button" class="cv-close" data-cv-close aria-label="Cerrar" data-i18n-attr="aria-label:cv.close">&times;</button>
+                </div>
+            </div>
+            <div class="cv-body">
+                <iframe id="cv-frame" title="CV de Antonio Canux" data-i18n-attr="title:cv.frameTitle"></iframe>
+                <p id="cv-missing" class="cv-missing" hidden data-i18n="cv.missing">El CV aún no está disponible. Vuelve pronto.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/i18n.js" defer></script>
     <script src="./js/main.js" defer></script>
 </body>
 </html>
