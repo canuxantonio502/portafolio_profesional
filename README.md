@@ -17,6 +17,8 @@ Este proyecto es  mi portafolio personal en el cual plasmé mis habilidades, con
 - Sección de habilidades con íconos dinámicos
 - Banner personalizado con identidad visual
 - Formulario de contacto
+- Sitio bilingüe (español / inglés) con selector en el encabezado; recuerda el idioma elegido
+- Visor de CV integrado con opción de descarga (los PDF van en la carpeta `cv/`)
 
 ## :bone: Estructura del proyecto
 Portafolio/
