@@ -165,6 +165,10 @@ h1, h2, h3, p { margin: 0; }
 .skills { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
 .skill { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: transform .25s, border-color .25s, box-shadow .25s; }
 .skill:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 12px 24px var(--shadow); }
+.skill-icon { display: block; width: 48px; height: 48px; margin-bottom: 14px; }
+/* El logo de Express tiene fondo blanco: se funde con la tarjeta en cada tema */
+.skill .express-img { filter: invert(1); mix-blend-mode: screen; }
+[data-theme="light"] .skill .express-img { filter: none; mix-blend-mode: multiply; }
 .skill img, .skill .ph { width: 48px; height: 48px; object-fit: contain; margin-bottom: 14px; }
 .skill h3 { font-size: 1.1rem; margin-bottom: 4px; }
 .skill p { color: var(--muted); font-size: .92rem; }
