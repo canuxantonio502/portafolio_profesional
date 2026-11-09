@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portafolio de Antonio Canux, desarrollador web: HTML, CSS, JavaScript, Python, MySQL, Docker y automatización con n8n." data-i18n-attr="content:meta.description">
+    <meta name="description" content="Portafolio de Antonio Canux, Técnico en Desarrollo de Software: HTML, CSS, JavaScript, Node.js, Express, MySQL, Docker y automatización con n8n." data-i18n-attr="content:meta.description">
     <meta name="theme-color" content="#0b1220">
     <script>
         /* Aplica el tema antes de pintar la página para evitar un parpadeo */
@@ -14,7 +14,7 @@
             document.documentElement.setAttribute('data-theme', t);
         })();
     </script>
-    <title data-i18n="meta.title">Antonio Canux | Desarrollador Web</title>
+    <title data-i18n="meta.title">Antonio Canux | Técnico en Desarrollo de Software</title>
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="icon" href="./css/logo1.png" type="image/png">
 </head>
@@ -71,7 +71,7 @@
                 </div>
             </div>
             <div class="container stats reveal">
-                <div><strong data-count="4">0</strong><span data-i18n="stats.projects">Proyectos destacados</span></div>
+                <div><strong data-count="6">0</strong><span data-i18n="stats.projects">Proyectos destacados</span></div>
                 <div><strong data-count="11">0</strong><span data-i18n="stats.tech">Tecnologías</span></div>
                 <div><strong data-count="5">0</strong><span data-i18n="stats.langs">Lenguajes y entornos</span></div>
             </div>
@@ -83,7 +83,7 @@
                 <div class="about reveal">
                     <img src="./css/foto2.png" alt="Antonio Canux" data-fallback="AC" class="about-img">
                     <div>
-                        <p data-i18n="about.p1">Soy desarrollador web enfocado en crear experiencias digitales que no solo funcionen bien, sino que también se vean bien. Trabajo con Python, HTML, CSS y JavaScript, combinando lógica y creatividad en cada proyecto.</p>
+                        <p data-i18n="about.p1">Soy Técnico en Desarrollo de Software formado en Campuslands. Construyo interfaces con HTML, CSS y JavaScript, y APIs REST y aplicaciones de consola con Node.js, Express y MySQL, cuidando que el código esté ordenado por capas y bien documentado.</p>
                         <p data-i18n="about.p2">Fuera del código, me apasionan la música, la fotografía y el fútbol, cosas que influyen bastante en mi forma de pensar y crear. Me gusta aprender constantemente, experimentar y mejorar en cada proyecto que realizo.</p>
                         <p data-i18n="about.p3">Disfruto involucrarme en todo el proceso de desarrollo, buscando que cada sitio tenga calidad, estilo y una buena experiencia para quien lo usa.</p>
                         <ul class="interests">
@@ -181,10 +181,36 @@
                 <h2 class="section-title reveal"><span>03</span> <b data-i18n="projects.title">Proyectos destacados</b></h2>
                 <div class="filters reveal" role="group" aria-label="Filtrar proyectos" data-i18n-attr="aria-label:projects.filterLabel">
                     <button class="filter active" data-filter="all" data-i18n="projects.all">Todos</button>
+                    <button class="filter" data-filter="node">Node.js &amp; MySQL</button>
                     <button class="filter" data-filter="js">JavaScript</button>
                     <button class="filter" data-filter="css">HTML &amp; CSS</button>
                 </div>
                 <div class="projects">
+                    <article class="card reveal" data-cat="node">
+                        <img src="./css/proyecto5.jpg" alt="Captura del catálogo de WTWT Movie Explorer" data-i18n-attr="alt:projects.p5.alt" data-fallback="WTWT">
+                        <div class="card-body">
+                            <h3>WTWT · What to Watch Today</h3>
+                            <p data-i18n="projects.p5.desc">Plataforma full stack para explorar, reseñar y rankear películas, animes y series. API REST con autenticación JWT, roles de usuario y administrador, ranking ponderado y documentación con Swagger. Proyecto en equipo con SCRUM.</p>
+                            <ul class="tags"><li>Node.js</li><li>Express</li><li>MySQL</li><li>JWT</li><li>Swagger</li><li>JavaScript</li></ul>
+                            <div class="actions">
+                                <a href="https://github.com/lucaspajarito01/wtwt_movie_explorer_backend" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
+                                <a href="https://wtwt-movie-explorer-backend.onrender.com/api/docs" target="_blank" rel="noopener" class="btn">API (Swagger)</a>
+                                <a href="https://lucaspajarito01.github.io/wtwt_movie_explorer_frontend/src/html/peliculas.html" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="projects.live">Ver proyecto</a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="card reveal" data-cat="node">
+                        <img src="./css/proyecto6.svg" alt="Menú principal de AlwayStrong en la terminal" data-i18n-attr="alt:projects.p6.alt" data-fallback="CLI">
+                        <div class="card-body">
+                            <h3 data-i18n="projects.p6.title">AlwayStrong · Gestión de gimnasio (CLI)</h3>
+                            <p data-i18n="projects.p6.desc">Aplicación de consola para administrar clientes, planes de entrenamiento, contratos automáticos, seguimiento físico, nutrición y finanzas. Aplica POO, principios SOLID, patrones Repository y Factory, y transacciones reales en MySQL.</p>
+                            <ul class="tags"><li>Node.js</li><li>MySQL</li><li>Inquirer</li><li>SOLID</li></ul>
+                            <div class="actions">
+                                <a href="https://github.com/canuxantonio502/alwaysstrong_nodejs_campuslands" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
+                                <a href="https://youtu.be/bOwPztq6V8c" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="projects.demo">Ver demo</a>
+                            </div>
+                        </div>
+                    </article>
                     <article class="card reveal" data-cat="js">
                         <img src="./css/proyecto3.png" alt="Captura de Gestión de CampusParking" data-i18n-attr="alt:projects.p1.alt" data-fallback="Parking">
                         <div class="card-body">

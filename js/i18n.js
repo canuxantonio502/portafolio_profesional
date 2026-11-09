@@ -3,8 +3,8 @@
    La ruta del CV de cada idioma está en "cv.file". */
 window.I18N = {
   es: {
-    'meta.title': 'Antonio Canux | Desarrollador Web',
-    'meta.description': 'Portafolio de Antonio Canux, desarrollador web: HTML, CSS, JavaScript, Python, MySQL, Docker y automatización con n8n.',
+    'meta.title': 'Antonio Canux | Técnico en Desarrollo de Software',
+    'meta.description': 'Portafolio de Antonio Canux, Técnico en Desarrollo de Software: HTML, CSS, JavaScript, Node.js, Express, MySQL, Docker y automatización con n8n.',
     'nav.label': 'Principal',
     'nav.homeLabel': 'Inicio - Antonio Canux',
     'nav.menu': 'Abrir menú',
@@ -18,7 +18,7 @@ window.I18N = {
     'theme.toDark': 'Cambiar a tema oscuro',
 
     'hero.hi': 'Hola, soy',
-    'hero.roles': ['Desarrollador Web', 'Desarrollador Front-end', 'Entusiasta de la automatización'],
+    'hero.roles': ['Técnico en Desarrollo de Software', 'Desarrollador Front-end', 'APIs REST con Node.js', 'Entusiasta de la automatización'],
     'hero.lead': 'Desarrollo sitios y aplicaciones web funcionales, claros y bien cuidados, desde la idea hasta el resultado final.',
     'hero.projects': 'Ver proyectos',
     'hero.cv': 'Ver mi CV',
@@ -29,7 +29,7 @@ window.I18N = {
     'stats.langs': 'Lenguajes y entornos',
 
     'about.title': 'Sobre mí',
-    'about.p1': 'Soy desarrollador web enfocado en crear experiencias digitales que no solo funcionen bien, sino que también se vean bien. Trabajo con Python, HTML, CSS y JavaScript, combinando lógica y creatividad en cada proyecto.',
+    'about.p1': 'Soy Técnico en Desarrollo de Software formado en Campuslands. Construyo interfaces con HTML, CSS y JavaScript, y APIs REST y aplicaciones de consola con Node.js, Express y MySQL, cuidando que el código esté ordenado por capas y bien documentado.',
     'about.p2': 'Fuera del código, me apasionan la música, la fotografía y el fútbol, cosas que influyen bastante en mi forma de pensar y crear. Me gusta aprender constantemente, experimentar y mejorar en cada proyecto que realizo.',
     'about.p3': 'Disfruto involucrarme en todo el proceso de desarrollo, buscando que cada sitio tenga calidad, estilo y una buena experiencia para quien lo usa.',
     'about.music': 'Música',
@@ -56,6 +56,12 @@ window.I18N = {
     'projects.all': 'Todos',
     'projects.code': 'Ver código',
     'projects.live': 'Ver proyecto',
+    'projects.demo': 'Ver demo',
+    'projects.p5.alt': 'Captura del catálogo de WTWT Movie Explorer',
+    'projects.p5.desc': 'Plataforma full stack para explorar, reseñar y rankear películas, animes y series. API REST con autenticación JWT, roles de usuario y administrador, ranking ponderado y documentación con Swagger. Proyecto en equipo con SCRUM.',
+    'projects.p6.alt': 'Menú principal de AlwayStrong en la terminal',
+    'projects.p6.title': 'AlwayStrong · Gestión de gimnasio (CLI)',
+    'projects.p6.desc': 'Aplicación de consola para administrar clientes, planes de entrenamiento, contratos automáticos, seguimiento físico, nutrición y finanzas. Aplica POO, principios SOLID, patrones Repository y Factory, y transacciones reales en MySQL.',
     'projects.p1.alt': 'Captura de Gestión de CampusParking',
     'projects.p1.title': 'Gestión de CampusParking',
     'projects.p1.desc': 'Sistema web de gestión y control de parqueo: administración de vehículos, control dinámico de espacios y cálculo automático de cobros en tiempo real.',
@@ -97,8 +103,8 @@ window.I18N = {
   },
 
   en: {
-    'meta.title': 'Antonio Canux | Web Developer',
-    'meta.description': 'Portfolio of Antonio Canux, web developer: HTML, CSS, JavaScript, Python, MySQL, Docker and automation with n8n.',
+    'meta.title': 'Antonio Canux | Software Development Technician',
+    'meta.description': 'Portfolio of Antonio Canux, Software Development Technician: HTML, CSS, JavaScript, Node.js, Express, MySQL, Docker and automation with n8n.',
     'nav.label': 'Main',
     'nav.homeLabel': 'Home - Antonio Canux',
     'nav.menu': 'Open menu',
@@ -112,7 +118,7 @@ window.I18N = {
     'theme.toDark': 'Switch to dark theme',
 
     'hero.hi': "Hi, I'm",
-    'hero.roles': ['Web Developer', 'Front-end Developer', 'Automation enthusiast'],
+    'hero.roles': ['Software Development Technician', 'Front-end Developer', 'REST APIs with Node.js', 'Automation enthusiast'],
     'hero.lead': 'I build functional, clean and well-crafted websites and web apps, from the first idea to the final result.',
     'hero.projects': 'View projects',
     'hero.cv': 'View my resume',
@@ -123,7 +129,7 @@ window.I18N = {
     'stats.langs': 'Languages & environments',
 
     'about.title': 'About me',
-    'about.p1': "I'm a web developer focused on creating digital experiences that not only work well but also look good. I work with Python, HTML, CSS and JavaScript, combining logic and creativity in every project.",
+    'about.p1': "I'm a Software Development Technician trained at Campuslands. I build interfaces with HTML, CSS and JavaScript, and REST APIs and command-line apps with Node.js, Express and MySQL, keeping the code organized in layers and well documented.",
     'about.p2': "Outside of code, I'm passionate about music, photography and football, things that strongly influence the way I think and create. I enjoy constantly learning, experimenting and improving with every project I take on.",
     'about.p3': 'I like being involved in the whole development process, making sure every site has quality, style and a great experience for the people who use it.',
     'about.music': 'Music',
@@ -150,6 +156,12 @@ window.I18N = {
     'projects.all': 'All',
     'projects.code': 'View code',
     'projects.live': 'View project',
+    'projects.demo': 'Watch demo',
+    'projects.p5.alt': 'Screenshot of the WTWT Movie Explorer catalog',
+    'projects.p5.desc': 'Full-stack platform to explore, review and rank movies, anime and series. REST API with JWT authentication, user and admin roles, weighted ranking and Swagger documentation. Team project using SCRUM.',
+    'projects.p6.alt': 'AlwayStrong main menu in the terminal',
+    'projects.p6.title': 'AlwayStrong · Gym management (CLI)',
+    'projects.p6.desc': 'Console app to manage clients, training plans, automatic contracts, physical progress, nutrition and finances. Applies OOP, SOLID principles, Repository and Factory patterns, and real MySQL transactions.',
     'projects.p1.alt': 'Screenshot of CampusParking Management',
     'projects.p1.title': 'CampusParking Management',
     'projects.p1.desc': 'Web system for parking management and control: vehicle administration, dynamic space tracking and automatic real-time fee calculation.',
