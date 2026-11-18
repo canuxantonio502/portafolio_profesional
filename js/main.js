@@ -77,14 +77,57 @@
     if (img.complete && img.naturalWidth === 0) applyFallback(img);
   });
 
-  /* Header, progreso, botón volver arriba */
-  const header = $('#header'), bar = $('#progress'), toTop = $('#to-top');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+
+  /* Tacómetro: la aguja sube con el scroll y llega a la zona roja al final */
+  const tach = $('#tach'), needle = $('.tach-needle', tach);
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const polar = (deg, r) => {
+    const a = (deg * Math.PI) / 180;
+    return [50 + r * Math.sin(a), 50 - r * Math.cos(a)].map((n) => +n.toFixed(2));
+  };
+  const arc = (from, to, r) => {
+    const [x1, y1] = polar(from, r), [x2, y2] = polar(to, r);
+    return `M${x1} ${y1}A${r} ${r} 0 ${to - from > 180 ? 1 : 0} 1 ${x2} ${y2}`;
+  };
+  // 0 a 8 (x1000 rpm) repartidos en 240°, de -120° a +120°
+  const rpmToDeg = (rpm) => -120 + rpm * 30;
+  $('.tach-arc', tach).setAttribute('d', arc(-120, rpmToDeg(6.5), 42));
+  $('.tach-red', tach).setAttribute('d', arc(rpmToDeg(6.5), 120, 42));
+  const ticks = $('.tach-ticks', tach);
+  for (let i = 0; i <= 8; i++) {
+    const [x1, y1] = polar(rpmToDeg(i), 38), [x2, y2] = polar(rpmToDeg(i), 33);
+    const line = document.createElementNS(SVGNS, 'line');
+    Object.entries({ x1, y1, x2, y2 }).forEach(([k, v]) => line.setAttribute(k, v));
+    ticks.appendChild(line);
+    if (i % 2 === 0) {
+      const [tx, ty] = polar(rpmToDeg(i), 26);
+      const label = document.createElementNS(SVGNS, 'text');
+      label.setAttribute('x', tx); label.setAttribute('y', ty);
+      label.textContent = i;
+      ticks.appendChild(label);
+    }
+  }
+  let needleTarget = -120, needleNow = -120, needleRaf = 0;
+  const drawNeedle = () => {
+    needleNow += (needleTarget - needleNow) * (reduceMotion ? 1 : 0.12);
+    needle.setAttribute('transform', `rotate(${needleNow.toFixed(2)} 50 50)`);
+    tach.classList.toggle('redline', needleNow > rpmToDeg(6.5));
+    needleRaf = Math.abs(needleTarget - needleNow) > 0.1 ? requestAnimationFrame(drawNeedle) : 0;
+  };
+
+  /* Header, tacómetro, botón volver arriba */
+  const header = $('#header'), toTop = $('#to-top'), cue = $('.scroll-cue');
   const onScroll = () => {
     const y = window.scrollY;
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+    needleTarget = rpmToDeg(8 * (max > 0 ? clamp(y / max) : 0));
+    if (!needleRaf) needleRaf = requestAnimationFrame(drawNeedle);
+    tach.classList.toggle('show', y > 120);
     header.classList.toggle('scrolled', y > 10);
     toTop.classList.toggle('show', y > 500);
+    if (cue) cue.classList.toggle('gone', y > 60);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
@@ -138,7 +181,6 @@
 
   /* Texto que se escribe (se reinicia al cambiar de idioma) */
   const typed = $('#typed');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let typedTimer;
   const startTyping = () => {
     clearTimeout(typedTimer);
@@ -295,6 +337,106 @@
 
   /* Año del footer */
   $('#year').textContent = new Date().getFullYear();
+
+  /* ---------- Experiencia inmersiva (GSAP + ScrollTrigger) ---------- */
+  const hasGsap = !!(window.gsap && window.ScrollTrigger);
+  if (hasGsap) gsap.registerPlugin(ScrollTrigger);
+
+  /* Hero: el nombre entra letra por letra y la escena se aleja al bajar */
+  const h1 = $('.hero h1');
+  if (h1) {
+    const name = h1.textContent.trim();
+    h1.setAttribute('aria-label', name);
+    h1.innerHTML = name.split(' ').map((w) =>
+      `<span class="word" aria-hidden="true" style="display:inline-block;white-space:nowrap">${[...w].map((c) => `<span class="ch">${c}</span>`).join('')}</span>`
+    ).join(' ');
+  }
+  if (hasGsap && !reduceMotion) {
+    gsap.timeline({ defaults: { ease: 'power3.out' } })
+      .from('.hero .eyebrow', { y: 16, opacity: 0, duration: 0.6 })
+      .from('.hero h1 .ch', { yPercent: 90, opacity: 0, rotate: 8, stagger: 0.035, duration: 0.8 }, '-=0.3')
+      .from('.hero .role', { y: 16, opacity: 0, duration: 0.6 }, '-=0.45')
+      .from('.hero .lead', { y: 16, opacity: 0, duration: 0.6 }, '-=0.45')
+      .from('.hero .actions', { y: 14, opacity: 0, duration: 0.5 }, '-=0.4')
+      .from('.hero-photo', { scale: 0.85, opacity: 0, rotate: -6, duration: 1.1 }, 0.25)
+      .from('.scroll-cue', { y: 10, opacity: 0, duration: 0.6, clearProps: 'all' }, '-=0.2');
+    const heroST = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true };
+    gsap.to('.hero-text', { y: -70, opacity: 0.25, ease: 'none', scrollTrigger: heroST });
+    gsap.to('.hero-photo', { yPercent: -14, ease: 'none', scrollTrigger: { ...heroST } });
+  }
+
+  /* Trayectoria: el motor gira, se despieza y se transforma en código */
+  const story = $('.story');
+  if (story) {
+    const svg = $('.engine', story);
+    const el = (s) => $(s, svg);
+    const gBig = el('#g-big'), gSmall = el('#g-small'), gPiston = el('#g-piston');
+    const pHead = el('#p-head'), pRod = el('#p-rod'), pPin = el('#p-pin');
+    const parts = el('.eng-parts'), labels = el('.eng-labels');
+    const braces = el('#glyph-braces'), tag = el('#glyph-tag');
+    const code = el('.eng-code'), frame = el('#code-frame'), lines = $$('.code-lines text', svg);
+    const seg = (p, a, b) => clamp((p - a) / (b - a));
+    const smooth = (t) => t * t * (3 - 2 * t);
+    const scaleAt = (x, y, s) => `translate(${x} ${y}) scale(${s}) translate(${-x} ${-y})`;
+
+    const render = (p) => {
+      const rot = p * 720;
+      const ex = smooth(seg(p, 0.22, 0.36));            // vista despiezada
+      const mo = smooth(seg(p, 0.5, 0.66));             // piezas -> símbolos
+      const co = seg(p, 0.72, 0.9);                     // símbolos -> código
+      gBig.setAttribute('transform', `translate(${150 - 34 * ex} ${205 - 14 * ex}) rotate(${rot}) scale(${1 - 0.3 * mo})`);
+      gSmall.setAttribute('transform', `translate(${247 + 26 * ex} ${149 - 26 * ex}) rotate(${-rot * 1.5 + 11})`);
+      // Biela y pistón: el cigüeñal da 6 vueltas en todo el recorrido
+      const th = (p * 360 * 6 * Math.PI) / 180;
+      const pinX = 310 + 18 * Math.sin(th), pinY = 340 - 18 * Math.cos(th);
+      const wristY = pinY - Math.sqrt(70 * 70 - (pinX - 310) ** 2);
+      pHead.setAttribute('y', (wristY - 26).toFixed(2));
+      pRod.setAttribute('x1', 310); pRod.setAttribute('y1', wristY.toFixed(2));
+      pRod.setAttribute('x2', pinX.toFixed(2)); pRod.setAttribute('y2', pinY.toFixed(2));
+      pPin.setAttribute('cx', pinX.toFixed(2)); pPin.setAttribute('cy', pinY.toFixed(2));
+      gPiston.setAttribute('transform', `translate(${30 * ex} ${22 * ex})`);
+      parts.style.opacity = 1 - mo;
+      labels.style.opacity = seg(p, 0.27, 0.4) * (1 - seg(p, 0.5, 0.58));
+      const fadeGlyphs = 1 - seg(p, 0.74, 0.84);
+      braces.style.opacity = mo * fadeGlyphs;
+      braces.setAttribute('transform', scaleAt(150 - 34 * ex, 205, 0.5 + 0.5 * mo));
+      tag.style.opacity = mo * fadeGlyphs;
+      tag.setAttribute('transform', scaleAt(247 + 26 * ex, 149, 0.5 + 0.5 * mo));
+      code.style.opacity = seg(p, 0.72, 0.78);
+      frame.style.strokeDashoffset = 1 - seg(p, 0.72, 0.86);
+      lines.forEach((ln, i) => {
+        const o = seg(p, 0.8 + i * 0.03, 0.84 + i * 0.03);
+        ln.style.opacity = o;
+        ln.setAttribute('transform', `translate(${(o - 1) * 14} 0)`);
+      });
+    };
+
+    const chapters = $$('.chapter', story), dots = $$('.story-dots li', story);
+    const STATES = [0.1, 0.42, 0.66, 1];   // estado del motor para cada capítulo
+    const setActive = (i) => {
+      chapters.forEach((c, k) => c.classList.toggle('active', k === i));
+      dots.forEach((d, k) => d.classList.toggle('active', k === i));
+      if (!hasGsap || reduceMotion) render(STATES[i]);
+    };
+    story.classList.add('is-live');
+    render(0);
+
+    if (hasGsap && !reduceMotion) {
+      ScrollTrigger.create({
+        trigger: '.story-inner', start: 'top top', end: 'bottom bottom', scrub: 0.6,
+        onUpdate: (self) => render(self.progress)
+      });
+    }
+    // Capítulo activo: el que cruza el centro del área visible
+    // (en móvil el motor ocupa la parte de arriba, así que la línea baja)
+    const mobile = window.matchMedia('(max-width: 820px)').matches;
+    const line = mobile ? '-68% 0px -32% 0px' : '-50% 0px -50% 0px';
+    const chIO = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) setActive(chapters.indexOf(en.target)); });
+    }, { rootMargin: line });
+    chapters.forEach((c) => chIO.observe(c));
+    setActive(0);
+  }
 
   applyLang();
 })();

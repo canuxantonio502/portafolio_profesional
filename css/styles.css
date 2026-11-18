@@ -68,8 +68,22 @@ h1, h2, h3, p { margin: 0; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .container { width: min(1100px, 100% - 40px); margin-inline: auto; }
 
-/* Progreso */
-#progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 200; }
+/* Tacómetro: indicador de progreso del scroll */
+.tach {
+  position: fixed; left: 18px; bottom: 18px; z-index: 90; width: 78px; height: 78px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border); box-shadow: 0 10px 24px var(--shadow);
+  opacity: 0; transform: translateY(10px); transition: opacity .4s, transform .4s; pointer-events: none;
+}
+.tach.show { opacity: 1; transform: none; }
+.tach svg { width: 100%; height: 100%; display: block; }
+.tach-arc { fill: none; stroke: var(--border); stroke-width: 3; }
+.tach-red { fill: none; stroke: var(--danger); stroke-width: 3; }
+.tach-ticks line { stroke: var(--muted); stroke-width: 1.5; }
+.tach-ticks text { fill: var(--muted); font-size: 7px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+.tach-needle { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.tach.redline .tach-needle { stroke: var(--danger); }
+.tach-hub { fill: var(--heading); }
+.tach-label { fill: var(--muted); font-size: 6px; letter-spacing: .5px; text-anchor: middle; }
 
 /* Header */
 #header {
@@ -135,6 +149,57 @@ h1, h2, h3, p { margin: 0; }
 .stats div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; }
 .stats strong { display: block; font-size: 2rem; color: var(--heading); }
 .stats span { color: var(--muted); font-size: .9rem; }
+
+/* Invitación a hacer scroll */
+.scroll-cue { display: flex; align-items: center; justify-content: center; gap: 12px; width: fit-content; margin: 44px auto 0; color: var(--muted); font-size: .9rem; letter-spacing: .3px; transition: color .2s; }
+.scroll-cue:hover { color: var(--accent); }
+.scroll-cue.gone { opacity: 0; pointer-events: none; transition: opacity .4s, color .2s; }
+.mouse { position: relative; width: 22px; height: 34px; border: 2px solid currentColor; border-radius: 12px; }
+.mouse::after { content: ""; position: absolute; left: 50%; top: 6px; width: 4px; height: 7px; margin-left: -2px; border-radius: 2px; background: var(--accent); animation: wheel 1.6s ease-in-out infinite; }
+@keyframes wheel { 0% { opacity: 0; transform: translateY(-2px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(10px); } }
+.hero h1 .ch { display: inline-block; will-change: transform; }
+
+/* Trayectoria: del motor al código */
+.story-inner { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; }
+.story-stage {
+  position: sticky; top: calc(var(--header-h) + 4vh); height: calc(92vh - var(--header-h));
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+}
+.engine { width: 100%; max-width: 480px; max-height: 100%; overflow: visible; }
+.gear { fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; fill-rule: evenodd; }
+.gear-alt { stroke: var(--muted); }
+.gear-hub { fill: none; stroke: var(--border); stroke-width: 2; stroke-dasharray: 4 6; }
+.cylinder { fill: none; stroke: var(--muted); stroke-width: 3; stroke-linecap: round; }
+.piston { fill: var(--accent-strong); }
+.rod { stroke: var(--muted); stroke-width: 6; stroke-linecap: round; }
+.crank { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+.pin { fill: var(--heading); }
+.eng-labels { opacity: 0; }
+.eng-labels path { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.eng-labels text { fill: var(--heading); font-size: 14px; font-weight: 600; }
+.eng-glyphs text { fill: var(--accent); font-family: Consolas, "Cascadia Code", monospace; font-weight: 700; text-anchor: middle; opacity: 0; }
+#glyph-braces { font-size: 84px; }
+#glyph-tag { font-size: 38px; fill: var(--muted); }
+.eng-code { opacity: 0; }
+.code-frame { fill: var(--bg-alt); stroke: var(--accent); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.code-dots circle { fill: var(--border); }
+.code-dots circle:first-child { fill: var(--danger); }
+.code-lines text { fill: var(--text); font-family: Consolas, "Cascadia Code", monospace; font-size: 19px; white-space: pre; opacity: 0; }
+.tk-k { fill: var(--accent); font-weight: 700; }
+.tk-s { fill: #7fb88a; }
+[data-theme="light"] .tk-s { fill: #3f7d4c; }
+.tk-cursor { fill: var(--accent); animation: blink 1s steps(1) infinite; }
+.story-dots { display: flex; gap: 10px; list-style: none; margin: 0; padding: 0; }
+.story-dots li { width: 8px; height: 8px; border-radius: 99px; background: var(--border); transition: width .35s, background .35s; }
+.story-dots li.active { width: 26px; background: var(--accent); }
+.chapter { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; gap: 12px; transition: opacity .5s; }
+.chapter:last-child { min-height: 70vh; }
+.story.is-live .chapter:not(.active) { opacity: .28; }
+.chapter-meta { color: var(--muted); font-size: .9rem; }
+.chapter-meta span { color: var(--accent); font-weight: 700; letter-spacing: .5px; }
+.chapter-meta b { font-weight: inherit; }
+.chapter h3 { font-size: clamp(1.7rem, 3.6vw, 2.6rem); line-height: 1.15; color: var(--heading); }
+.chapter p:last-child { color: var(--muted); font-size: 1.05rem; max-width: 44ch; }
 
 /* Botones */
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -295,6 +360,14 @@ body.modal-open { overflow: hidden; }
   .projects { grid-template-columns: 1fr; }
   .section { padding: 56px 0; }
   .about-cv { justify-content: center; }
+  /* Trayectoria en móvil: el motor queda fijo arriba y los capítulos pasan debajo */
+  .story-inner { grid-template-columns: 1fr; gap: 0; }
+  .story-stage { top: var(--header-h); height: 40vh; z-index: 2; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .engine { max-width: 280px; }
+  .chapter { min-height: 58vh; text-align: center; align-items: center; }
+  .chapter:last-child { min-height: 50vh; }
+  .chapter p:last-child { margin-inline: auto; }
+  .tach { width: 60px; height: 60px; left: 12px; bottom: 12px; }
   .cv-modal { padding: 0; }
   .cv-dialog { height: 100%; border-radius: 0; border: 0; }
   .cv-head h2 { width: 100%; }
