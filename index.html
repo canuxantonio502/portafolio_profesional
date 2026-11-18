@@ -118,6 +118,7 @@
             </div>
             <div class="container story-inner">
                 <div class="story-stage" aria-hidden="true">
+                    <div class="engine-wrap">
                     <svg class="engine" viewBox="0 0 400 400">
                         <g class="eng-parts">
                             <g id="g-big" transform="translate(150 205)">
@@ -157,6 +158,7 @@
                             </g>
                         </g>
                     </svg>
+                    </div>
                     <ol class="story-dots">
                         <li class="active"></li><li></li><li></li><li></li>
                     </ol>
@@ -341,6 +343,7 @@
     <footer>
         <div class="container">
             <p>© <span id="year">2026</span> Antonio Canux. <span data-i18n="footer.rights">Todos los derechos reservados.</span></p>
+            <p class="credit"><span data-i18n="footer.model">Modelo 3D</span> <a href="https://sketchfab.com/3d-models/animated-engine-v8-b0dbf778b81e4afba4edf11336e2a099" target="_blank" rel="noopener">"Animated Engine V8"</a> <span data-i18n="footer.by">de</span> <a href="https://sketchfab.com/meeww" target="_blank" rel="noopener">meeww</a>, <span data-i18n="footer.license">bajo licencia</span> <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
         </div>
     </footer>
 
@@ -369,5 +372,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
     <script src="./js/i18n.js" defer></script>
     <script src="./js/main.js" defer></script>
+    <script type="importmap">
+        { "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        } }
+    </script>
+    <script type="module" src="./js/engine3d.js"></script>
 </body>
 </html>

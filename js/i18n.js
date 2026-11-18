@@ -96,6 +96,9 @@ window.I18N = {
     'form.whatsapp': 'Hola Antonio, soy {name} ({email}).',
 
     'footer.rights': 'Todos los derechos reservados.',
+    'footer.model': 'Modelo 3D',
+    'footer.by': 'de',
+    'footer.license': 'bajo licencia',
     'toTop': 'Volver arriba',
 
     'cv.file': './cv/CV_Antonio_Canux_ES.pdf',
@@ -202,6 +205,9 @@ window.I18N = {
     'form.whatsapp': "Hi Antonio, I'm {name} ({email}).",
 
     'footer.rights': 'All rights reserved.',
+    'footer.model': '3D model',
+    'footer.by': 'by',
+    'footer.license': 'licensed under',
     'toTop': 'Back to top',
 
     'cv.file': './cv/CV_Antonio_Canux_EN.pdf',

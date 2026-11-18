@@ -380,6 +380,9 @@
     const scaleAt = (x, y, s) => `translate(${x} ${y}) scale(${s}) translate(${-x} ${-y})`;
 
     const render = (p) => {
+      // El motor 3D (js/engine3d.js), si cargó, sigue el mismo avance
+      window.__storyP = p;
+      if (window.engine3d) window.engine3d.update(p);
       const rot = p * 720;
       const ex = smooth(seg(p, 0.22, 0.36));            // vista despiezada
       const mo = smooth(seg(p, 0.5, 0.66));             // piezas -> símbolos

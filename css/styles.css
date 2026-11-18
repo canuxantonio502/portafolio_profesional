@@ -165,7 +165,14 @@ h1, h2, h3, p { margin: 0; }
   position: sticky; top: calc(var(--header-h) + 4vh); height: calc(92vh - var(--header-h));
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
 }
-.engine { width: 100%; max-width: 480px; max-height: 100%; overflow: visible; }
+.engine-wrap { position: relative; width: min(100%, 560px); aspect-ratio: 1; max-height: calc(100% - 30px); }
+.engine { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.engine-canvas { position: absolute; inset: -6%; width: 112% !important; height: 112% !important; display: block; animation: fade .8s ease; }
+/* Con el motor 3D activo, el SVG solo aporta la ventana de código final */
+.story.has-3d .eng-parts, .story.has-3d .eng-labels, .story.has-3d .eng-glyphs { display: none; }
+.credit { margin-top: 6px; font-size: .78rem; opacity: .8; }
+.credit a { text-decoration: underline; text-underline-offset: 2px; }
+.credit a:hover { color: var(--accent); }
 .gear { fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; fill-rule: evenodd; }
 .gear-alt { stroke: var(--muted); }
 .gear-hub { fill: none; stroke: var(--border); stroke-width: 2; stroke-dasharray: 4 6; }
@@ -363,7 +370,7 @@ body.modal-open { overflow: hidden; }
   /* Trayectoria en móvil: el motor queda fijo arriba y los capítulos pasan debajo */
   .story-inner { grid-template-columns: 1fr; gap: 0; }
   .story-stage { top: var(--header-h); height: 40vh; z-index: 2; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--border); }
-  .engine { max-width: 280px; }
+  .engine-wrap { width: min(100%, 300px); max-height: calc(100% - 26px); }
   .chapter { min-height: 58vh; text-align: center; align-items: center; }
   .chapter:last-child { min-height: 50vh; }
   .chapter p:last-child { margin-inline: auto; }
