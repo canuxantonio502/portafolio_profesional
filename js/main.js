@@ -124,6 +124,18 @@
     reveals.forEach((el) => el.classList.add('visible'));
   }
 
+  /* Carrusel de logos: duplica la pista para que el desplazamiento sea continuo */
+  $$('.marquee').forEach((m) => {
+    const track = $('.marquee-track', m);
+    [...track.children].forEach((li) => {
+      const copy = li.cloneNode(true);
+      copy.setAttribute('aria-hidden', 'true');
+      $$('[id]', copy).forEach((el) => el.removeAttribute('id'));
+      track.appendChild(copy);
+    });
+    m.classList.add('is-running');
+  });
+
   /* Texto que se escribe (se reinicia al cambiar de idioma) */
   const typed = $('#typed');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
