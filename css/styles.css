@@ -557,3 +557,62 @@ html.lenis, html.lenis body { height: auto; }
   .header-tools { gap: 6px; }
   .brand { width: 48px; height: 48px; }
 }
+
+/* ===== El arranque (js/ignition.js) =====
+   Solo existe mientras html tiene .ignition-pending. El garaje siempre está a
+   oscuras, sin importar el tema; al arrancar se abre un círculo de luz. */
+@property --hole { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+.ignition { display: none; }
+html.ignition-pending { overflow: hidden; }
+html.ignition-pending .ignition {
+  position: fixed; inset: 0; z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  padding: 20px; color: #8b97ab;
+  background: radial-gradient(circle at 50% 46%, #0e1626 0, #060a12 42%, #020307 100%);
+}
+.ign-name { margin: 0; font-size: .78rem; font-weight: 600; letter-spacing: .45em; text-indent: .45em; text-transform: uppercase; color: #566379; }
+.ign-stage { position: relative; width: min(340px, 74vw); aspect-ratio: 1; display: grid; place-items: center; }
+.ign-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* Botón de respaldo (sin WebGL): bisel cromado, anillo LED y tapa de goma */
+.ign-btn {
+  position: relative; z-index: 1; width: 50%; aspect-ratio: 1; padding: 0; border: 0; border-radius: 50%; cursor: pointer;
+  color: #d3d8e0; background: radial-gradient(circle at 50% 30%, #2b3039, #15181d 72%);
+  box-shadow: 0 0 0 3px #0a0c10, 0 0 0 5px #6ea8d8, 0 0 18px 5px rgba(110, 168, 216, .35), 0 0 0 16px #a2a8b1, 0 0 0 18px #4a4f57, 0 24px 50px #000;
+  animation: ign-breathe 2.6s ease-in-out infinite; transition: transform .12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.ign-btn:active { transform: scale(.96); }
+.ign-btn:focus { outline: none; }
+.ign-btn:focus-visible { outline: 2px solid #6ea8d8; outline-offset: 26px; }
+.ign-face { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 100%; }
+.ign-face small { font-size: clamp(.55rem, 1.8vw, .72rem); font-weight: 700; letter-spacing: .18em; line-height: 1.15; }
+.ign-face svg { width: 32%; fill: none; stroke: #6ea8d8; stroke-width: 2.4; stroke-linecap: round; }
+@keyframes ign-breathe { 50% { box-shadow: 0 0 0 3px #0a0c10, 0 0 0 5px #6ea8d8, 0 0 30px 9px rgba(110, 168, 216, .55), 0 0 0 16px #a2a8b1, 0 0 0 18px #4a4f57, 0 24px 50px #000; } }
+/* Con el botón 3D, el HTML queda como zona de click invisible (y sigue siendo accesible) */
+.ign-stage.has-3d .ign-btn { background: transparent; box-shadow: none; animation: none; }
+.ign-stage.has-3d .ign-face { opacity: 0; }
+.ign-hint { margin: 0; font-size: .85rem; letter-spacing: .04em; color: #6b778b; animation: ign-hint 2.6s ease-in-out infinite; }
+.ign-hint kbd { margin-left: 6px; padding: 2px 7px; border: 1px solid #2a3344; border-bottom-width: 2px; border-radius: 5px; font: 600 .72rem Consolas, monospace; color: #8b97ab; }
+@keyframes ign-hint { 50% { opacity: .55; } }
+/* Al presionar: destello y vibración de marcha */
+html.ignition-press .ign-stage { animation: ign-crank .5s linear; }
+html.ignition-press .ign-hint, html.ignition-press .ign-name { opacity: 0; transition: opacity .25s; }
+@keyframes ign-crank { 10%, 50%, 90% { translate: -1.5px 1px; } 30%, 70% { translate: 1.5px -1px; } }
+.ignition::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle at 50% 46%, rgba(160, 205, 255, .5), transparent 34%);
+}
+html.ignition-press .ignition::after { animation: ign-flash .9s ease-out; }
+@keyframes ign-flash { 15% { opacity: 1; } 100% { opacity: 0; } }
+/* Se encienden las luces: un círculo crece desde el botón */
+html.ignition-on .ignition {
+  pointer-events: none;
+  -webkit-mask: radial-gradient(circle at 50% 46%, transparent var(--hole), #000 calc(var(--hole) + 16%));
+  mask: radial-gradient(circle at 50% 46%, transparent var(--hole), #000 calc(var(--hole) + 16%));
+  animation: ign-reveal 1.1s cubic-bezier(.65, 0, .25, 1) forwards;
+}
+@keyframes ign-reveal { to { --hole: 140%; } }
+@media (prefers-reduced-motion: reduce) {
+  html.ignition-on .ignition { -webkit-mask: none; mask: none; animation: ign-fade .35s forwards; }
+  @keyframes ign-fade { to { opacity: 0; } }
+  .ign-btn, .ign-hint { animation: none; }
+}

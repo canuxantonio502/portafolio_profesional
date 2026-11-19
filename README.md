@@ -6,6 +6,7 @@ Portafolio personal de **Marco Antonio Canux Raquec**, Técnico en Desarrollo de
 
 ## El recorrido
 
+0. **El arranque:** la primera vez en la sesión el sitio está a oscuras con un botón **ENGINE START/STOP** en 3D. Al presionarlo (o con Enter), el LED destella, el tacómetro da un acelerón y la luz se abre desde el botón.
 1. **Inicio:** presentación con el nombre que entra letra por letra y contadores con datos reales.
 2. **Sobre mí · Del motor al código:** un manifiesto que se ilumina palabra por palabra y da paso a la trayectoria en cuatro capítulos. Un motor V8 en 3D acompaña cada capítulo: gira armado, se despieza, se convierte en aristas de plano técnico y da paso a una laptop 3D que abre la tapa y escribe código en su pantalla.
 3. **Habilidades:** carrusel continuo de logos; al pasar el mouse aparece una tarjeta con el nombre y su uso.
@@ -61,6 +62,8 @@ portafolio_profesional/
 │   ├── main.js       # Tema, idioma, scroll, animaciones, filtros, formulario y visor de CV
 │   ├── engine3d.js   # Motor y laptop 3D de la trayectoria, y motor de la meta
 │   ├── tach3d.js     # Tacómetro 3D
+│   ├── ignition.js   # El arranque: pantalla a oscuras y encendido
+│   ├── ignition3d.js # Botón ENGINE START/STOP en 3D
 │   ├── particles.js  # Partículas de los márgenes
 │   └── sparks.js     # Chispas al hacer click
 ├── models/           # Modelos 3D (.glb comprimidos y la laptop en glTF) y sus licencias

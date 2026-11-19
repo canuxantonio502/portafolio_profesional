@@ -79,6 +79,9 @@
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  // El arranque (js/ignition.js): si el sitio empieza a oscuras, las entradas esperan al encendido
+  const ignitionPending = document.documentElement.classList.contains('ignition-pending');
+  const afterIgnition = (fn) => (ignitionPending ? window.addEventListener('ignition:start', fn, { once: true }) : fn());
 
   /* Tacómetro: la aguja sube con el scroll y llega a la zona roja al final */
   const tach = $('#tach'), needle = $('.tach-needle', tach);
@@ -122,12 +125,13 @@
 
   /* Header, tacómetro, botón volver arriba */
   const header = $('#header'), toTop = $('#to-top'), cue = $('.scroll-cue');
+  let revving = false;   // acelerón del arranque: el tacómetro aparece y la aguja sube
   const onScroll = () => {
     const y = window.scrollY;
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    needleTarget = rpmToDeg(8 * (max > 0 ? clamp(y / max) : 0));
+    if (!revving) needleTarget = rpmToDeg(8 * (max > 0 ? clamp(y / max) : 0));
     if (!needleRaf) needleRaf = requestAnimationFrame(drawNeedle);
-    tach.classList.toggle('show', y > 120);
+    tach.classList.toggle('show', y > 120 || revving);
     header.classList.toggle('scrolled', y > 10);
     toTop.classList.toggle('show', y > 500);
     toTop.style.setProperty('--spin', (y * 0.12).toFixed(1) + 'deg'); // el engrane avanza con el scroll
@@ -135,6 +139,14 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+  if (ignitionPending && !reduceMotion) {
+    window.addEventListener('ignition:start', () => {
+      revving = true;
+      needleTarget = rpmToDeg(7.4);
+      onScroll();
+      setTimeout(() => { revving = false; onScroll(); }, 900);
+    }, { once: true });
+  }
   toTop.addEventListener('click', () => {
     // Reversa: la flecha sale disparada y el engrane gira hacia atrás mientras sube
     toTop.classList.remove('reversing'); void toTop.offsetWidth; toTop.classList.add('reversing');
@@ -224,7 +236,7 @@
       obs.unobserve(el);
     });
   }, { threshold: 0.6 });
-  counters.forEach((c) => cio.observe(c));
+  afterIgnition(() => counters.forEach((c) => cio.observe(c)));
 
   /* Filtro de proyectos */
   const filters = $$('.filter'), cards = $$('.card');
@@ -357,6 +369,8 @@
     // Con scroll-behavior: smooth (CSS), ScrollTrigger mide mal al recargar o cambiar el
     // tamaño a media página. Se apaga y los enlaces internos se desplazan suave por JS.
     document.documentElement.style.scrollBehavior = 'auto';
+    // Al retirar la pantalla del arranque cambia el desbordamiento de html: se vuelven a medir los disparadores
+    if (ignitionPending) window.addEventListener('ignition:done', () => ScrollTrigger.refresh(), { once: true });
 
     // Scroll suave con inercia (Lenis), sincronizado con el reloj de GSAP.
     // En táctiles Lenis deja el scroll nativo; con movimiento reducido no se activa.
@@ -368,6 +382,7 @@
       // La página cambia de alto (galería fijada, motor de la meta): Lenis recalcula su límite
       ScrollTrigger.addEventListener('refresh', () => lenis.resize());
       window.lenis = lenis;
+      if (ignitionPending) { lenis.stop(); afterIgnition(() => lenis.start()); }
     }
 
     document.addEventListener('click', (e) => {
@@ -392,7 +407,10 @@
     ).join(' ');
   }
   if (hasGsap && !reduceMotion) {
-    gsap.timeline({ defaults: { ease: 'power3.out' } })
+    // En pausa hasta el arranque: el hero queda vacío en la oscuridad y entra con la luz
+    const heroIntro = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+    afterIgnition(() => heroIntro.play());
+    heroIntro
       .from('.hero .eyebrow', { y: 16, opacity: 0, duration: 0.6 })
       .from('.hero h1 .ch', { yPercent: 90, opacity: 0, rotate: 8, stagger: 0.035, duration: 0.8 }, '-=0.3')
       .from('.hero .role', { y: 16, opacity: 0, duration: 0.6 }, '-=0.45')

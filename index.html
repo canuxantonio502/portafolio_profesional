@@ -13,12 +13,35 @@
             if (t !== 'light' && t !== 'dark') t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', t);
         })();
+        /* El arranque: la primera vez en la sesión el sitio empieza a oscuras.
+           Se omite si se llega con un enlace a una sección. */
+        (function () {
+            var done = null;
+            try { done = sessionStorage.getItem('ignited'); } catch (e) {}
+            if (!done && !location.hash) document.documentElement.classList.add('ignition-pending');
+        })();
     </script>
     <title data-i18n="meta.title">Antonio Canux | Técnico en Desarrollo de Software</title>
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="icon" href="./css/logo1.png" type="image/png">
 </head>
 <body>
+    <!-- El arranque: pantalla a oscuras con el botón ENGINE START/STOP.
+         js/ignition.js lo controla y js/ignition3d.js dibuja el botón en 3D. -->
+    <div id="ignition" class="ignition" role="dialog" aria-modal="true" aria-labelledby="ign-name" aria-describedby="ign-hint">
+        <p id="ign-name" class="ign-name">Antonio Canux</p>
+        <div class="ign-stage">
+            <button type="button" id="ign-btn" class="ign-btn" aria-label="Arrancar el sitio" data-i18n-attr="aria-label:ign.label">
+                <span class="ign-face" aria-hidden="true">
+                    <small>ENGINE</small>
+                    <svg viewBox="0 0 24 24"><path d="M12 3v8M6.3 6.8a8 8 0 1 0 11.4 0"/></svg>
+                    <small>START<br>STOP</small>
+                </span>
+            </button>
+        </div>
+        <p id="ign-hint" class="ign-hint"><span data-i18n="ign.hint">Presiona para arrancar</span> <kbd>Enter</kbd></p>
+    </div>
+
     <div id="tach" class="tach" aria-hidden="true">
         <svg viewBox="0 0 100 100">
             <path class="tach-arc" d=""/>
@@ -388,6 +411,7 @@
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
     <script src="./js/i18n.js" defer></script>
     <script src="./js/main.js" defer></script>
+    <script src="./js/ignition.js" defer></script>
     <script type="importmap">
         { "imports": {
             "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
@@ -396,6 +420,7 @@
     </script>
     <script src="./js/particles.js" defer></script>
     <script src="./js/sparks.js" defer></script>
+    <script type="module" src="./js/ignition3d.js"></script>
     <script type="module" src="./js/engine3d.js"></script>
     <script type="module" src="./js/tach3d.js"></script>
 </body>

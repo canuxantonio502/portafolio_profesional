@@ -117,6 +117,8 @@ window.I18N = {
     'footer.license': 'bajo licencia',
     'toTop': 'Volver arriba',
     'toTopHint': 'Reversa',
+    'ign.label': 'Arrancar el sitio',
+    'ign.hint': 'Presiona para arrancar',
 
     'cv.file': './cv/CV_Antonio_Canux_ES.pdf',
     'cv.title': 'Curriculum Vitae',
@@ -243,6 +245,8 @@ window.I18N = {
     'footer.license': 'licensed under',
     'toTop': 'Back to top',
     'toTopHint': 'Reverse',
+    'ign.label': 'Start the site',
+    'ign.hint': 'Press to start the engine',
 
     'cv.file': './cv/CV_Antonio_Canux_EN.pdf',
     'cv.title': 'Resume',
