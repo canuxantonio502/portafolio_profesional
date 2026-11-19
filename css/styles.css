@@ -178,6 +178,25 @@ h1, h2, h3, p { margin: 0; }
 .engine-wrap { position: relative; width: min(100%, 560px); aspect-ratio: 1; max-height: calc(100% - 30px); }
 .engine { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .engine-canvas { position: absolute; inset: -6%; width: 112% !important; height: 112% !important; display: block; animation: fade .8s ease; }
+/* En escritorio el canvas se extiende por detrás del texto (el encuadre del motor
+   no cambia, ver engine3d.js) y sus bordes se desvanecen en vez de cortar las piezas */
+@media (min-width: 821px) {
+  .story.has-3d .engine-canvas {
+    right: auto; width: 190% !important;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 62%, transparent 92%), linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent, #000 4%, #000 62%, transparent 92%), linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+    mask-composite: intersect;
+  }
+  .story-chapters { position: relative; z-index: 1; }
+  /* Tarjeta esmerilada: lo que pase por detrás del texto se ve borroso */
+  .chapter-card {
+    margin-left: -28px; padding: 24px 28px; border-radius: 20px;
+    background: color-mix(in srgb, var(--bg) 58%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15); backdrop-filter: blur(14px) saturate(1.15);
+  }
+}
 /* Con el motor 3D activo, el SVG solo aporta la ventana de código final */
 .story.has-3d .eng-parts, .story.has-3d .eng-labels, .story.has-3d .eng-glyphs { display: none; }
 .credit { margin-top: 6px; font-size: .78rem; opacity: .8; }
@@ -209,7 +228,8 @@ h1, h2, h3, p { margin: 0; }
 .story-dots { display: flex; gap: 10px; list-style: none; margin: 0; padding: 0; }
 .story-dots li { width: 8px; height: 8px; border-radius: 99px; background: var(--border); transition: width .35s, background .35s; }
 .story-dots li.active { width: 26px; background: var(--accent); }
-.chapter { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; gap: 12px; transition: opacity .5s; }
+.chapter { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; transition: opacity .5s; }
+.chapter-card { display: flex; flex-direction: column; gap: 12px; }
 .chapter:last-child { min-height: 70vh; }
 .story.is-live .chapter:not(.active) { opacity: .28; }
 .chapter-meta { color: var(--muted); font-size: .9rem; }

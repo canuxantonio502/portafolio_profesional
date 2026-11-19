@@ -104,10 +104,16 @@ async function init() {
   story.classList.add('has-3d');
 
   const resize = () => {
-    const r = canvas.getBoundingClientRect(); // el canvas sobresale un poco del recuadro
+    const r = canvas.getBoundingClientRect();
     if (!r.width || !r.height) return;
     renderer.setSize(r.width, r.height, false);
-    camera.aspect = r.width / r.height;
+    // El encuadre del motor es el recuadro del motor más un 6% por lado.
+    // En escritorio el canvas es más ancho (llega por detrás del texto):
+    // setViewOffset dibuja ese recuadro en su sitio y usa el resto como margen.
+    const w = wrap.getBoundingClientRect();
+    const fw = w.width * 1.12, fh = w.height * 1.12;
+    camera.aspect = fw / fh;
+    camera.setViewOffset(fw, fh, r.left - (w.left - w.width * 0.06), r.top - (w.top - w.height * 0.06), r.width, r.height);
     camera.updateProjectionMatrix();
     draw(lastP);
   };
