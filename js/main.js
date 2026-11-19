@@ -362,6 +362,8 @@
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add((time) => lenis.raf(time * 1000));
       gsap.ticker.lagSmoothing(0);
+      // La página cambia de alto (galería fijada, motor de la meta): Lenis recalcula su límite
+      ScrollTrigger.addEventListener('refresh', () => lenis.resize());
       window.lenis = lenis;
     }
 
