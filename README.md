@@ -7,7 +7,7 @@ Portafolio personal de **Marco Antonio Canux Raquec**, Técnico en Desarrollo de
 ## El recorrido
 
 0. **El arranque:** la primera vez en la sesión el sitio está a oscuras con un botón **ENGINE START/STOP** en 3D. Al presionarlo (o con Enter), el LED destella, el tacómetro da un acelerón y la luz se abre desde el botón.
-1. **Inicio:** presentación con el nombre que entra letra por letra y contadores con datos reales.
+1. **Inicio:** presentación con el nombre que entra letra por letra y contadores con datos reales. Al hacer click en la foto, se convierte en una **rueda 3D** que gira a toda velocidad y frena: el disco se pone al rojo vivo y saltan chispas.
 2. **Sobre mí · Del motor al código:** un manifiesto que se ilumina palabra por palabra y da paso a la trayectoria en cuatro capítulos. Un motor V8 en 3D acompaña cada capítulo: gira armado, se despieza, se convierte en aristas de plano técnico y da paso a una laptop 3D que abre la tapa y escribe código en su pantalla.
 3. **Habilidades:** carrusel continuo de logos; al pasar el mouse aparece una tarjeta con el nombre y su uso.
 4. **Proyectos:** galería horizontal fijada. Al bajar, las tarjetas pasan de lado; los filtros siguen funcionando.
@@ -64,6 +64,7 @@ portafolio_profesional/
 │   ├── tach3d.js     # Tacómetro 3D
 │   ├── ignition.js   # El arranque: pantalla a oscuras y encendido
 │   ├── ignition3d.js # Botón ENGINE START/STOP en 3D
+│   ├── wheel3d.js    # La foto que se convierte en rueda
 │   ├── particles.js  # Partículas de los márgenes
 │   └── sparks.js     # Chispas al hacer click
 ├── models/           # Modelos 3D (.glb comprimidos y la laptop en glTF) y sus licencias
@@ -72,11 +73,12 @@ portafolio_profesional/
 
 ## Créditos de los modelos 3D
 
-Los tres modelos se usan bajo licencia [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (el motor y el tacómetro, comprimidos para la web):
+Los cuatro modelos se usan bajo licencia [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (el motor y el tacómetro comprimidos, y la rueda con texturas reducidas para la web):
 
 - ["Animated Engine V8"](https://sketchfab.com/3d-models/animated-engine-v8-b0dbf778b81e4afba4edf11336e2a099) de [meeww](https://sketchfab.com/meeww).
 - ["Original car self-illuminating meter"](https://sketchfab.com/3d-models/original-car-self-illuminating-meter-4c9efe86824745f79eab8e2135a561a0) de [celsko683mywork](https://sketchfab.com/celsko683mywork).
 - ["Laptop"](https://sketchfab.com/3d-models/laptop-7d870e900889481395b4a575b9fa8c3e) de [Aullwen](https://sketchfab.com/Aullwen).
+- ["Car wheel with brake disc - Low poly"](https://sketchfab.com/3d-models/car-wheel-with-brake-disc-low-poly-5b9bb83857674cd5a866f35fbf7fe8d4) de [Márcio Meireles](https://sketchfab.com/marciomeireles).
 
 ## Objetivo del proyecto
 

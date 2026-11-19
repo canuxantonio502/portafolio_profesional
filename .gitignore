@@ -6,3 +6,5 @@ models/*.zip
 models/engine/
 # Tacómetro original (en el sitio se usa models/tach.glb)
 models/tach/
+# Rueda original con texturas de 2048 px (la web usa models/wheel-web/)
+models/wheel/

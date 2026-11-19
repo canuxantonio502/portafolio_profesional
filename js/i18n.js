@@ -114,9 +114,11 @@ window.I18N = {
     'footer.and': 'y',
     'footer.by2': 'de',
     'footer.by3': 'de',
+    'footer.by4': 'de',
     'footer.license': 'bajo licencia',
     'toTop': 'Volver arriba',
     'toTopHint': 'Reversa',
+    'hero.photoBtn': 'Girar la rueda',
     'ign.label': 'Arrancar el sitio',
     'ign.hint': 'Presiona para arrancar',
 
@@ -242,9 +244,11 @@ window.I18N = {
     'footer.and': 'and',
     'footer.by2': 'by',
     'footer.by3': 'by',
+    'footer.by4': 'by',
     'footer.license': 'licensed under',
     'toTop': 'Back to top',
     'toTopHint': 'Reverse',
+    'hero.photoBtn': 'Spin the wheel',
     'ign.label': 'Start the site',
     'ign.hint': 'Press to start the engine',
 

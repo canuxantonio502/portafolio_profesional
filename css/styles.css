@@ -158,6 +158,16 @@ h1, h2, h3, p { margin: 0; }
   transition: transform .4s, border-color .4s;
 }
 .hero-photo img:hover { transform: scale(1.03); border-color: var(--accent); }
+/* La foto es un botón: al hacer click se convierte en rueda (js/wheel3d.js) */
+.hero-photo { position: relative; }
+.photo-btn { display: block; padding: 0; border: 0; background: none; border-radius: 50%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.photo-btn:focus { outline: none; }
+.photo-btn:focus-visible img { border-color: var(--accent); box-shadow: 0 0 0 8px var(--ring), 0 0 0 11px var(--accent), 0 20px 40px var(--shadow-strong); }
+.wheel-canvas, .wheel-fx {
+  position: absolute; left: 50%; top: 50%; width: 160%; aspect-ratio: 1; translate: -50% -50%;
+  pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 2;
+}
+.hero-photo.is-wheeling .photo-btn { pointer-events: none; }
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 56px; }
 .stats div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; }
 .stats strong { display: block; font-size: 2rem; color: var(--heading); }

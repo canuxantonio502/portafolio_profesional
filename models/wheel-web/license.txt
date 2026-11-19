@@ -1,0 +1,11 @@
+Model Information:
+* title:	Car wheel with brake disc - Low poly
+* source:	https://sketchfab.com/3d-models/car-wheel-with-brake-disc-low-poly-5b9bb83857674cd5a866f35fbf7fe8d4
+* author:	Márcio Meireles (https://sketchfab.com/marciomeireles)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Car wheel with brake disc - Low poly" (https://sketchfab.com/3d-models/car-wheel-with-brake-disc-low-poly-5b9bb83857674cd5a866f35fbf7fe8d4) by Márcio Meireles (https://sketchfab.com/marciomeireles) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
