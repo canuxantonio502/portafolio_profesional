@@ -27,7 +27,7 @@ window.I18N = {
     'hero.photoAlt': 'Foto de perfil de Antonio Canux',
     'stats.projects': 'Proyectos destacados',
     'stats.tech': 'Tecnologías',
-    'stats.langs': 'Lenguajes y entornos',
+    'stats.years': 'Años de formación técnica',
 
     'about.title': 'Sobre mí',
     'about.manifesto': 'Soy Antonio, Técnico en Desarrollo de Software formado en Campuslands. Antes de escribir código *desarmaba motores*, y de ahí viene mi forma de trabajar: *diagnosticar, ordenar y probar* cada pieza hasta que todo funcione. Hoy aplico esa lógica a *interfaces, APIs y aplicaciones móviles*.',
@@ -149,7 +149,7 @@ window.I18N = {
     'hero.photoAlt': 'Profile photo of Antonio Canux',
     'stats.projects': 'Featured projects',
     'stats.tech': 'Technologies',
-    'stats.langs': 'Languages & environments',
+    'stats.years': 'Years of technical training',
 
     'about.title': 'About me',
     'about.manifesto': "I'm Antonio, a Software Development Technician trained at Campuslands. Before writing code I *took engines apart*, and that is where my way of working comes from: *diagnose, organize and test* every piece until everything works. Today I apply that logic to *interfaces, APIs and mobile apps*.",

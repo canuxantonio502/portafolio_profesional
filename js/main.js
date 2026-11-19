@@ -202,15 +202,16 @@
   };
   langListeners.push(startTyping);
 
-  /* Contadores */
+  /* Contadores: suben con frenado suave al aparecer (al instante con movimiento reducido) */
   const counters = $$('[data-count]');
   const cio = new IntersectionObserver((entries, obs) => {
     entries.forEach((en) => {
       if (!en.isIntersecting) return;
       const el = en.target, target = +el.dataset.count, start = performance.now();
+      const dur = 900 + target * 60;
       const step = (now) => {
-        const p = Math.min((now - start) / 1000, 1);
-        el.textContent = Math.round(target * p);
+        const p = reduceMotion ? 1 : Math.min((now - start) / dur, 1);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
         if (p < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
