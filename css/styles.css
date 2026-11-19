@@ -84,6 +84,16 @@ h1, h2, h3, p { margin: 0; }
 .tach.redline .tach-needle { stroke: var(--danger); }
 .tach-hub { fill: var(--heading); }
 .tach-label { fill: var(--muted); font-size: 6px; letter-spacing: .5px; text-anchor: middle; }
+/* Tacómetro 3D (js/tach3d.js): más grande, con bisel y brillo en la zona roja */
+.tach.has-3d {
+  width: clamp(112px, 11vw, 150px); height: clamp(112px, 11vw, 150px); overflow: hidden;
+  background: #111317; border: 3px solid #2a2e35;
+  box-shadow: 0 0 0 1px #000 inset, 0 0 0 1px var(--border), 0 14px 32px var(--shadow);
+  transition: opacity .4s, transform .4s, box-shadow .5s;
+}
+.tach.has-3d svg { display: none; }
+.tach.has-3d.redline { box-shadow: 0 0 0 1px #000 inset, 0 0 0 1px var(--danger), 0 0 26px rgba(255, 60, 40, .45), 0 14px 32px var(--shadow); }
+.tach-canvas { width: 100%; height: 100%; display: block; animation: fade .8s ease; }
 
 /* Header */
 #header {
@@ -375,6 +385,8 @@ body.modal-open { overflow: hidden; }
   .chapter:last-child { min-height: 50vh; }
   .chapter p:last-child { margin-inline: auto; }
   .tach { width: 60px; height: 60px; left: 12px; bottom: 12px; }
+  .tach.has-3d { width: 92px; height: 92px; }
+  footer { padding-bottom: 116px; } /* que el tacómetro fijo no tape el pie */
   .cv-modal { padding: 0; }
   .cv-dialog { height: 100%; border-radius: 0; border: 0; }
   .cv-head h2 { width: 100%; }

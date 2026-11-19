@@ -114,6 +114,9 @@
     needleNow += (needleTarget - needleNow) * (reduceMotion ? 1 : 0.12);
     needle.setAttribute('transform', `rotate(${needleNow.toFixed(2)} 50 50)`);
     tach.classList.toggle('redline', needleNow > rpmToDeg(6.5));
+    // Tacómetro 3D (js/tach3d.js), si ya cargó
+    window.__tachRpm = (needleNow + 120) / 30;
+    if (window.tach3d) window.tach3d.update(window.__tachRpm);
     needleRaf = Math.abs(needleTarget - needleNow) > 0.1 ? requestAnimationFrame(drawNeedle) : 0;
   };
 

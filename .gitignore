@@ -4,3 +4,5 @@
 # Modelo 3D original (en el sitio se usa models/engine.glb, ya comprimido)
 models/*.zip
 models/engine/
+# Tacómetro original (en el sitio se usa models/tach.glb)
+models/tach/

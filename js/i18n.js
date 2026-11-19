@@ -96,8 +96,10 @@ window.I18N = {
     'form.whatsapp': 'Hola Antonio, soy {name} ({email}).',
 
     'footer.rights': 'Todos los derechos reservados.',
-    'footer.model': 'Modelo 3D',
+    'footer.model': 'Modelos 3D:',
     'footer.by': 'de',
+    'footer.and': 'y',
+    'footer.by2': 'de',
     'footer.license': 'bajo licencia',
     'toTop': 'Volver arriba',
 
@@ -205,8 +207,10 @@ window.I18N = {
     'form.whatsapp': "Hi Antonio, I'm {name} ({email}).",
 
     'footer.rights': 'All rights reserved.',
-    'footer.model': '3D model',
+    'footer.model': '3D models:',
     'footer.by': 'by',
+    'footer.and': 'and',
+    'footer.by2': 'by',
     'footer.license': 'licensed under',
     'toTop': 'Back to top',
 
