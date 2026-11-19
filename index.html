@@ -38,7 +38,6 @@
             <nav id="nav" aria-label="Principal" data-i18n-attr="aria-label:nav.label">
                 <a href="#inicio" data-i18n="nav.home">Inicio</a>
                 <a href="#sobremi" data-i18n="nav.about">Sobre mí</a>
-                <a href="#trayectoria" data-i18n="nav.story">Trayectoria</a>
                 <a href="#habilidades" data-i18n="nav.skills">Habilidades</a>
                 <a href="#proyectos" data-i18n="nav.projects">Proyectos</a>
                 <a href="#contacto" data-i18n="nav.contact">Contacto</a>
@@ -91,30 +90,25 @@
             </a>
         </section>
 
-        <section id="sobremi" class="section">
+        <section id="sobremi" class="section about-story" aria-labelledby="about-title">
             <div class="container">
-                <h2 class="section-title reveal"><span>01</span> <b data-i18n="about.title">Sobre mí</b></h2>
-                <div class="about reveal">
-                    <img src="./css/foto2.png" alt="Antonio Canux" data-fallback="AC" class="about-img">
-                    <div>
-                        <p data-i18n="about.p1">Soy Técnico en Desarrollo de Software formado en Campuslands. Construyo interfaces con HTML, CSS y JavaScript, y APIs REST y aplicaciones de consola con Node.js, Express y MySQL, cuidando que el código esté ordenado por capas y bien documentado.</p>
-                        <p data-i18n="about.p2">Fuera del código, me apasionan la música, la fotografía y el fútbol, cosas que influyen bastante en mi forma de pensar y crear. Me gusta aprender constantemente, experimentar y mejorar en cada proyecto que realizo.</p>
-                        <p data-i18n="about.p3">Disfruto involucrarme en todo el proceso de desarrollo, buscando que cada sitio tenga calidad, estilo y una buena experiencia para quien lo usa.</p>
-                        <ul class="interests">
-                            <li data-i18n="about.music">Música</li><li data-i18n="about.photo">Fotografía</li><li data-i18n="about.football">Fútbol</li>
-                        </ul>
-                        <div class="actions about-cv">
-                            <button type="button" class="btn btn-primary" data-cv-open aria-haspopup="dialog" data-i18n="cv.view">Ver CV</button>
-                            <a class="btn" data-cv-download download data-i18n="cv.download">Descargar CV</a>
-                        </div>
+                <h2 class="section-title reveal" id="about-title"><span>01</span> <b data-i18n="about.title">Sobre mí</b></h2>
+                <p class="manifesto" data-manifesto="about.manifesto">Soy Antonio, Técnico en Desarrollo de Software formado en Campuslands. Antes de escribir código desarmaba motores, y de ahí viene mi forma de trabajar: diagnosticar, ordenar y probar cada pieza hasta que todo funcione. Hoy aplico esa lógica a interfaces, APIs y aplicaciones móviles.</p>
+                <div class="about-meta reveal">
+                    <p class="about-outside" data-i18n="about.outside">Fuera del código:</p>
+                    <ul class="interests">
+                        <li data-i18n="about.music">Música</li><li data-i18n="about.photo">Fotografía</li><li data-i18n="about.football">Fútbol</li>
+                    </ul>
+                    <div class="actions about-cv">
+                        <button type="button" class="btn btn-primary" data-cv-open aria-haspopup="dialog" data-i18n="cv.view">Ver CV</button>
+                        <a class="btn" data-cv-download download data-i18n="cv.download">Descargar CV</a>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <section id="trayectoria" class="section story" aria-labelledby="story-title">
+            <div id="trayectoria" class="story">
             <div class="container">
-                <h2 class="section-title reveal" id="story-title"><span>02</span> <b data-i18n="story.title">Del motor al código</b></h2>
+                <p class="story-kicker reveal" data-i18n="story.title">Del motor al código</p>
             </div>
             <div class="container story-inner">
                 <div class="story-stage" aria-hidden="true">
@@ -194,11 +188,12 @@
                     </article>
                 </div>
             </div>
+            </div>
         </section>
 
         <section id="habilidades" class="section alt">
             <div class="container">
-                <h2 class="section-title reveal"><span>03</span> <b data-i18n="skills.title">Habilidades</b></h2>
+                <h2 class="section-title reveal"><span>02</span> <b data-i18n="skills.title">Habilidades</b></h2>
                 <div class="marquee reveal" role="region" aria-label="Tecnologías que uso" data-i18n-attr="aria-label:skills.carousel">
                     <ul class="marquee-track">
                         <li class="logo"><img src="./css/html.png" alt="HTML" data-fallback="HTML"><span class="logo-card" aria-hidden="true"><b>HTML</b><small data-i18n="skills.cat.html">Estructura de páginas web</small></span></li>
@@ -225,7 +220,7 @@
 
         <section id="proyectos" class="section">
             <div class="container">
-                <h2 class="section-title reveal"><span>04</span> <b data-i18n="projects.title">Proyectos destacados</b></h2>
+                <h2 class="section-title reveal"><span>03</span> <b data-i18n="projects.title">Proyectos destacados</b></h2>
                 <div class="filters reveal" role="group" aria-label="Filtrar proyectos" data-i18n-attr="aria-label:projects.filterLabel">
                     <button class="filter active" data-filter="all" data-i18n="projects.all">Todos</button>
                     <button class="filter" data-filter="node">Node.js &amp; MySQL</button>
@@ -312,7 +307,7 @@
 
         <section id="contacto" class="section alt">
             <div class="container">
-                <h2 class="section-title reveal"><span>05</span> <b data-i18n="contact.title">Contacto</b></h2>
+                <h2 class="section-title reveal"><span>04</span> <b data-i18n="contact.title">Contacto</b></h2>
                 <div class="contact reveal">
                     <div class="contact-info">
                         <p data-i18n="contact.text">¿Tienes un proyecto o una oportunidad en mente? Escríbeme y conversemos.</p>

@@ -343,7 +343,21 @@
 
   /* ---------- Experiencia inmersiva (GSAP + ScrollTrigger) ---------- */
   const hasGsap = !!(window.gsap && window.ScrollTrigger);
-  if (hasGsap) gsap.registerPlugin(ScrollTrigger);
+  if (hasGsap) {
+    gsap.registerPlugin(ScrollTrigger);
+    // Con scroll-behavior: smooth (CSS), ScrollTrigger mide mal al recargar o cambiar el
+    // tamaño a media página. Se apaga y los enlaces internos se desplazan suave por JS.
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      const target = a && a.getAttribute('href').length > 1 && document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0);
+      window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+      history.pushState(null, '', a.getAttribute('href'));
+    });
+  }
 
   /* Hero: el nombre entra letra por letra y la escena se aleja al bajar */
   const h1 = $('.hero h1');
@@ -367,6 +381,35 @@
     gsap.to('.hero-text', { y: -70, opacity: 0.25, ease: 'none', scrollTrigger: heroST });
     gsap.to('.hero-photo', { yPercent: -14, ease: 'none', scrollTrigger: { ...heroST } });
   }
+
+  /* Sobre mí: el manifiesto se ilumina palabra por palabra con el scroll.
+     En el texto (i18n) las frases entre *asteriscos* se resaltan con el color de acento. */
+  const mani = $('.manifesto');
+  let maniTween = null;
+  const esc = (x) => x.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const buildManifesto = () => {
+    if (!mani) return;
+    const text = t(mani.dataset.manifesto);
+    let hl = false;
+    const words = text.split(/\s+/).map((tok) => {
+      if (tok.startsWith('*')) { hl = true; tok = tok.slice(1); }
+      const ends = tok.includes('*');
+      const html = `<span class="w${hl ? ' hl' : ''}">${esc(tok.replace('*', ''))}</span>`;
+      if (ends) hl = false;
+      return html;
+    }).join(' ');
+    // Texto completo para lectores de pantalla; las palabras sueltas son decorativas
+    mani.innerHTML = `<span class="sr-only">${esc(text.replace(/\*/g, ''))}</span><span aria-hidden="true">${words}</span>`;
+    if (maniTween) { maniTween.scrollTrigger.kill(); maniTween.kill(); maniTween = null; }
+    if (hasGsap && !reduceMotion) {
+      mani.classList.add('is-live');
+      maniTween = gsap.fromTo($$('.w', mani), { opacity: 0.14 }, {
+        opacity: 1, ease: 'none', stagger: 0.08,
+        scrollTrigger: { trigger: mani, start: 'top 82%', end: 'bottom 48%', scrub: 0.4 }
+      });
+    }
+  };
+  langListeners.push(buildManifesto);
 
   /* Trayectoria: el motor gira, se despieza y se transforma en código */
   const story = $('.story');
