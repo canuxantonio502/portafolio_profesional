@@ -32,46 +32,57 @@ const lerp = (a, b, t) => a + (b - a) * t;
 // Tiempos de la animación del modelo (segundos)
 const T_ASSEMBLED = 0.8, T_EXPLODED = 4.6, T_REBUILD_FROM = 6.4, T_REBUILT = 8.0;
 
-async function init() {
+// El modelo se descarga una sola vez y lo comparten las dos vistas
+let gltfPromise = null;
+const loadModel = () => (gltfPromise ||= new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(MODEL_URL));
+
+// Renderizador y escena con la misma iluminación para ambas vistas
+function makeStage(className) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
   const canvas = renderer.domElement;
-  canvas.className = 'engine-canvas';
+  canvas.className = className;
   canvas.setAttribute('aria-hidden', 'true');
 
   const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
   const key = new THREE.DirectionalLight(0xffffff, 1.6);
   key.position.set(3, 5, 4);
   scene.add(key, new THREE.AmbientLight(0xffffff, 0.25));
+  return { renderer, canvas, scene, camera: new THREE.PerspectiveCamera(32, 1, 0.01, 200) };
+}
 
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 200);
-  const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(MODEL_URL);
-  const model = gltf.scene;
+// Prepara un modelo con su animación y mide el motor armado y despiezado
+function rig(model, clip) {
   const pivot = new THREE.Group();
   pivot.add(model);
-  scene.add(pivot);
-
   const mixer = new THREE.AnimationMixer(model);
-  const clip = gltf.animations[0];
   if (clip) mixer.clipAction(clip).play();
-
-  // Centra el modelo armado en el origen del pivote
   const boxAt = (t) => {
     mixer.setTime(t);
     model.updateMatrixWorld(true);
     return new THREE.Box3().setFromObject(model);
   };
-  const center = boxAt(0).getCenter(new THREE.Vector3());
-  model.position.sub(center);
+  model.position.sub(boxAt(0).getCenter(new THREE.Vector3()));
   const sizeA = boxAt(0).getSize(new THREE.Vector3()).length();
   const exploded = boxAt(T_EXPLODED);
-  const sizeE = exploded.getSize(new THREE.Vector3()).length();
-  const centerE = exploded.getCenter(new THREE.Vector3());
+  return {
+    pivot, mixer, sizeA,
+    sizeE: exploded.getSize(new THREE.Vector3()).length(),
+    centerE: exploded.getCenter(new THREE.Vector3())
+  };
+}
+
+async function init() {
+  const { renderer, canvas, scene, camera } = makeStage('engine-canvas');
+  const gltf = await loadModel();
+  // La vista de la trayectoria usa el modelo original; la del contacto, una copia
+  const model = gltf.scene;
+  const { pivot, mixer, sizeA, sizeE, centerE } = rig(model, gltf.animations[0]);
+  scene.add(pivot);
 
   // Materiales: el metal se puede desvanecer y cada pieza tiene sus aristas
   const accent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
@@ -153,13 +164,82 @@ async function init() {
   draw(lastP);
 }
 
-if (story && wrap && hasWebGL && !saveData) {
-  // Carga perezosa: empieza cuando la sección está a una pantalla de distancia
+/* La meta (sección de contacto): una copia del motor llega despiezada
+   y se vuelve a armar mientras la sección entra en pantalla. */
+const goal = document.querySelector('.goal');
+const goalWrap = goal && goal.querySelector('.goal-wrap');
+
+async function initGoal() {
+  const { renderer, canvas, scene, camera } = makeStage('goal-canvas');
+  const gltf = await loadModel();
+  const model = gltf.scene.clone(true);
+  // Sin las aristas de la otra vista y con materiales propios (la trayectoria los desvanece)
+  const extras = [];
+  model.traverse((o) => {
+    if (o.isLineSegments) extras.push(o);
+    else if (o.isMesh) {
+      o.material = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();
+      (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => {
+        m.transparent = false; m.opacity = 1; m.depthWrite = true; m.visible = true;
+      });
+    }
+  });
+  extras.forEach((o) => o.removeFromParent());
+  const { pivot, mixer, sizeA, sizeE, centerE } = rig(model, gltf.animations[0]);
+  scene.add(pivot);
+
+  goalWrap.appendChild(canvas);
+  goal.classList.add('is-ready');
+
+  let lastQ = 0;
+  const target = new THREE.Vector3();
+  const draw = (q) => {
+    lastQ = q;
+    const s = smooth(q);
+    mixer.setTime(lerp(T_REBUILD_FROM, T_REBUILT, s));   // de despiezado a armado
+    pivot.rotation.set(0.12, 0.6 - s * 1.3, 0);
+    const dist = lerp(sizeE * 1.6, sizeA * 1.9, s);
+    target.copy(centerE).multiplyScalar(1 - s);
+    camera.position.set(target.x + dist * 0.15, target.y + dist * 0.32, target.z + dist * 0.94);
+    camera.lookAt(target);
+    renderer.render(scene, camera);
+  };
+  const resize = () => {
+    const r = canvas.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    renderer.setSize(r.width, r.height, false);
+    camera.aspect = r.width / r.height;
+    camera.updateProjectionMatrix();
+    draw(lastQ);
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (window.gsap && window.ScrollTrigger && !reduce) {
+    window.ScrollTrigger.create({
+      // clamp(): el contacto está al final de la página; el armado debe terminar antes del fondo
+      trigger: goal, start: 'clamp(top 90%)', end: 'clamp(center 50%)', scrub: 0.6,
+      onUpdate: (self) => draw(self.progress)
+    });
+    window.ScrollTrigger.refresh();
+  } else {
+    draw(1);
+  }
+}
+
+// Carga perezosa: cada vista empieza cuando su sección está a una pantalla de distancia
+const lazy = (el, fn, label) => {
   const io = new IntersectionObserver((entries) => {
     if (entries.some((e) => e.isIntersecting)) {
       io.disconnect();
-      init().catch((err) => { console.warn('Motor 3D no disponible:', err); });
+      fn().catch((err) => { console.warn(label, err); });
     }
   }, { rootMargin: '100% 0px' });
-  io.observe(story);
+  io.observe(el);
+};
+if (hasWebGL && !saveData) {
+  if (story && wrap) lazy(story, init, 'Motor 3D no disponible:');
+  // .goal está oculto hasta que carga: se observa la sección de contacto
+  if (goal && goalWrap) lazy(goal.closest('section') || goal, initGoal, 'Motor de la meta no disponible:');
 }

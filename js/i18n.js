@@ -92,6 +92,8 @@ window.I18N = {
     'projects.p4.desc': 'Portafolio para mostrar habilidades, proyectos y logros, con diseño responsivo para dispositivos móviles y de escritorio.',
 
     'contact.title': 'Contacto',
+    'contact.kicker': 'La meta',
+    'contact.goal': 'Motor armado y listo. ¿Arrancamos tu proyecto?',
     'contact.text': '¿Tienes un proyecto o una oportunidad en mente? Escríbeme y conversemos.',
     'form.name': 'Nombre',
     'form.namePh': 'Tu nombre',
@@ -214,6 +216,8 @@ window.I18N = {
     'projects.p4.desc': 'Portfolio to showcase skills, projects and achievements, with a responsive design for mobile and desktop.',
 
     'contact.title': 'Contact',
+    'contact.kicker': 'The finish line',
+    'contact.goal': 'Engine assembled and ready. Shall we start your project?',
     'contact.text': 'Have a project or an opportunity in mind? Write to me and let’s talk.',
     'form.name': 'Name',
     'form.namePh': 'Your name',

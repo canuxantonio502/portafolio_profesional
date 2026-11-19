@@ -358,6 +358,14 @@ h1, h2, h3, p { margin: 0; }
 /* Contacto */
 .contact { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; }
 .contact-info p { color: var(--muted); margin-bottom: 20px; }
+/* La meta: el motor se vuelve a armar en el contacto (solo si hay WebGL) */
+.contact-info .goal-kicker { margin-bottom: 8px; color: var(--accent); font-size: .85rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.goal { display: none; margin-top: 18px; }
+.goal.is-ready { display: block; }
+.goal-wrap { position: relative; width: 100%; max-width: 420px; aspect-ratio: 4 / 3; margin-inline: auto; }
+.contact-info .goal-caption { margin-inline: auto; }
+.goal-canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; animation: fade .8s ease; }
+.contact-info .goal-caption { margin: 4px 0 0; max-width: 420px; text-align: center; color: var(--heading); font-weight: 600; }
 .socials { display: grid; gap: 10px; }
 .socials a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); transition: transform .2s, border-color .2s; }
 .socials a:hover { transform: translateX(5px); border-color: var(--accent); }
