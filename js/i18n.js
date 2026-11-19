@@ -116,6 +116,7 @@ window.I18N = {
     'footer.by3': 'de',
     'footer.license': 'bajo licencia',
     'toTop': 'Volver arriba',
+    'toTopHint': 'Reversa',
 
     'cv.file': './cv/CV_Antonio_Canux_ES.pdf',
     'cv.title': 'Curriculum Vitae',
@@ -241,6 +242,7 @@ window.I18N = {
     'footer.by3': 'by',
     'footer.license': 'licensed under',
     'toTop': 'Back to top',
+    'toTopHint': 'Reverse',
 
     'cv.file': './cv/CV_Antonio_Canux_EN.pdf',
     'cv.title': 'Resume',

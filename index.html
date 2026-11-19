@@ -357,7 +357,12 @@
         </div>
     </footer>
 
-    <button id="to-top" class="to-top" aria-label="Volver arriba" data-i18n-attr="aria-label:toTop">↑</button>
+    <!-- Volver arriba: un engrane que gira con el scroll; al subir gira en reversa -->
+    <button id="to-top" class="to-top" aria-label="Volver arriba" data-i18n-attr="aria-label:toTop">
+        <svg class="tt-gear" viewBox="0 0 48 48" aria-hidden="true"><path d="M41.59 18.28L42.32 21.45L46.91 21.98L46.91 26.02L42.32 26.55L41.59 29.72L40.32 32.71L43.72 35.83L41.35 39.10L37.33 36.83L34.87 38.97L32.09 40.64L33.00 45.17L29.16 46.41L27.24 42.21L24.00 42.50L20.76 42.21L18.84 46.41L15.00 45.17L15.91 40.64L13.13 38.97L10.67 36.83L6.65 39.10L4.28 35.83L7.68 32.71L6.41 29.72L5.68 26.55L1.09 26.02L1.09 21.98L5.68 21.45L6.41 18.28L7.68 15.29L4.28 12.17L6.65 8.90L10.67 11.17L13.13 9.03L15.91 7.36L15.00 2.83L18.84 1.59L20.76 5.79L24.00 5.50L27.24 5.79L29.16 1.59L33.00 2.83L32.09 7.36L34.87 9.03L37.33 11.17L41.35 8.90L43.72 12.17L40.32 15.29Z"/><circle cx="24" cy="24" r="12.5"/></svg>
+        <svg class="tt-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6.5 11.5 12 6l5.5 5.5"/></svg>
+        <span class="tt-hint" aria-hidden="true"><b>R</b> <span data-i18n="toTopHint">Reversa</span></span>
+    </button>
 
     <!-- Visor del CV -->
     <div id="cv-modal" class="cv-modal" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="cv-title" hidden>
@@ -389,6 +394,7 @@
             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
         } }
     </script>
+    <script src="./js/particles.js" defer></script>
     <script type="module" src="./js/engine3d.js"></script>
     <script type="module" src="./js/tach3d.js"></script>
 </body>

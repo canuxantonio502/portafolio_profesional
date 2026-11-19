@@ -130,11 +130,14 @@
     tach.classList.toggle('show', y > 120);
     header.classList.toggle('scrolled', y > 10);
     toTop.classList.toggle('show', y > 500);
+    toTop.style.setProperty('--spin', (y * 0.12).toFixed(1) + 'deg'); // el engrane avanza con el scroll
     if (cue) cue.classList.toggle('gone', y > 60);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
   toTop.addEventListener('click', () => {
+    // Reversa: la flecha sale disparada y el engrane gira hacia atrás mientras sube
+    toTop.classList.remove('reversing'); void toTop.offsetWidth; toTop.classList.add('reversing');
     if (window.lenis) window.lenis.scrollTo(0);
     else window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   });
