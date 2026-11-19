@@ -183,6 +183,19 @@
     raf = requestAnimationFrame(tick);
   };
 
+  // Chispa de bujía (js/sparks.js): las piezas cercanas salen disparadas
+  window.addEventListener('spark', (e) => {
+    const { x, y } = e.detail, R = 240;
+    for (const p of parts) {
+      const dx = p.x - x, dy = p.y - y, d = Math.hypot(dx, dy) || 1;
+      if (d > R) continue;
+      const f = (1 - d / R) * 9;
+      p.vx += (dx / d) * f; p.vy += (dy / d) * f;
+      p.spin += (Math.random() - 0.5) * 0.12 * (1 - d / R);
+      p.glow = 1;
+    }
+  });
+
   window.addEventListener('pointermove', (e) => {
     if (e.pointerType === 'mouse') { mouse.x = e.clientX; mouse.y = e.clientY; }
   }, { passive: true });

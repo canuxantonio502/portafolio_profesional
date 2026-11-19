@@ -14,7 +14,7 @@ Portafolio personal de **Marco Antonio Canux Raquec**, Técnico en Desarrollo de
 
 Durante todo el recorrido, un **tacómetro 3D** en la esquina indica el avance: la aguja sube con el scroll y la zona roja se enciende al llegar a la meta.
 
-En los márgenes flotan **partículas con lo que me define**: ruedas, engranes, llaves, tuercas, código, notas musicales, una cámara y un balón. Se apartan del mouse y se mueven con el scroll. El botón para volver arriba es un engrane que gira con el scroll y, al pulsarlo, mete la **reversa**.
+En los márgenes flotan **partículas con lo que me define**: ruedas, engranes, llaves, tuercas, código, notas musicales, una cámara y un balón. Se apartan del mouse y se mueven con el scroll. El botón para volver arriba es un engrane que gira con el scroll y, al pulsarlo, mete la **reversa**. Al hacer click en un espacio vacío salta una **chispa de bujía**.
 
 ## Proyectos incluidos
 
@@ -61,7 +61,8 @@ portafolio_profesional/
 │   ├── main.js       # Tema, idioma, scroll, animaciones, filtros, formulario y visor de CV
 │   ├── engine3d.js   # Motor y laptop 3D de la trayectoria, y motor de la meta
 │   ├── tach3d.js     # Tacómetro 3D
-│   └── particles.js  # Partículas de los márgenes
+│   ├── particles.js  # Partículas de los márgenes
+│   └── sparks.js     # Chispas al hacer click
 ├── models/           # Modelos 3D (.glb comprimidos y la laptop en glTF) y sus licencias
 └── cv/               # CV en PDF (español e inglés)
 ```

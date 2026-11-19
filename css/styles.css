@@ -431,6 +431,9 @@ footer { padding: 28px 0; text-align: center; color: var(--muted); font-size: .8
 /* Partículas de los márgenes (js/particles.js): detrás del contenido */
 .side-particles { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
+/* Chispas al hacer click (js/sparks.js): encima del contenido, sin bloquear clicks */
+.spark-layer { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 95; pointer-events: none; }
+
 /* Volver arriba: engrane que gira con el scroll y flecha al centro */
 .to-top {
   position: fixed; right: 20px; bottom: 20px; z-index: 90; width: 56px; height: 56px; padding: 0;

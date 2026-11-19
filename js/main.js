@@ -533,8 +533,9 @@
           onUpdate: (self) => { fill.style.transform = `scaleX(${self.progress})`; }
         }
       });
-      projST = tween.scrollTrigger;
-      return () => { projSection.classList.remove('is-h'); projST = null; tween.scrollTrigger.kill(); tween.kill(); gsap.set(track, { clearProps: 'transform' }); };
+      const st = projST = tween.scrollTrigger;
+      // gsap.matchMedia ya revierte el tween al cambiar de tamaño: aquí solo se limpia lo propio
+      return () => { projSection.classList.remove('is-h'); projST = null; if (st) st.kill(); tween.kill(); gsap.set(track, { clearProps: 'transform' }); };
     });
     // Al filtrar cambia el ancho de la pista: se recalcula el recorrido y, si la
     // galería estaba fijada, se vuelve a su inicio para ver el resultado desde el principio
