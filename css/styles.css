@@ -272,7 +272,6 @@ h1, h2, h3, p { margin: 0; }
 }
 .marquee-track { display: flex; width: max-content; }
 .marquee.is-running .marquee-track { animation: marquee 38s linear infinite; }
-.marquee:hover .marquee-track { animation-play-state: paused; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 .logo {
   flex: 0 0 auto; display: grid; place-items: center; width: 116px; height: 116px; margin-right: 22px;
