@@ -220,6 +220,7 @@ h1, h2, h3, p { margin: 0; }
 #glyph-braces { font-size: 84px; }
 #glyph-tag { font-size: 38px; fill: var(--muted); }
 .eng-code { opacity: 0; }
+.story.has-laptop .eng-code { display: none; }
 .code-frame { fill: var(--bg-alt); stroke: var(--accent); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; }
 .code-dots circle { fill: var(--border); }
 .code-dots circle:first-child { fill: var(--danger); }

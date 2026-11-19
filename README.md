@@ -1,13 +1,13 @@
 # Portafolio Web · Antonio Canux
 
-Portafolio personal de **Marco Antonio Canux Raquec**, Técnico en Desarrollo de Software. Es un portafolio inmersivo que se recorre con el scroll: cuenta mi paso de la mecánica automotriz al desarrollo de software con un motor 3D que se despieza, se vuelve plano técnico y termina convertido en código.
+Portafolio personal de **Marco Antonio Canux Raquec**, Técnico en Desarrollo de Software. Es un portafolio inmersivo que se recorre con el scroll: cuenta mi paso de la mecánica automotriz al desarrollo de software con un motor 3D que se despieza, se vuelve plano técnico y termina en una laptop escribiendo código.
 
 **Vista previa:** https://canuxantonio502.github.io/portafolio_profesional/
 
 ## El recorrido
 
 1. **Inicio:** presentación con el nombre que entra letra por letra y contadores con datos reales.
-2. **Sobre mí · Del motor al código:** un manifiesto que se ilumina palabra por palabra y da paso a la trayectoria en cuatro capítulos. Un motor V8 en 3D acompaña cada capítulo: gira armado, se despieza, se convierte en aristas de plano técnico y se transforma en una ventana de código.
+2. **Sobre mí · Del motor al código:** un manifiesto que se ilumina palabra por palabra y da paso a la trayectoria en cuatro capítulos. Un motor V8 en 3D acompaña cada capítulo: gira armado, se despieza, se convierte en aristas de plano técnico y da paso a una laptop 3D que abre la tapa y escribe código en su pantalla.
 3. **Habilidades:** carrusel continuo de logos; al pasar el mouse aparece una tarjeta con el nombre y su uso.
 4. **Proyectos:** galería horizontal fijada. Al bajar, las tarjetas pasan de lado; los filtros siguen funcionando.
 5. **Contacto · La meta:** el motor vuelve a armarse al llegar al final, con el formulario y las redes.
@@ -57,18 +57,19 @@ portafolio_profesional/
 ├── js/
 │   ├── i18n.js       # Textos en español e inglés
 │   ├── main.js       # Tema, idioma, scroll, animaciones, filtros, formulario y visor de CV
-│   ├── engine3d.js   # Motor 3D de la trayectoria y de la meta
+│   ├── engine3d.js   # Motor y laptop 3D de la trayectoria, y motor de la meta
 │   └── tach3d.js     # Tacómetro 3D
-├── models/           # Modelos 3D comprimidos (.glb) y sus licencias
+├── models/           # Modelos 3D (.glb comprimidos y la laptop en glTF) y sus licencias
 └── cv/               # CV en PDF (español e inglés)
 ```
 
 ## Créditos de los modelos 3D
 
-Ambos modelos se usan bajo licencia [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) y fueron comprimidos para la web:
+Los tres modelos se usan bajo licencia [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (el motor y el tacómetro, comprimidos para la web):
 
 - ["Animated Engine V8"](https://sketchfab.com/3d-models/animated-engine-v8-b0dbf778b81e4afba4edf11336e2a099) de [meeww](https://sketchfab.com/meeww).
 - ["Original car self-illuminating meter"](https://sketchfab.com/3d-models/original-car-self-illuminating-meter-4c9efe86824745f79eab8e2135a561a0) de [celsko683mywork](https://sketchfab.com/celsko683mywork).
+- ["Laptop"](https://sketchfab.com/3d-models/laptop-7d870e900889481395b4a575b9fa8c3e) de [Aullwen](https://sketchfab.com/Aullwen).
 
 ## Objetivo del proyecto
 

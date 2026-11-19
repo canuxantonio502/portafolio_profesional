@@ -113,6 +113,7 @@ window.I18N = {
     'footer.by': 'de',
     'footer.and': 'y',
     'footer.by2': 'de',
+    'footer.by3': 'de',
     'footer.license': 'bajo licencia',
     'toTop': 'Volver arriba',
 
@@ -237,6 +238,7 @@ window.I18N = {
     'footer.by': 'by',
     'footer.and': 'and',
     'footer.by2': 'by',
+    'footer.by3': 'by',
     'footer.license': 'licensed under',
     'toTop': 'Back to top',
 

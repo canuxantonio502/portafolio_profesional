@@ -4,7 +4,8 @@
      capítulo 1: motor armado que gira
      capítulo 2: vista despiezada (animación propia del modelo)
      capítulo 3: el metal se vuelve plano técnico (aristas) y se rearma
-     capítulo 4: el motor se desvanece y entra la ventana de código (SVG)
+     capítulo 4: el motor se desvanece y entra una laptop que escribe el código
+                 (si la laptop no carga, queda la ventana de código SVG)
    Si WebGL no está disponible o el visitante ahorra datos, se queda el SVG. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -76,6 +77,110 @@ function rig(model, clip) {
   };
 }
 
+/* Laptop del capítulo final: aparece cerrada donde estaba el motor, abre la tapa
+   y en su pantalla se escribe el código. Pantalla: textura de un canvas propio. */
+const LAPTOP_URL = './models/laptop/scene.gltf';
+const LID_CLOSED = -88;                          // grados respecto a la tapa abierta
+const SCREEN = { y: 10.69, z: -10.672, w: 29.4, h: 17.0 };  // pantalla, en unidades del modelo
+const CODE = [
+  [['k', 'const'], ['t', ' antonio = {']],
+  [['t', '  from: '], ['s', "'engines'"], ['t', ',']],
+  [['t', '  to: '], ['s', "'code'"], ['t', ',']],
+  [['t', '  status: '], ['s', "'building'"], ['t', ',']],
+  [['t', '};']]
+];
+const CODE_CHARS = CODE.reduce((n, line) => n + line.reduce((m, [, s]) => m + s.length, 0), 0);
+
+async function buildLaptop(size, accent) {
+  const gltf = await new GLTFLoader().loadAsync(LAPTOP_URL);
+  const root = gltf.scene;
+  root.updateMatrixWorld(true);
+  const lid = root.getObjectByName('Screen');
+  if (!lid) throw new Error('Laptop sin tapa');
+
+  // Pantalla: canvas con el editor y el código que se va escribiendo
+  const cv = document.createElement('canvas');
+  cv.width = 1024; cv.height = Math.round(1024 * SCREEN.h / SCREEN.w);
+  const g = cv.getContext('2d');
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  const screenMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0, toneMapped: false });
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN.w, SCREEN.h), screenMat);
+  screen.position.set(0, SCREEN.y, SCREEN.z);
+  root.add(screen);
+  lid.attach(screen);                            // la pantalla gira con la tapa
+
+  let typed = -1;
+  const paint = (n, color) => {
+    if (n === typed) return;
+    typed = n;
+    const W = cv.width, H = cv.height;
+    g.fillStyle = '#0d1117'; g.fillRect(0, 0, W, H);
+    g.fillStyle = '#161b22'; g.fillRect(0, 0, W, 64);
+    ['#ff5f57', '#febc2e', '#28c840'].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(40 + i * 34, 32, 11, 0, Math.PI * 2); g.fill(); });
+    g.font = '600 26px Consolas, "Cascadia Code", monospace';
+    g.fillStyle = '#8b949e'; g.fillText('antonio.js', 160, 41);
+    g.font = '600 44px Consolas, "Cascadia Code", monospace';
+    let left = n, cx = 110, cy = 140;           // cursor: justo después de lo escrito
+    CODE.forEach((line, row) => {
+      const y = 140 + row * 68;
+      g.fillStyle = '#3b4452'; g.fillText(String(row + 1), 36, y);
+      if (left > 0) { cx = 110; cy = y; }
+      let x = 110;
+      line.forEach(([kind, text]) => {
+        const shown = text.slice(0, Math.max(0, left));
+        left -= text.length;
+        if (!shown) return;
+        g.fillStyle = kind === 'k' ? color : kind === 's' ? '#7fb88a' : '#e6edf3';
+        g.fillText(shown, x, y);
+        x += g.measureText(shown).width;
+        cx = x; cy = y;
+      });
+    });
+    g.fillStyle = color; g.fillRect(cx + 4, cy - 36, 22, 44);
+    tex.needsUpdate = true;
+  };
+
+  // Materiales propios para poder aparecer de forma gradual
+  const mats = [];
+  root.traverse((o) => {
+    if (o.isMesh && o !== screen) {
+      o.material = o.material.clone();
+      mats.push(o.material);
+    }
+  });
+
+  // Tamaño parecido al motor y centrado en el origen
+  const group = new THREE.Group();
+  const box = new THREE.Box3().setFromObject(root);
+  root.position.sub(box.getCenter(new THREE.Vector3()));
+  group.add(root);
+  const k = (size * 0.85) / box.getSize(new THREE.Vector3()).length();
+  group.scale.setScalar(k);
+  // Centrada con la tapa abierta: cerrada queda más baja, así que se compensa
+  const dropClosed = (box.getCenter(new THREE.Vector3()).y - box.min.y) * 0.9 * k;
+  group.visible = false;
+
+  const lidOpen = lid.quaternion.clone();
+  const hinge = new THREE.Quaternion(), xAxis = new THREE.Vector3(1, 0, 0);
+  return {
+    group,
+    // show: aparición (0-1) · open: apertura de la tapa (0-1) · type: código escrito (0-1)
+    update(show, open, type) {
+      group.visible = show > 0.001;
+      if (!group.visible) return;
+      mats.forEach((m) => { m.transparent = show < 1; m.opacity = show; m.depthWrite = show > 0.5; });
+      hinge.setFromAxisAngle(xAxis, THREE.MathUtils.degToRad(lerp(LID_CLOSED, 0, open)));
+      lid.quaternion.copy(lidOpen).multiply(hinge);
+      group.rotation.set(0, lerp(0.7, 0.28, show), 0);
+      group.position.y = dropClosed * (1 - open);
+      screenMat.opacity = show * smooth(seg(open, 0.6, 1));
+      paint(Math.round(type * CODE_CHARS), accent());
+    }
+  };
+}
+
 async function init() {
   const { renderer, canvas, scene, camera } = makeStage('engine-canvas');
   const gltf = await loadModel();
@@ -114,6 +219,15 @@ async function init() {
   wrap.prepend(canvas);
   story.classList.add('has-3d');
 
+  // La laptop del último capítulo se carga después, sin retrasar el motor
+  let laptop = null;
+  buildLaptop(sizeA, accent).then((l) => {
+    laptop = l;
+    scene.add(l.group);
+    story.classList.add('has-laptop');
+    draw(lastP);
+  }).catch((err) => console.warn('Laptop 3D no disponible:', err));
+
   const resize = () => {
     const r = canvas.getBoundingClientRect();
     if (!r.width || !r.height) return;
@@ -144,7 +258,10 @@ async function init() {
     const out = smooth(seg(p, 0.72, 0.82));
     metals.forEach((m) => { m.opacity = 1 - bp; m.depthWrite = bp < 0.5; m.visible = bp < 0.999; });
     lineMat.opacity = edgesReady ? bp * 0.9 * (1 - out) : 0;
-    canvas.style.opacity = String(1 - out);
+    // Con la laptop el lienzo sigue visible; sin ella queda la ventana de código SVG
+    canvas.style.opacity = laptop ? '1' : String(1 - out);
+    pivot.visible = !laptop || out < 0.999;
+    if (laptop) laptop.update(smooth(seg(p, 0.74, 0.86)), smooth(seg(p, 0.78, 0.9)), seg(p, 0.86, 0.98));
 
     // Giro continuo y cámara que se aleja para encuadrar el despiece
     pivot.rotation.y = -0.9 + p * Math.PI * 1.4;
