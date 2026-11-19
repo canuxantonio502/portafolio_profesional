@@ -53,6 +53,9 @@
 body { transition: background-color .3s, color .3s; }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: var(--header-h); }
+/* Sin barra de desplazamiento: el tacómetro indica el avance (el scroll sigue funcionando) */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
 body {
   margin: 0;
   font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
@@ -263,6 +266,19 @@ h1, h2, h3, p { margin: 0; }
   letter-spacing: -.01em; color: var(--heading); text-wrap: pretty;
 }
 .manifesto .w { display: inline-block; }
+/* Foto de fondo a la derecha del manifiesto: difuminada y desvanecida hacia el texto */
+.about-story { overflow-x: clip; }
+.about-intro { position: relative; isolation: isolate; }
+.about-photo {
+  position: absolute; z-index: -1; top: -40px; right: -60px; bottom: -40px; width: min(48%, 560px); height: calc(100% + 80px);
+  object-fit: cover; object-position: 50% 20%; pointer-events: none; user-select: none;
+  opacity: .42; filter: blur(1.5px) saturate(.9);
+  -webkit-mask-image: linear-gradient(to left, #000 25%, transparent 95%), linear-gradient(to bottom, transparent, #000 18%, #000 75%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to left, #000 25%, transparent 95%), linear-gradient(to bottom, transparent, #000 18%, #000 75%, transparent);
+  mask-composite: intersect;
+}
+[data-theme="light"] .about-photo { opacity: .3; }
 .manifesto .hl { color: var(--accent); }
 .about-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 34px; }
 .about-outside { color: var(--muted); font-size: .95rem; }
@@ -370,6 +386,29 @@ h1, h2, h3, p { margin: 0; }
 .socials a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); transition: transform .2s, border-color .2s; }
 .socials a:hover { transform: translateX(5px); border-color: var(--accent); }
 .socials img, .socials .ph { width: 24px; height: 24px; object-fit: contain; border-radius: 4px; font-size: .55rem; }
+/* Al pasar el mouse por una red, el fondo del contacto se tiñe con sus colores.
+   Los colores son propiedades registradas para que la mezcla cambie con suavidad. */
+@property --g1 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --g2 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --g3 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+#contacto { position: relative; overflow: hidden; isolation: isolate; transition: --g1 .6s ease, --g2 .6s ease, --g3 .6s ease; }
+.contact-glow {
+  position: absolute; inset: -15%; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .5s ease;
+  background:
+    radial-gradient(38% 48% at 18% 38%, var(--g1), transparent 70%),
+    radial-gradient(48% 58% at 58% 30%, var(--g2), transparent 70%),
+    radial-gradient(34% 44% at 42% 88%, var(--g3), transparent 70%);
+  filter: blur(48px);
+}
+#contacto:has(.socials a:is(:hover, :focus-visible)) .contact-glow { opacity: .75; }
+[data-theme="light"] #contacto:has(.socials a:is(:hover, :focus-visible)) .contact-glow { opacity: .5; }
+#contacto:has([data-brand="github"]:is(:hover, :focus-visible)) { --g1: #8250df; --g2: #6e7681; --g3: #2da44e; }
+#contacto:has([data-brand="linkedin"]:is(:hover, :focus-visible)) { --g1: #0a66c2; --g2: #378fe9; --g3: #004182; }
+#contacto:has([data-brand="instagram"]:is(:hover, :focus-visible)) { --g1: #f58529; --g2: #dd2a7b; --g3: #8134af; }
+#contacto:has([data-brand="whatsapp"]:is(:hover, :focus-visible)) { --g1: #25d366; --g2: #128c7e; --g3: #34b7f1; }
+#contacto:has([data-brand="cv"]:is(:hover, :focus-visible)) { --g1: var(--accent); --g2: var(--accent-strong); --g3: var(--accent); }
+/* Tarjetas un poco translúcidas para que el color se note detrás */
+#contacto .socials a, #contacto form { background: color-mix(in srgb, var(--surface) 78%, transparent); }
 form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; }
 .field { margin-bottom: 16px; }
 label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: .92rem; color: var(--text); }
@@ -452,6 +491,7 @@ html.lenis, html.lenis body { height: auto; }
   .lead { margin-inline: auto; }
   .hero .actions { justify-content: center; }
   .about-meta { justify-content: center; text-align: center; }
+  .about-photo { width: 78%; right: -30px; opacity: .26; }
   .about-meta .about-cv { margin-left: 0; width: 100%; }
   .story-kicker { margin-top: 70px; }
   .stats { grid-template-columns: 1fr; }
