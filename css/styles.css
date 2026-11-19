@@ -395,6 +395,11 @@ a[aria-disabled="true"] { opacity: .6; }
 
 /* Visor del CV */
 body.modal-open { overflow: hidden; }
+/* Lenis (scroll suave): reglas de su hoja oficial, sin la que desactiva los iframes (visor del CV) */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
 .cv-modal { position: fixed; inset: 0; z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .cv-modal[hidden] { display: none; }
 .cv-backdrop { position: absolute; inset: 0; background: var(--backdrop); backdrop-filter: blur(4px); animation: fade .25s ease; }

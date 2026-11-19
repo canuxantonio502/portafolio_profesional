@@ -134,7 +134,10 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-  toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  toTop.addEventListener('click', () => {
+    if (window.lenis) window.lenis.scrollTo(0);
+    else window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
 
   /* Menú móvil */
   const toggle = $('#menu-toggle'), nav = $('#nav');
@@ -313,6 +316,7 @@
     closeMenu();
     cvModal.hidden = false;
     document.body.classList.add('modal-open');
+    if (window.lenis) window.lenis.stop();   // el fondo no se mueve con el visor abierto
     loadCvFrame();
     $('.cv-close', cvModal).focus();
   };
@@ -320,6 +324,7 @@
     if (cvModal.hidden) return;
     cvModal.hidden = true;
     document.body.classList.remove('modal-open');
+    if (window.lenis) window.lenis.start();
     if (lastFocus) lastFocus.focus();
   };
   $$('[data-cv-open]').forEach((b) => b.addEventListener('click', openCv));
@@ -349,13 +354,25 @@
     // Con scroll-behavior: smooth (CSS), ScrollTrigger mide mal al recargar o cambiar el
     // tamaño a media página. Se apaga y los enlaces internos se desplazan suave por JS.
     document.documentElement.style.scrollBehavior = 'auto';
+
+    // Scroll suave con inercia (Lenis), sincronizado con el reloj de GSAP.
+    // En táctiles Lenis deja el scroll nativo; con movimiento reducido no se activa.
+    if (window.Lenis && !reduceMotion) {
+      const lenis = new Lenis({ lerp: 0.1 });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+      window.lenis = lenis;
+    }
+
     document.addEventListener('click', (e) => {
       const a = e.target.closest('a[href^="#"]');
       const target = a && a.getAttribute('href').length > 1 && document.querySelector(a.getAttribute('href'));
       if (!target) return;
       e.preventDefault();
-      const top = target.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0);
-      window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+      const offset = -(header ? header.offsetHeight : 0);
+      if (window.lenis) window.lenis.scrollTo(target, { offset });
+      else window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY + offset, behavior: reduceMotion ? 'auto' : 'smooth' });
       history.pushState(null, '', a.getAttribute('href'));
     });
   }
@@ -520,7 +537,9 @@
       if (!projST) return;
       const wasPinned = projST.isActive;
       ScrollTrigger.refresh();
-      if (wasPinned) window.scrollTo({ top: projST.start, behavior: 'auto' });
+      if (!wasPinned) return;
+      if (window.lenis) window.lenis.scrollTo(projST.start, { immediate: true });
+      else window.scrollTo({ top: projST.start, behavior: 'auto' });
     }));
   }
 
