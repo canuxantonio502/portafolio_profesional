@@ -7,7 +7,7 @@ Portafolio personal de **Marco Antonio Canux Raquec**, Técnico en Desarrollo de
 ## El recorrido
 
 0. **El arranque:** la primera vez en la sesión el sitio está a oscuras con un botón **ENGINE START/STOP** en 3D. Al presionarlo (o con Enter), el LED destella, el tacómetro da un acelerón y la luz se abre desde el botón.
-1. **Inicio:** presentación con el nombre que entra letra por letra y contadores con datos reales. Al hacer click en la foto, se convierte en una **rueda 3D** que gira a toda velocidad y frena: el disco se pone al rojo vivo y saltan chispas.
+1. **Inicio:** presentación con el nombre que entra letra por letra y contadores con datos reales. Al pasar el mouse sobre la foto aparece una **rueda 3D**; al hacer click gira a toda velocidad y frena: el disco se pone al rojo vivo y salta una lluvia de chispas.
 2. **Sobre mí · Del motor al código:** un manifiesto que se ilumina palabra por palabra y da paso a la trayectoria en cuatro capítulos. Un motor V8 en 3D acompaña cada capítulo: gira armado, se despieza, se convierte en aristas de plano técnico y da paso a una laptop 3D que abre la tapa y escribe código en su pantalla.
 3. **Habilidades:** carrusel continuo de logos; al pasar el mouse aparece una tarjeta con el nombre y su uso.
 4. **Proyectos:** galería horizontal fijada. Al bajar, las tarjetas pasan de lado; los filtros siguen funcionando.

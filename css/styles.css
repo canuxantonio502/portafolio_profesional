@@ -167,7 +167,8 @@ h1, h2, h3, p { margin: 0; }
   position: absolute; left: 50%; top: 50%; width: 160%; aspect-ratio: 1; translate: -50% -50%;
   pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 2;
 }
-.hero-photo.is-wheeling .photo-btn { pointer-events: none; }
+/* Efectos: lienzo más grande para que las chispas vuelen lejos (FX en js/wheel3d.js) */
+.wheel-fx { width: 260%; z-index: 3; }
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 56px; }
 .stats div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; }
 .stats strong { display: block; font-size: 2rem; color: var(--heading); }

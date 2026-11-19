@@ -1,9 +1,13 @@
-/* La foto del hero se convierte en rueda: al hacer click la foto gira como una
-   moneda, aparece la rueda 3D girando a toda velocidad y frena hasta detenerse;
-   luego vuelve la foto. Alrededor, mientras gira:
+/* La foto del hero se convierte en rueda.
+   - Al pasar el mouse (o con el foco del teclado) la foto gira como moneda y
+     aparece la rueda 3D, rodando despacio. Al salir vuelve la foto.
+   - Al hacer click la rueda gira a toda velocidad y frena. Otro click mientras
+     frena la vuelve a acelerar. En pantallas táctiles, un toque hace todo.
+   Alrededor, mientras gira:
      - líneas de velocidad con el color de acento,
      - el disco de freno se pone al rojo vivo al frenar y se enfría,
-     - chispas que salen de la parte baja de la llanta al frenar.
+     - lluvia de chispas desde la parte baja de la llanta (rebotan en el "piso")
+       y desde la pinza, donde roza el disco.
    La pinza de freno queda fija, como en un auto real.
    Modelo: "Car wheel with brake disc - Low poly" de Márcio Meireles (CC BY 4.0). */
 import * as THREE from 'three';
@@ -12,7 +16,8 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const MODEL_URL = './models/wheel-web/scene.gltf';
 const SPINNING = ['tire-low', 'wheel-full', 'brake-disc'];   // la pinza ('brake-caliper') no gira
-const PAD = 0.3;              // el lienzo es un 30% más grande por lado que la foto (para los efectos)
+const PAD = 0.3;      // lienzo 3D: 30% más grande por lado que la foto (160%)
+const FX = 2.6;       // lienzo de efectos: 2.6 veces la foto, para que las chispas vuelen lejos
 
 const photo = document.querySelector('.hero-photo');
 const btn = photo && photo.querySelector('.photo-btn');
@@ -25,16 +30,17 @@ const hasWebGL = (() => {
 })();
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const seg = (t, a, b) => clamp((t - a) / (b - a));
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-const easeIn = (t) => t * t * t;
+const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const accent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
 
-// Línea de tiempo (ms)
-const T = { photoOut: [0, 200], wheelIn: [150, 380], spinUp: [150, 420], brake: [950, 1750], wheelOut: [1760, 1960], photoIn: [1900, 2240], end: 2260 };
-const W_MAX = 30;             // rad/s a toda velocidad (~4.8 vueltas por segundo)
+// Giro al hacer click: acelera durante BOOST_MS (llega rápido a W_MAX) y luego frena
+const BOOST_MS = 780;
+const W_MAX = 30;     // rad/s a toda velocidad (~4.8 vueltas por segundo)
+const W_IDLE = 0.9;   // rodando despacio mientras se muestra
+const FLIP_MS = 420;  // foto → rueda (o al revés)
 
-let stage = null, loading = null, busy = false;
+let stage = null, loading = null;
 
 async function buildStage() {
   const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
@@ -92,20 +98,20 @@ async function buildStage() {
 
   photo.append(canvas, fx);
 
-  let px = 0;
+  let fxSize = 0;
   const resize = () => {
-    const r = canvas.getBoundingClientRect();
+    const r = canvas.getBoundingClientRect(), f = fx.getBoundingClientRect();
     if (!r.width) return;
     renderer.setSize(r.width, r.height, false);
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    fx.width = r.width * dpr; fx.height = r.height * dpr;
+    fx.width = f.width * dpr; fx.height = f.height * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    px = r.width;
+    fxSize = f.width;
   };
   resize();
   window.addEventListener('resize', resize);
 
-  return { renderer, scene, camera, wheelSpace, spinner, discMat, canvas, fx, ctx, resize, size: () => px };
+  return { renderer, scene, camera, wheelSpace, spinner, discMat, canvas, fx, ctx, resize, fxSize: () => fxSize };
 }
 
 const load = () => (loading ||= buildStage().then((s) => (stage = s)).catch((err) => {
@@ -113,139 +119,185 @@ const load = () => (loading ||= buildStage().then((s) => (stage = s)).catch((err
   stage = false;
 }));
 
-/* Foto: gira como moneda (Web Animations, para no chocar con el GSAP del hero) */
-const flip = (from, to, dur, easing) => {
-  const img = photo.querySelector('img, .ph');
-  if (!img) return;
-  img.animate([{ transform: `perspective(700px) rotateY(${from}deg)` }, { transform: `perspective(700px) rotateY(${to}deg)` }],
-    { duration: dur, easing, fill: 'forwards' });
+/* ---------- Estado y bucle de dibujo ---------- */
+const img = () => photo.querySelector('img, .ph');
+const st = {
+  hover: false,       // mouse o foco encima
+  face: 0,            // 0 = foto, 0.5 = de canto, 1 = rueda de frente
+  boostUntil: 0,      // hasta cuándo acelera (último click + BOOST_MS)
+  w: 0,               // velocidad del giro (rad/s)
+  angle: 0, heat: 0,
+  sparks: [],
+  raf: 0, last: 0
 };
+const spinning = (now) => now < st.boostUntil || st.w > W_IDLE + 0.3;
 
-function play() {
+function setPhoto() {
+  const el = img();
+  if (!el) return;
+  if (st.face <= 0) {
+    // Foto en su lugar: se devuelven sus estilos (zoom al pasar el mouse incluido)
+    el.style.transform = el.style.transition = el.style.visibility = '';
+    return;
+  }
+  el.style.transition = 'none';
+  const a = Math.min(st.face, 0.5) * 2 * 90;       // 0 → 90° (queda de canto)
+  el.style.transform = `perspective(700px) rotateY(${a}deg)`;
+  el.style.visibility = st.face >= 0.5 ? 'hidden' : '';
+}
+
+function frame(now) {
+  st.raf = 0;
   const s = stage;
-  const { renderer, scene, camera, wheelSpace, spinner, discMat, canvas, fx, ctx } = s;
-  s.resize();
-  photo.classList.add('is-wheeling');
-  canvas.style.opacity = fx.style.opacity = '1';
-  flip(0, 90, T.photoOut[1], 'cubic-bezier(.5,0,.9,.5)');
+  const dt = Math.min(0.04, (now - st.last) / 1000 || 0.016);
+  st.last = now;
 
-  const color = accent();
+  // Mostrar la rueda mientras hay hover o giro
+  const want = st.hover || spinning(now) ? 1 : 0;
+  const step = (dt * 1000) / FLIP_MS;
+  st.face = want ? Math.min(1, st.face + step) : Math.max(0, st.face - step);
+  setPhoto();
+
+  // Velocidad: el click acelera desde la velocidad actual; después frena hasta rodar despacio
+  const idle = st.face > 0.5 ? W_IDLE : 0;
+  const boosting = now < st.boostUntil;
+  if (boosting) st.w += (W_MAX - st.w) * (1 - Math.exp(-dt * 9));
+  else st.w = Math.max(idle, st.w * Math.exp(-dt * 1.6) - dt * 5);
+  const speed = st.w / W_MAX;
+  const braking = !boosting && st.w > W_IDLE + 0.5;
+  st.angle += st.w * dt;
+  s.spinner.rotation.x = -st.angle;               // en pantalla gira en sentido horario
+
+  // Volteo: de canto (face 0.5) a de frente (face 1)
+  const wf = easeInOut(clamp((st.face - 0.5) * 2));
+  s.wheelSpace.rotation.set(0.08, -Math.PI / 2 + (1 - wf) * Math.PI / 2, 0);
+  s.wheelSpace.visible = st.face > 0.5;
+  s.canvas.style.opacity = s.fx.style.opacity = st.face > 0.5 || st.sparks.length ? '1' : '0';
+
+  // El disco se calienta al frenar y se enfría
+  st.heat = braking ? Math.min(1, st.heat + dt * 2.6 * (speed + 0.25)) : Math.max(0, st.heat - dt * 0.9);
+  if (s.discMat) s.discMat.emissiveIntensity = st.heat * 1.25;
+  s.renderer.render(s.scene, s.camera);
+
+  drawFx(s, dt, speed, braking, wf);
+
+  const busy = st.face > 0 || want || st.sparks.length || st.heat > 0.01;
+  if (busy) st.raf = requestAnimationFrame(frame);
+}
+const wake = () => { if (!st.raf && stage) { st.last = performance.now(); st.raf = requestAnimationFrame(frame); } };
+
+/* ---------- Efectos 2D: líneas de velocidad y chispas ---------- */
+function drawFx(s, dt, speed, braking, vis) {
+  const { ctx } = s;
+  const S = s.fxSize(), c = S / 2, R = S / FX / 2;   // R: radio de la llanta (= radio de la foto)
+  const floor = c + R * 1.02;
   const light = document.documentElement.dataset.theme === 'light';
-  const sparks = [];
-  let angle = 0, heat = 0, last = performance.now();
-  const t0 = last;
-  let photoBack = false, photoHidden = false;
-  const img = photo.querySelector('img, .ph');
+  ctx.clearRect(0, 0, S, S);
+  ctx.globalCompositeOperation = light ? 'source-over' : 'lighter';
+  ctx.lineCap = 'round';
 
-  const frame = (now) => {
-    const t = now - t0, dt = Math.min(0.04, (now - last) / 1000);
-    last = now;
-
-    // Velocidad: arranca, sostiene y frena
-    const up = easeIn(seg(t, ...T.spinUp));
-    const br = seg(t, ...T.brake);
-    const w = W_MAX * up * Math.pow(1 - br, 2);
-    angle += w * dt;
-    spinner.rotation.x = -angle;          // gira hacia adelante (en pantalla, sentido horario)
-
-    // Aparece de canto, queda de frente y se va de canto
-    const inn = easeOut(seg(t, ...T.wheelIn)), out = easeIn(seg(t, ...T.wheelOut));
-    wheelSpace.rotation.set(0.08 * (1 - out), -Math.PI / 2 + (1 - inn) * Math.PI / 2 - out * Math.PI / 2, 0);
-    wheelSpace.visible = inn > 0.01 && out < 0.99;
-
-    // El disco se calienta al frenar y se enfría
-    const braking = br > 0 && br < 1;
-    heat = braking ? Math.min(1, heat + dt * 2.6 * (w / W_MAX + 0.25)) : Math.max(0, heat - dt * 1.4);
-    if (discMat) discMat.emissiveIntensity = heat * 1.25;
-    renderer.render(scene, camera);
-
-    // Efectos 2D alrededor de la llanta
-    const S = s.size(), c = S / 2, R = (S / (1 + 2 * PAD)) / 2;
-    ctx.clearRect(0, 0, S, S);
-    const speed = w / W_MAX;
-    const vis = (1 - out) * inn;
-    ctx.globalCompositeOperation = light ? 'source-over' : 'lighter';
-    ctx.lineCap = 'round';
-    if (speed > 0.05 && vis > 0.01) {
-      // Líneas de velocidad: arcos que siguen el giro, más largos cuanto más rápido
-      for (let i = 0; i < 9; i++) {
-        const r = R * (1.06 + (i % 3) * 0.07 + (i * 0.013));
-        const a0 = angle * (1 - (i % 3) * 0.12) + (i * Math.PI * 2) / 9;
-        const len = 0.25 + speed * 0.9;
-        ctx.strokeStyle = color;
-        ctx.globalAlpha = Math.min(1, speed * 0.75) * vis * (0.35 + (i % 3) * 0.2);
-        ctx.lineWidth = 2.2 - (i % 3) * 0.5;
-        ctx.beginPath();
-        ctx.arc(c, c, r, a0 - len, a0);
-        ctx.stroke();
-      }
+  if (speed > 0.05 && vis > 0.01) {
+    const color = accent();
+    for (let i = 0; i < 12; i++) {
+      const r = R * (1.06 + (i % 4) * 0.06 + i * 0.008);
+      const a0 = st.angle * (1 - (i % 4) * 0.1) + (i * Math.PI * 2) / 12;
+      const len = 0.25 + speed * 0.95;
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = Math.min(1, speed * 0.8) * vis * (0.3 + (i % 4) * 0.15);
+      ctx.lineWidth = 2.4 - (i % 4) * 0.45;
+      ctx.beginPath();
+      ctx.arc(c, c, r, a0 - len, a0);
+      ctx.stroke();
     }
-    // Chispas de frenado: salen de abajo, hacia atrás del giro
-    if (braking && speed > 0.08) {
-      const n = Math.round(speed * 3.5 + Math.random());
-      for (let i = 0; i < n; i++) {
-        sparks.push({
-          x: c + (Math.random() - 0.5) * R * 0.3, y: c + R * 0.97,
-          vx: -(2 + Math.random() * 5) * (0.5 + speed), vy: -(Math.random() * 2.5),
-          life: 0, max: 280 + Math.random() * 360
+  }
+
+  // Emisión: muchas al frenar, algunas a toda velocidad
+  const k = dt * 60;
+  if (vis > 0.5 && speed > 0.04) {
+    const rate = braking ? 6 + speed * 22 : speed * 3;
+    const n = Math.floor(rate * k + Math.random());
+    for (let i = 0; i < n; i++) {
+      // Desde la parte baja de la llanta, hacia atrás del giro (izquierda) y hacia arriba
+      const a = Math.PI + (Math.random() - 0.2) * 0.9;     // ángulo de salida
+      const v = (3 + Math.random() * 9) * (0.55 + speed);
+      st.sparks.push({
+        x: c + (Math.random() - 0.35) * R * 0.5, y: floor - 2,
+        vx: Math.cos(a) * v, vy: -Math.abs(Math.sin(a)) * v * 0.9 - Math.random() * 2,
+        life: 0, max: 380 + Math.random() * 620, hot: Math.random() < 0.3, bounced: 0
+      });
+    }
+    if (braking) {
+      // Desde la pinza (a la derecha del centro), donde roza el disco: salen hacia abajo
+      const m = Math.floor((2 + speed * 9) * k + Math.random());
+      for (let i = 0; i < m; i++) {
+        const v = 2 + Math.random() * 6 * (0.5 + speed);
+        st.sparks.push({
+          x: c + R * (0.46 + Math.random() * 0.12), y: c + (Math.random() - 0.5) * R * 0.3,
+          vx: v * (0.3 + Math.random() * 0.6), vy: v * (0.6 + Math.random() * 0.6),
+          life: 0, max: 260 + Math.random() * 420, hot: Math.random() < 0.5, bounced: 0
         });
       }
     }
-    for (let i = sparks.length - 1; i >= 0; i--) {
-      const p = sparks[i];
-      p.life += dt * 1000;
-      if (p.life > p.max) { sparks.splice(i, 1); continue; }
-      const k = dt * 60;
-      p.vy += 0.25 * k; p.vx *= Math.pow(0.97, k);
-      const x0 = p.x, y0 = p.y;
-      p.x += p.vx * k; p.y += p.vy * k;
-      const life = p.life / p.max;
-      ctx.globalAlpha = 1 - life * life;
-      ctx.strokeStyle = `rgb(255, ${Math.round(230 - 140 * life)}, ${Math.round(120 - 100 * life)})`;
-      ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(p.x, p.y); ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
+  }
 
-    // La foto queda oculta mientras la rueda está de frente
-    if (!photoHidden && t >= T.photoOut[1]) { photoHidden = true; if (img) img.style.visibility = 'hidden'; }
-    if (!photoBack && t >= T.photoIn[0]) {
-      photoBack = true;
-      if (img) img.style.visibility = '';
-      flip(-90, 0, T.photoIn[1] - T.photoIn[0], 'cubic-bezier(.25,1.4,.5,1)');
+  if (!light) { ctx.shadowColor = 'rgba(255, 140, 40, 0.9)'; ctx.shadowBlur = 6; }
+  for (let i = st.sparks.length - 1; i >= 0; i--) {
+    const p = st.sparks[i];
+    p.life += dt * 1000;
+    if (p.life > p.max) { st.sparks.splice(i, 1); continue; }
+    p.vy += 0.32 * k;
+    p.vx *= Math.pow(0.985, k);
+    const x0 = p.x, y0 = p.y;
+    p.x += p.vx * k; p.y += p.vy * k;
+    // Rebote en el piso imaginario bajo la llanta
+    if (p.y > floor + 40 && p.vy > 0 && p.bounced < 2) {
+      p.y = floor + 40; p.vy *= -0.38; p.vx *= 0.75; p.bounced++;
     }
-    if (t < T.end || sparks.length) requestAnimationFrame(frame);
-    else {
-      ctx.clearRect(0, 0, S, S);
-      canvas.style.opacity = fx.style.opacity = '0';
-      photo.classList.remove('is-wheeling');
-      // La foto ya está en su lugar: se quitan las animaciones para que vuelva el zoom al pasar el mouse
-      if (img) { img.style.visibility = ''; img.getAnimations().forEach((a) => a.cancel()); }
-      busy = false;
-    }
-  };
-  requestAnimationFrame(frame);
+    const life = p.life / p.max;
+    ctx.globalAlpha = 1 - life * life;
+    ctx.strokeStyle = p.hot
+      ? `rgb(255, ${Math.round(245 - 90 * life)}, ${Math.round(200 - 160 * life)})`
+      : `rgb(255, ${Math.round(200 - 120 * life)}, ${Math.round(70 - 60 * life)})`;
+    ctx.lineWidth = p.hot ? 2.2 : 1.7;
+    ctx.beginPath();
+    ctx.moveTo(x0 - p.vx * 0.8, y0 - p.vy * 0.8);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
 }
 
-// Sin WebGL (o si el modelo no carga): la foto da dos vueltas rápidas
+/* ---------- Sin WebGL: la foto da dos vueltas rápidas ---------- */
+let fallbackBusy = false;
 const fallbackSpin = () => {
-  const img = photo.querySelector('img, .ph');
-  if (!img) { busy = false; return; }
-  img.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(720deg)' }],
-    { duration: 1100, easing: 'cubic-bezier(.2,.7,.2,1)' }).onfinish = () => { busy = false; };
+  const el = img();
+  if (!el || fallbackBusy) return;
+  fallbackBusy = true;
+  el.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(720deg)' }],
+    { duration: 1100, easing: 'cubic-bezier(.2,.7,.2,1)' }).onfinish = () => { fallbackBusy = false; };
 };
 
 if (btn && !reduce) {
-  // Precarga al acercar el mouse o el foco, para que el primer click sea inmediato
-  const warm = () => { if (hasWebGL) load(); };
-  btn.addEventListener('pointerenter', warm, { once: true });
-  btn.addEventListener('focus', warm, { once: true });
+  const enter = async () => {
+    st.hover = true;
+    if (!hasWebGL) return;
+    await load();
+    if (stage && st.hover) { stage.resize(); wake(); }
+  };
+  const leave = () => { st.hover = false; wake(); };
+  btn.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') enter(); });
+  btn.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') leave(); });
+  btn.addEventListener('focus', () => { if (btn.matches(':focus-visible')) enter(); });
+  btn.addEventListener('blur', leave);
   btn.addEventListener('click', async () => {
-    if (busy) return;
-    busy = true;
     if (!hasWebGL) return fallbackSpin();
     await load();
-    if (stage) play(); else fallbackSpin();
+    if (!stage) return fallbackSpin();
+    stage.resize();
+    // Si ya estaba girando, vuelve a acelerar desde la velocidad actual (sin saltos)
+    st.boostUntil = performance.now() + BOOST_MS;
+    wake();
   });
 }
