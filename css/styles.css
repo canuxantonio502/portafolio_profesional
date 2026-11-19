@@ -337,6 +337,20 @@ h1, h2, h3, p { margin: 0; }
 .card-body h3 { font-size: 1.2rem; }
 .card-body p { color: var(--muted); font-size: .95rem; flex: 1; }
 .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+/* Galería horizontal (main.js la activa en pantallas anchas): la sección se fija
+   y la pista de tarjetas se desplaza de lado con el scroll */
+.h-progress { display: none; }
+#proyectos.is-h { overflow: hidden; height: 100vh; padding-block: 0; display: flex; align-items: center; }
+#proyectos.is-h > .container { padding-top: var(--header-h); }
+#proyectos.is-h .section-title { margin-bottom: 18px; }
+#proyectos.is-h .filters { margin-bottom: 18px; }
+#proyectos.is-h .projects { display: flex; gap: 24px; width: max-content; will-change: transform; }
+#proyectos.is-h .card { flex: 0 0 auto; width: clamp(380px, 40vw, 460px); }
+#proyectos.is-h .card > img, #proyectos.is-h .card > .ph { height: clamp(120px, 17vh, 190px); }
+#proyectos.is-h .card-body { padding: 18px 22px; gap: 10px; }
+#proyectos.is-h .card-body p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
+#proyectos.is-h .h-progress { display: block; height: 3px; margin-top: 20px; border-radius: 99px; background: var(--border); overflow: hidden; }
+#proyectos.is-h .h-progress span { display: block; height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; }
 
 /* Placeholder cuando falta una imagen */
 .ph { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--ph-from), var(--ph-to)); color: var(--accent); font-weight: 700; letter-spacing: 1px; border: 1px solid var(--border); border-radius: 10px; }

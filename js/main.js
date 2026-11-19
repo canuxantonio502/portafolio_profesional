@@ -487,5 +487,41 @@
     setActive(0);
   }
 
+  /* Proyectos: galería horizontal fijada. Al bajar, las tarjetas pasan de lado.
+     Solo en pantallas anchas y altas; en el resto queda la cuadrícula normal. */
+  const projSection = $('#proyectos'), track = $('.projects');
+  if (hasGsap && projSection && track) {
+    const bar = document.createElement('div');
+    bar.className = 'h-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    bar.innerHTML = '<span></span>';
+    track.after(bar);
+    const fill = $('span', bar);
+    const distance = () => Math.max(0, track.scrollWidth - track.parentElement.clientWidth);
+    let projST = null;
+
+    gsap.matchMedia().add('(min-width: 821px) and (min-height: 680px) and (prefers-reduced-motion: no-preference)', () => {
+      projSection.classList.add('is-h');
+      const tween = gsap.to(track, {
+        x: () => -distance(), ease: 'none',
+        scrollTrigger: {
+          trigger: projSection, start: 'top top', end: () => '+=' + distance(),
+          pin: true, scrub: 0.6, invalidateOnRefresh: true,
+          onUpdate: (self) => { fill.style.transform = `scaleX(${self.progress})`; }
+        }
+      });
+      projST = tween.scrollTrigger;
+      return () => { projSection.classList.remove('is-h'); projST = null; tween.scrollTrigger.kill(); tween.kill(); gsap.set(track, { clearProps: 'transform' }); };
+    });
+    // Al filtrar cambia el ancho de la pista: se recalcula el recorrido y, si la
+    // galería estaba fijada, se vuelve a su inicio para ver el resultado desde el principio
+    filters.forEach((btn) => btn.addEventListener('click', () => {
+      if (!projST) return;
+      const wasPinned = projST.isActive;
+      ScrollTrigger.refresh();
+      if (wasPinned) window.scrollTo({ top: projST.start, behavior: 'auto' });
+    }));
+  }
+
   applyLang();
 })();
