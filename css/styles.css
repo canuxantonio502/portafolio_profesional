@@ -401,26 +401,29 @@ h1, h2, h3, p { margin: 0; }
 .socials a:hover { transform: translateX(5px); border-color: var(--accent); }
 .socials img, .socials .ph { width: 24px; height: 24px; object-fit: contain; border-radius: 4px; font-size: .55rem; }
 /* Al pasar el mouse por una red, el fondo del contacto se tiñe con sus colores.
-   Los colores son propiedades registradas para que la mezcla cambie con suavidad. */
-@property --g1 { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --g2 { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --g3 { syntax: '<color>'; inherits: true; initial-value: transparent; }
-#contacto { position: relative; overflow: hidden; isolation: isolate; transition: --g1 .6s ease, --g2 .6s ease, --g3 .6s ease; }
-.contact-glow {
-  position: absolute; inset: -15%; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .5s ease;
+   Cada red tiene su capa ya pintada y solo cambia su opacidad: la tarjeta gráfica
+   mezcla las capas sin volver a pintar (antes se animaban los colores con un
+   filter: blur sobre toda la sección y se repintaba en cada cuadro). */
+#contacto { position: relative; overflow: hidden; isolation: isolate; }
+.contact-glow { position: absolute; inset: -10%; z-index: -1; pointer-events: none; }
+.contact-glow span {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .55s ease;
   background:
-    radial-gradient(38% 48% at 18% 38%, var(--g1), transparent 70%),
-    radial-gradient(48% 58% at 58% 30%, var(--g2), transparent 70%),
-    radial-gradient(34% 44% at 42% 88%, var(--g3), transparent 70%);
-  filter: blur(48px);
+    radial-gradient(48% 58% at 18% 38%, var(--g1), color-mix(in srgb, var(--g1) 62%, transparent) 22%, color-mix(in srgb, var(--g1) 28%, transparent) 48%, color-mix(in srgb, var(--g1) 8%, transparent) 72%, transparent),
+    radial-gradient(58% 68% at 58% 30%, var(--g2), color-mix(in srgb, var(--g2) 62%, transparent) 22%, color-mix(in srgb, var(--g2) 28%, transparent) 48%, color-mix(in srgb, var(--g2) 8%, transparent) 72%, transparent),
+    radial-gradient(44% 54% at 42% 88%, var(--g3), color-mix(in srgb, var(--g3) 62%, transparent) 22%, color-mix(in srgb, var(--g3) 28%, transparent) 48%, color-mix(in srgb, var(--g3) 8%, transparent) 72%, transparent);
 }
-#contacto:has(.socials a:is(:hover, :focus-visible)) .contact-glow { opacity: .75; }
-[data-theme="light"] #contacto:has(.socials a:is(:hover, :focus-visible)) .contact-glow { opacity: .5; }
-#contacto:has([data-brand="github"]:is(:hover, :focus-visible)) { --g1: #8250df; --g2: #6e7681; --g3: #2da44e; }
-#contacto:has([data-brand="linkedin"]:is(:hover, :focus-visible)) { --g1: #0a66c2; --g2: #378fe9; --g3: #004182; }
-#contacto:has([data-brand="instagram"]:is(:hover, :focus-visible)) { --g1: #f58529; --g2: #dd2a7b; --g3: #8134af; }
-#contacto:has([data-brand="whatsapp"]:is(:hover, :focus-visible)) { --g1: #25d366; --g2: #128c7e; --g3: #34b7f1; }
-#contacto:has([data-brand="cv"]:is(:hover, :focus-visible)) { --g1: var(--accent); --g2: var(--accent-strong); --g3: var(--accent); }
+[data-glow="github"] { --g1: #8250df; --g2: #6e7681; --g3: #2da44e; }
+[data-glow="linkedin"] { --g1: #0a66c2; --g2: #378fe9; --g3: #004182; }
+[data-glow="instagram"] { --g1: #f58529; --g2: #dd2a7b; --g3: #8134af; }
+[data-glow="whatsapp"] { --g1: #25d366; --g2: #128c7e; --g3: #34b7f1; }
+[data-glow="cv"] { --g1: var(--accent); --g2: var(--accent-strong); --g3: var(--accent); }
+#contacto:has([data-brand="github"]:is(:hover, :focus-visible)) [data-glow="github"],
+#contacto:has([data-brand="linkedin"]:is(:hover, :focus-visible)) [data-glow="linkedin"],
+#contacto:has([data-brand="instagram"]:is(:hover, :focus-visible)) [data-glow="instagram"],
+#contacto:has([data-brand="whatsapp"]:is(:hover, :focus-visible)) [data-glow="whatsapp"],
+#contacto:has([data-brand="cv"]:is(:hover, :focus-visible)) [data-glow="cv"] { opacity: .75; }
+[data-theme="light"] #contacto .contact-glow { opacity: .67; }
 /* Tarjetas un poco translúcidas para que el color se note detrás */
 #contacto .socials a, #contacto form { background: color-mix(in srgb, var(--surface) 78%, transparent); }
 form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; }
