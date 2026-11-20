@@ -182,6 +182,20 @@ h1, h2, h3, p { margin: 0; }
 .mouse::after { content: ""; position: absolute; left: 50%; top: 6px; width: 4px; height: 7px; margin-left: -2px; border-radius: 2px; background: var(--accent); animation: wheel 1.6s ease-in-out infinite; }
 @keyframes wheel { 0% { opacity: 0; transform: translateY(-2px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(10px); } }
 .hero h1 .ch { display: inline-block; will-change: transform; }
+/* Aura del nombre: cada letra brilla según qué tan cerca está el mouse (--p de 0 a 1).
+   Solo cambian color, sombra y un pequeño salto de las letras: se repinta el título, nada más. */
+.hero h1 { cursor: default; }
+.hero h1 .ch {
+  --p: 0; --aura: var(--accent);
+  color: color-mix(in srgb, var(--aura) calc(var(--p) * 75%), var(--heading));
+  text-shadow:
+    0 0 calc(var(--p) * 10px) color-mix(in srgb, var(--aura) calc(var(--p) * 90%), transparent),
+    0 0 calc(var(--p) * 28px) color-mix(in srgb, var(--aura) calc(var(--p) * 60%), transparent);
+  translate: 0 calc(var(--p) * -4px);
+  transition: color .25s ease, text-shadow .25s ease, translate .25s ease;
+}
+[data-theme="light"] .hero h1 .ch { text-shadow: 0 0 calc(var(--p) * 14px) color-mix(in srgb, var(--aura) calc(var(--p) * 55%), transparent); }
+@media (prefers-reduced-motion: reduce) { .hero h1 .ch { translate: none; } }
 
 /* Trayectoria: del motor al código */
 .story-inner { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; }

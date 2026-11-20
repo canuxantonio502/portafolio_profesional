@@ -457,6 +457,44 @@
       `<span class="word" aria-hidden="true" style="display:inline-block;white-space:nowrap">${[...w].map((c) => `<span class="ch">${c}</span>`).join('')}</span>`
     ).join(' ');
   }
+  /* Aura del nombre: las letras cerca del mouse se encienden con un degradado de color
+     (acento → violeta → chispa). En pantallas táctiles, un toque la pasa de lado a lado. */
+  if (h1) {
+    const chars = $$('.ch', h1);
+    const stops = [[110, 168, 216], [139, 124, 246], [255, 154, 60]];   // acento, violeta, chispa
+    chars.forEach((ch, i) => {
+      const t = chars.length > 1 ? i / (chars.length - 1) : 0;
+      const k = t < 0.5 ? t * 2 : (t - 0.5) * 2, [a, b] = t < 0.5 ? [stops[0], stops[1]] : [stops[1], stops[2]];
+      ch.style.setProperty('--aura', `rgb(${a.map((v, j) => Math.round(v + (b[j] - v) * k)).join(', ')})`);
+    });
+    const R = 130;   // radio del aura en px
+    let raf = 0, px = 0, py = 0;
+    const paint = () => {
+      raf = 0;
+      chars.forEach((ch) => {
+        const r = ch.getBoundingClientRect();
+        const d = Math.hypot(r.left + r.width / 2 - px, (r.top + r.height / 2 - py) * 1.6);
+        ch.style.setProperty('--p', Math.max(0, 1 - d / R).toFixed(3));
+      });
+    };
+    const at = (x, y) => { px = x; py = y; if (!raf) raf = requestAnimationFrame(paint); };
+    const off = () => { cancelAnimationFrame(raf); raf = 0; chars.forEach((ch) => ch.style.setProperty('--p', '0')); };
+    h1.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') at(e.clientX, e.clientY); });
+    h1.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') off(); });
+    // Toque: el aura recorre el nombre una vez
+    let sweeping = false;
+    h1.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' || sweeping) return;
+      const box = h1.getBoundingClientRect(), y = box.top + box.height / 2, t0 = performance.now(), dur = reduceMotion ? 0 : 1100;
+      sweeping = true;
+      const step = (now) => {
+        const t = dur ? Math.min(1, (now - t0) / dur) : 1;
+        at(box.left - R + (box.width + 2 * R) * t, y);
+        if (t < 1) requestAnimationFrame(step); else { sweeping = false; setTimeout(off, 60); }
+      };
+      requestAnimationFrame(step);
+    });
+  }
   if (hasGsap && !reduceMotion) {
     // En pausa hasta el arranque: el hero queda vacío en la oscuridad y entra con la luz
     const heroIntro = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
