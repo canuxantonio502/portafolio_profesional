@@ -372,6 +372,8 @@ h1, h2, h3, p { margin: 0; }
 .card-flip .flip-face:not(.is-on) { opacity: 0; transform: translateY(6px); pointer-events: none; }
 .card-body .card-role { align-self: start; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); color: var(--text); }
 .card-role b { color: var(--accent); }
+.card-status { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px dashed var(--border); border-radius: 999px; color: var(--muted); font-size: .85rem; }
+.card-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #FFC233; box-shadow: 0 0 0 3px color-mix(in srgb, #FFC233 25%, transparent); }
 .flip-dots { position: absolute; left: 0; bottom: 0; display: flex; gap: 6px; }
 .flip-dots button { width: 18px; height: 6px; padding: 0; border: 0; border-radius: 99px; background: var(--border); cursor: pointer; transition: background-color .3s, width .3s; }
 .flip-dots button.is-on { width: 28px; background: var(--accent); }

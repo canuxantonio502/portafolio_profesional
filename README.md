@@ -22,6 +22,7 @@ En los márgenes flotan **partículas con lo que me define**: ruedas, engranes, 
 | Proyecto | Tipo | Tecnologías |
 | --- | --- | --- |
 | [WTWT · What to Watch Today](https://github.com/lucaspajarito01/wtwt_movie_explorer_backend) | Full stack (en equipo; hice la mayor parte del backend) | Node.js, Express, MySQL, JWT, Swagger |
+| KidFit (repositorio privado, en desarrollo) | App móvil (en equipo) | React Native, TypeScript, MediaPipe, Firebase, Notifee |
 | [AlwayStrong · Gestión de gimnasio](https://github.com/canuxantonio502/alwaysstrong_nodejs_campuslands) | Aplicación CLI | Node.js, MySQL, Inquirer, SOLID |
 | [Gestión de CampusParking](https://github.com/canuxantonio502/gestion_parqueo_javascript) | Aplicación web | HTML, CSS, JavaScript |
 | [Campus Movie Explorer](https://github.com/canuxantonio502/campus_movie_explorer) | Aplicación web | HTML, CSS, JavaScript, TMDB API |

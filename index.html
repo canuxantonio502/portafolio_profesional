@@ -119,7 +119,7 @@
                 </div>
             </div>
             <div class="container stats reveal">
-                <div><strong data-count="5">0</strong><span data-i18n="stats.projects">Proyectos destacados</span></div>
+                <div><strong data-count="6">0</strong><span data-i18n="stats.projects">Proyectos destacados</span></div>
                 <div><strong data-count="12">0</strong><span data-i18n="stats.tech">Tecnologías</span></div>
                 <div><strong data-count="3">0</strong><span data-i18n="stats.areas">Áreas de desarrollo: web, APIs y móvil</span></div>
             </div>
@@ -264,6 +264,7 @@
                 <div class="filters reveal" role="group" aria-label="Filtrar proyectos" data-i18n-attr="aria-label:projects.filterLabel">
                     <button class="filter active" data-filter="all" data-i18n="projects.all">Todos</button>
                     <button class="filter" data-filter="node">Node.js &amp; MySQL</button>
+                    <button class="filter" data-filter="mobile">React Native</button>
                     <button class="filter" data-filter="js">JavaScript</button>
                     <button class="filter" data-filter="css">HTML &amp; CSS</button>
                 </div>
@@ -285,6 +286,24 @@
                                 <a href="https://github.com/lucaspajarito01/wtwt_movie_explorer_backend" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
                                 <a href="https://wtwt-movie-explorer-backend.onrender.com/api/docs" target="_blank" rel="noopener" class="btn">API (Swagger)</a>
                                 <a href="https://lucaspajarito01.github.io/wtwt_movie_explorer_frontend/src/html/peliculas.html" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="projects.live">Ver proyecto</a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="card reveal" data-cat="mobile">
+                        <img src="./css/proyecto7.svg" alt="Ilustración de KidFit: inicio con actividad del día e hidratación, y sesión con detección de movimiento por cámara" data-i18n-attr="alt:projects.p7.alt" data-fallback="KidFit">
+                        <div class="card-body">
+                            <h3>KidFit</h3>
+                            <div class="card-flip" data-flip>
+                                <p class="flip-face is-on" data-i18n="projects.p7.desc">App móvil infantil que fomenta la actividad física: los niveles se juegan con la cámara y MediaPipe detecta la pose en el teléfono para contar repeticiones. Incluye hidratación con avisos, rachas, logros y progreso que funciona sin conexión.</p>
+                                <p class="flip-face card-role"><b data-i18n="projects.roleLabel">Mi parte:</b> <span data-i18n="projects.p7.role">En un equipo de 10: sincronización offline-first con Firestore y reintentos al volver la conexión, avisos de agua con Notifee, tarjeta de hidratación, contador de la sesión, estrellas por tiempo sostenido y pruebas del almacenamiento.</span></p>
+                                <div class="flip-dots" role="group" aria-label="Ver descripción o mi parte" data-i18n-attr="aria-label:projects.flipLabel">
+                                    <button type="button" class="is-on" aria-pressed="true" aria-label="Descripción" data-i18n-attr="aria-label:projects.descLabel"></button>
+                                    <button type="button" aria-pressed="false" aria-label="Mi parte" data-i18n-attr="aria-label:projects.roleShort"></button>
+                                </div>
+                            </div>
+                            <ul class="tags"><li>React Native</li><li>TypeScript</li><li>MediaPipe</li><li>Firebase</li><li>Notifee</li><li>Jest</li></ul>
+                            <div class="actions">
+                                <span class="card-status" data-i18n="projects.p7.status">En desarrollo · repositorio privado</span>
                             </div>
                         </div>
                     </article>
