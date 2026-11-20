@@ -366,8 +366,17 @@ h1, h2, h3, p { margin: 0; }
 .card-body { padding: 22px; display: flex; flex-direction: column; flex: 1; gap: 12px; }
 .card-body h3 { font-size: 1.2rem; }
 .card-body p { color: var(--muted); font-size: .95rem; flex: 1; }
-.card-body .card-role { flex: 0 0 auto; padding: 10px 12px; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--accent) 9%, transparent); font-size: .86rem; color: var(--text); }
+/* Descripción y "Mi parte" se turnan en el mismo lugar (la tarjeta no crece) */
+.card-flip { position: relative; flex: 1; display: grid; padding-bottom: 18px; }
+.card-flip .flip-face { grid-area: 1 / 1; margin: 0; transition: opacity .6s ease, transform .6s ease; }
+.card-flip .flip-face:not(.is-on) { opacity: 0; transform: translateY(6px); pointer-events: none; }
+.card-body .card-role { align-self: start; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); color: var(--text); }
 .card-role b { color: var(--accent); }
+.flip-dots { position: absolute; left: 0; bottom: 0; display: flex; gap: 6px; }
+.flip-dots button { width: 18px; height: 6px; padding: 0; border: 0; border-radius: 99px; background: var(--border); cursor: pointer; transition: background-color .3s, width .3s; }
+.flip-dots button.is-on { width: 28px; background: var(--accent); }
+.flip-dots button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .card-flip .flip-face, .flip-dots button { transition: none; } }
 .tags { display: flex; gap: 6px; flex-wrap: wrap; }
 /* Galería horizontal (main.js la activa en pantallas anchas): la sección se fija
    y la pista de tarjetas se desplaza de lado con el scroll */

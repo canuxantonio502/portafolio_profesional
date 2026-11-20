@@ -287,6 +287,28 @@
     counter.textContent = '0/' + msg.maxLength;
   });
 
+  /* Tarjetas con dos caras (WTWT: descripción ↔ mi parte) */
+  $$('[data-flip]').forEach((flip) => {
+    const faces = $$('.flip-face', flip), dots = $$('.flip-dots button', flip);
+    const card = flip.closest('.card') || flip;
+    let i = 0, timer = 0, visible = false, paused = false;
+    const show = (n) => {
+      i = n;
+      faces.forEach((f, k) => f.classList.toggle('is-on', k === n));
+      dots.forEach((d, k) => { d.classList.toggle('is-on', k === n); d.setAttribute('aria-pressed', String(k === n)); });
+    };
+    const run = () => {
+      clearInterval(timer);
+      if (visible && !paused) timer = setInterval(() => show((i + 1) % faces.length), 6000);
+    };
+    dots.forEach((d, k) => d.addEventListener('click', () => { show(k); run(); }));
+    card.addEventListener('pointerenter', () => { paused = true; run(); });
+    card.addEventListener('pointerleave', () => { paused = false; run(); });
+    card.addEventListener('focusin', () => { paused = true; run(); });
+    card.addEventListener('focusout', () => { paused = false; run(); });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(); }).observe(card);
+  });
+
   /* CV: visor y descarga.
      Usa el PDF del idioma actual; si no existe, el del otro idioma. */
   const cvModal = $('#cv-modal'), cvFrame = $('#cv-frame'), cvMissing = $('#cv-missing');

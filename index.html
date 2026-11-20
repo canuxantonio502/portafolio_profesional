@@ -272,8 +272,14 @@
                         <img src="./css/proyecto5.jpg" alt="Captura del catálogo de WTWT Movie Explorer" data-i18n-attr="alt:projects.p5.alt" data-fallback="WTWT">
                         <div class="card-body">
                             <h3>WTWT · What to Watch Today</h3>
-                            <p data-i18n="projects.p5.desc">Plataforma full stack para explorar, reseñar y rankear películas, animes y series. API REST con autenticación JWT, roles de usuario y administrador, ranking ponderado y documentación con Swagger. Proyecto en equipo con SCRUM.</p>
-                            <p class="card-role"><b data-i18n="projects.roleLabel">Mi parte:</b> <span data-i18n="projects.p5.role">Desarrollé la mayor parte del backend (75 de 94 commits): autenticación JWT con roles, rate limiting, CRUD de títulos con transacciones, votos de reseñas con bloqueo de fila, ranking ponderado, documentación con Swagger y despliegue.</span></p>
+                            <div class="card-flip" data-flip>
+                                <p class="flip-face is-on" data-i18n="projects.p5.desc">Plataforma full stack para explorar, reseñar y rankear películas, animes y series. API REST con autenticación JWT, roles de usuario y administrador, ranking ponderado y documentación con Swagger. Proyecto en equipo con SCRUM.</p>
+                                <p class="flip-face card-role"><b data-i18n="projects.roleLabel">Mi parte:</b> <span data-i18n="projects.p5.role">Hice la mayor parte del backend (75 de 94 commits): login JWT con roles, rate limiting, títulos con transacciones, votos de reseñas, ranking ponderado, Swagger y despliegue.</span></p>
+                                <div class="flip-dots" role="group" aria-label="Ver descripción o mi parte" data-i18n-attr="aria-label:projects.flipLabel">
+                                    <button type="button" class="is-on" aria-pressed="true" aria-label="Descripción" data-i18n-attr="aria-label:projects.descLabel"></button>
+                                    <button type="button" aria-pressed="false" aria-label="Mi parte" data-i18n-attr="aria-label:projects.roleShort"></button>
+                                </div>
+                            </div>
                             <ul class="tags"><li>Node.js</li><li>Express</li><li>MySQL</li><li>JWT</li><li>Swagger</li><li>JavaScript</li></ul>
                             <div class="actions">
                                 <a href="https://github.com/lucaspajarito01/wtwt_movie_explorer_backend" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
@@ -346,7 +352,7 @@
                         <p data-i18n="contact.text">¿Tienes un proyecto o una oportunidad en mente? Escríbeme y conversemos.</p>
                         <ul class="socials">
                             <li><a data-brand="github" href="https://github.com/canuxantonio502" target="_blank" rel="noopener"><img src="./css/github.png" alt="" data-fallback="GH">GitHub</a></li>
-                            <li><a data-brand="email" href="mailto:canuxantonio77@gmail.com"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>canuxantonio77@gmail.com</a></li>
+                            <li><a data-brand="email" href="mailto:canuxantonio77@gmail.com"><img src="./css/gmail.webp" alt="" data-fallback="@">canuxantonio77@gmail.com</a></li>
                             <li><a data-brand="linkedin" href="https://www.linkedin.com/in/marco-antonio-canux-raquec-153519402/" target="_blank" rel="noopener"><img src="./css/linkedin.png" alt="" data-fallback="in">LinkedIn</a></li>
                             <li><a data-brand="instagram" href="https://www.instagram.com/antoniocanux/" target="_blank" rel="noopener"><img src="./css/instagram.png" alt="" data-fallback="IG">Instagram</a></li>
                             <li><a data-brand="whatsapp" href="https://wa.me/50231007720" target="_blank" rel="noopener"><img src="./css/whatsapp.png" alt="" data-fallback="WA">WhatsApp</a></li>
