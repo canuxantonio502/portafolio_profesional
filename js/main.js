@@ -274,9 +274,15 @@
     const ok = $$('input, textarea', form).map(validate).every(Boolean);
     if (!ok) { status.textContent = ''; return; }
     const d = new FormData(form);
-    const text = `${t('form.whatsapp', { name: d.get('name'), email: d.get('_replyto') })}\n\n${d.get('message')}`;
-    window.open('https://wa.me/50231007720?text=' + encodeURIComponent(text), '_blank', 'noopener');
-    status.textContent = t('form.opening');
+    const name = d.get('name'), text = `${t('form.whatsapp', { name, email: d.get('_replyto') })}\n\n${d.get('message')}`;
+    if (e.submitter && e.submitter.dataset.via === 'whatsapp') {
+      window.open('https://wa.me/50231007720?text=' + encodeURIComponent(text), '_blank', 'noopener');
+      status.textContent = t('form.opening');
+    } else {
+      // Por defecto (Enter o "Enviar por correo"): abre el correo con todo listo
+      location.href = 'mailto:canuxantonio77@gmail.com?subject=' + encodeURIComponent(t('form.emailSubject', { name })) + '&body=' + encodeURIComponent(text);
+      status.textContent = t('form.openingEmail');
+    }
     form.reset();
     counter.textContent = '0/' + msg.maxLength;
   });

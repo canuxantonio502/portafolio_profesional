@@ -21,12 +21,11 @@ En los márgenes flotan **partículas con lo que me define**: ruedas, engranes, 
 
 | Proyecto | Tipo | Tecnologías |
 | --- | --- | --- |
-| [WTWT · What to Watch Today](https://github.com/lucaspajarito01/wtwt_movie_explorer_backend) | Full stack (en equipo) | Node.js, Express, MySQL, JWT, Swagger |
+| [WTWT · What to Watch Today](https://github.com/lucaspajarito01/wtwt_movie_explorer_backend) | Full stack (en equipo; hice la mayor parte del backend) | Node.js, Express, MySQL, JWT, Swagger |
 | [AlwayStrong · Gestión de gimnasio](https://github.com/canuxantonio502/alwaysstrong_nodejs_campuslands) | Aplicación CLI | Node.js, MySQL, Inquirer, SOLID |
 | [Gestión de CampusParking](https://github.com/canuxantonio502/gestion_parqueo_javascript) | Aplicación web | HTML, CSS, JavaScript |
 | [Campus Movie Explorer](https://github.com/canuxantonio502/campus_movie_explorer) | Aplicación web | HTML, CSS, JavaScript, TMDB API |
-| [Página para festival de música](https://canuxantonio502.github.io/festival_html_css/) | Sitio web | HTML, CSS |
-| Portafolio profesional | Sitio web | HTML, CSS, JavaScript, Three.js, GSAP |
+| [Página para festival de música](https://github.com/canuxantonio502/festival_html_css) | Sitio web | HTML, CSS |
 
 ## Tecnologías utilizadas
 

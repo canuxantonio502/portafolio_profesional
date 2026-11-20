@@ -23,7 +23,20 @@
     </script>
     <title data-i18n="meta.title">Antonio Canux | Técnico en Desarrollo de Software</title>
     <link rel="stylesheet" href="./css/styles.css">
-    <link rel="icon" href="./css/logo1.png" type="image/png">
+    <link rel="icon" href="./css/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="./css/apple-touch-icon.png">
+    <link rel="canonical" href="https://canuxantonio502.github.io/portafolio_profesional/">
+    <!-- Vista previa al compartir el enlace (LinkedIn, WhatsApp, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://canuxantonio502.github.io/portafolio_profesional/">
+    <meta property="og:title" content="Antonio Canux | Técnico en Desarrollo de Software">
+    <meta property="og:description" content="Del motor al código: de la mecánica automotriz al desarrollo de software. APIs con Node.js, Express y MySQL, y aplicaciones web con JavaScript.">
+    <meta property="og:image" content="https://canuxantonio502.github.io/portafolio_profesional/css/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Antonio Canux, Técnico en Desarrollo de Software">
+    <meta property="og:locale" content="es_GT">
+    <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
     <!-- El arranque: pantalla a oscuras con el botón ENGINE START/STOP.
@@ -106,8 +119,8 @@
                 </div>
             </div>
             <div class="container stats reveal">
-                <div><strong data-count="6">0</strong><span data-i18n="stats.projects">Proyectos destacados</span></div>
-                <div><strong data-count="11">0</strong><span data-i18n="stats.tech">Tecnologías</span></div>
+                <div><strong data-count="5">0</strong><span data-i18n="stats.projects">Proyectos destacados</span></div>
+                <div><strong data-count="12">0</strong><span data-i18n="stats.tech">Tecnologías</span></div>
                 <div><strong data-count="3">0</strong><span data-i18n="stats.areas">Áreas de desarrollo: web, APIs y móvil</span></div>
             </div>
             <a href="#trayectoria" class="scroll-cue">
@@ -260,6 +273,7 @@
                         <div class="card-body">
                             <h3>WTWT · What to Watch Today</h3>
                             <p data-i18n="projects.p5.desc">Plataforma full stack para explorar, reseñar y rankear películas, animes y series. API REST con autenticación JWT, roles de usuario y administrador, ranking ponderado y documentación con Swagger. Proyecto en equipo con SCRUM.</p>
+                            <p class="card-role"><b data-i18n="projects.roleLabel">Mi parte:</b> <span data-i18n="projects.p5.role">Desarrollé la mayor parte del backend (75 de 94 commits): autenticación JWT con roles, rate limiting, CRUD de títulos con transacciones, votos de reseñas con bloqueo de fila, ranking ponderado, documentación con Swagger y despliegue.</span></p>
                             <ul class="tags"><li>Node.js</li><li>Express</li><li>MySQL</li><li>JWT</li><li>Swagger</li><li>JavaScript</li></ul>
                             <div class="actions">
                                 <a href="https://github.com/lucaspajarito01/wtwt_movie_explorer_backend" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
@@ -311,20 +325,8 @@
                             <p data-i18n="projects.p3.desc">Presenta line-up, horarios, ubicación y venta de entradas de forma clara y atractiva, con una experiencia de usuario fluida.</p>
                             <ul class="tags"><li>HTML</li><li>CSS</li></ul>
                             <div class="actions">
-                                <a href="https://github.com/canuxantonio502/repaso/blob/master/index.html" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
+                                <a href="https://github.com/canuxantonio502/festival_html_css" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
                                 <a href="https://canuxantonio502.github.io/festival_html_css/" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="projects.live">Ver proyecto</a>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="card reveal" data-cat="css">
-                        <img src="./css/proyecto2.png" alt="Captura del portafolio profesional" data-i18n-attr="alt:projects.p4.alt" data-fallback="Portafolio">
-                        <div class="card-body">
-                            <h3 data-i18n="projects.p4.title">Portafolio profesional</h3>
-                            <p data-i18n="projects.p4.desc">Portafolio para mostrar habilidades, proyectos y logros, con diseño responsivo para dispositivos móviles y de escritorio.</p>
-                            <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
-                            <div class="actions">
-                                <a href="https://github.com/canuxantonio502/Portafolio/blob/main/index.html" target="_blank" rel="noopener" class="btn" data-i18n="projects.code">Ver código</a>
-                                <a href="#inicio" class="btn btn-primary" data-i18n="projects.live">Ver proyecto</a>
                             </div>
                         </div>
                     </article>
@@ -334,7 +336,7 @@
 
         <section id="contacto" class="section alt">
             <div class="contact-glow" aria-hidden="true">
-                <span data-glow="github"></span><span data-glow="linkedin"></span><span data-glow="instagram"></span><span data-glow="whatsapp"></span><span data-glow="cv"></span>
+                <span data-glow="github"></span><span data-glow="linkedin"></span><span data-glow="email"></span><span data-glow="instagram"></span><span data-glow="whatsapp"></span><span data-glow="cv"></span>
             </div>
             <div class="container">
                 <h2 class="section-title reveal"><span>04</span> <b data-i18n="contact.title">Contacto</b></h2>
@@ -344,6 +346,7 @@
                         <p data-i18n="contact.text">¿Tienes un proyecto o una oportunidad en mente? Escríbeme y conversemos.</p>
                         <ul class="socials">
                             <li><a data-brand="github" href="https://github.com/canuxantonio502" target="_blank" rel="noopener"><img src="./css/github.png" alt="" data-fallback="GH">GitHub</a></li>
+                            <li><a data-brand="email" href="mailto:canuxantonio77@gmail.com"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>canuxantonio77@gmail.com</a></li>
                             <li><a data-brand="linkedin" href="https://www.linkedin.com/in/marco-antonio-canux-raquec-153519402/" target="_blank" rel="noopener"><img src="./css/linkedin.png" alt="" data-fallback="in">LinkedIn</a></li>
                             <li><a data-brand="instagram" href="https://www.instagram.com/antoniocanux/" target="_blank" rel="noopener"><img src="./css/instagram.png" alt="" data-fallback="IG">Instagram</a></li>
                             <li><a data-brand="whatsapp" href="https://wa.me/50231007720" target="_blank" rel="noopener"><img src="./css/whatsapp.png" alt="" data-fallback="WA">WhatsApp</a></li>
@@ -370,7 +373,10 @@
                             <textarea id="message" name="message" rows="5" maxlength="500" placeholder="Escribe tu mensaje aquí" data-i18n-attr="placeholder:form.messagePh" required minlength="10"></textarea>
                             <small class="error"></small>
                         </div>
-                        <button type="submit" class="btn btn-primary" data-i18n="form.send">Enviar por WhatsApp</button>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" data-via="email" data-i18n="form.sendEmail">Enviar por correo</button>
+                            <button type="submit" class="btn" data-via="whatsapp" data-i18n="form.send">Enviar por WhatsApp</button>
+                        </div>
                         <p id="form-status" role="status"></p>
                     </form>
                 </div>

@@ -366,6 +366,8 @@ h1, h2, h3, p { margin: 0; }
 .card-body { padding: 22px; display: flex; flex-direction: column; flex: 1; gap: 12px; }
 .card-body h3 { font-size: 1.2rem; }
 .card-body p { color: var(--muted); font-size: .95rem; flex: 1; }
+.card-body .card-role { flex: 0 0 auto; padding: 10px 12px; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--accent) 9%, transparent); font-size: .86rem; color: var(--text); }
+.card-role b { color: var(--accent); }
 .tags { display: flex; gap: 6px; flex-wrap: wrap; }
 /* Galería horizontal (main.js la activa en pantallas anchas): la sección se fija
    y la pista de tarjetas se desplaza de lado con el scroll */
@@ -414,12 +416,14 @@ h1, h2, h3, p { margin: 0; }
     radial-gradient(44% 54% at 42% 88%, var(--g3), color-mix(in srgb, var(--g3) 62%, transparent) 22%, color-mix(in srgb, var(--g3) 28%, transparent) 48%, color-mix(in srgb, var(--g3) 8%, transparent) 72%, transparent);
 }
 [data-glow="github"] { --g1: #8250df; --g2: #6e7681; --g3: #2da44e; }
+[data-glow="email"] { --g1: #ea4335; --g2: #fbbc05; --g3: #4285f4; }
 [data-glow="linkedin"] { --g1: #0a66c2; --g2: #378fe9; --g3: #004182; }
 [data-glow="instagram"] { --g1: #f58529; --g2: #dd2a7b; --g3: #8134af; }
 [data-glow="whatsapp"] { --g1: #25d366; --g2: #128c7e; --g3: #34b7f1; }
 [data-glow="cv"] { --g1: var(--accent); --g2: var(--accent-strong); --g3: var(--accent); }
 #contacto:has([data-brand="github"]:is(:hover, :focus-visible)) [data-glow="github"],
 #contacto:has([data-brand="linkedin"]:is(:hover, :focus-visible)) [data-glow="linkedin"],
+#contacto:has([data-brand="email"]:is(:hover, :focus-visible)) [data-glow="email"],
 #contacto:has([data-brand="instagram"]:is(:hover, :focus-visible)) [data-glow="instagram"],
 #contacto:has([data-brand="whatsapp"]:is(:hover, :focus-visible)) [data-glow="whatsapp"],
 #contacto:has([data-brand="cv"]:is(:hover, :focus-visible)) [data-glow="cv"] { opacity: .75; }
@@ -435,6 +439,8 @@ textarea { resize: vertical; }
 input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
 .field.invalid input, .field.invalid textarea { border-color: var(--danger); }
 .error { display: block; min-height: 1.1em; color: var(--danger); font-size: .8rem; margin-top: 4px; }
+.form-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.form-actions .btn { flex: 1 1 180px; justify-content: center; }
 #form-status { margin-top: 12px; font-size: .9rem; color: var(--accent); }
 
 /* Footer y volver arriba */
