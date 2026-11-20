@@ -34,6 +34,17 @@ const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const accent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
 
+// Chispas: con tope, y dibujadas por lotes (8 trazos en vez de uno por chispa, sin shadowBlur)
+const MAX_SPARKS = 320;
+const BUCKETS = 4;   // tramos de vida: cada uno con su color y transparencia
+const sparkStyle = (hot, life) => (hot
+  ? `rgb(255, ${Math.round(245 - 90 * life)}, ${Math.round(200 - 160 * life)})`
+  : `rgb(255, ${Math.round(200 - 120 * life)}, ${Math.round(70 - 60 * life)})`);
+const STYLES = [false, true].flatMap((hot) => Array.from({ length: BUCKETS }, (_, b) => {
+  const life = (b + 0.5) / BUCKETS;
+  return { color: sparkStyle(hot, life), alpha: 1 - life * life, width: hot ? 2.2 : 1.7 };
+}));
+
 // Giro al hacer click: acelera durante BOOST_MS (llega rápido a W_MAX) y luego frena
 const BOOST_MS = 780;
 const W_MAX = 30;     // rad/s a toda velocidad (~4.8 vueltas por segundo)
@@ -103,7 +114,7 @@ async function buildStage() {
     const r = canvas.getBoundingClientRect(), f = fx.getBoundingClientRect();
     if (!r.width) return;
     renderer.setSize(r.width, r.height, false);
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     fx.width = f.width * dpr; fx.height = f.height * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     fxSize = f.width;
@@ -128,6 +139,7 @@ const st = {
   w: 0,               // velocidad del giro (rad/s)
   angle: 0, heat: 0,
   sparks: [],
+  color: '#6ea8d8', light: false,
   raf: 0, last: 0
 };
 const spinning = (now) => now < st.boostUntil || st.w > W_IDLE + 0.3;
@@ -184,20 +196,26 @@ function frame(now) {
   const busy = st.face > 0 || want || st.sparks.length || st.heat > 0.01;
   if (busy) st.raf = requestAnimationFrame(frame);
 }
-const wake = () => { if (!st.raf && stage) { st.last = performance.now(); st.raf = requestAnimationFrame(frame); } };
+const wake = () => {
+  if (st.raf || !stage) return;
+  st.color = accent();
+  st.light = document.documentElement.dataset.theme === 'light';
+  st.last = performance.now();
+  st.raf = requestAnimationFrame(frame);
+};
 
 /* ---------- Efectos 2D: líneas de velocidad y chispas ---------- */
 function drawFx(s, dt, speed, braking, vis) {
   const { ctx } = s;
   const S = s.fxSize(), c = S / 2, R = S / FX / 2;   // R: radio de la llanta (= radio de la foto)
   const floor = c + R * 1.02;
-  const light = document.documentElement.dataset.theme === 'light';
+  const { light } = st;
   ctx.clearRect(0, 0, S, S);
   ctx.globalCompositeOperation = light ? 'source-over' : 'lighter';
   ctx.lineCap = 'round';
 
   if (speed > 0.05 && vis > 0.01) {
-    const color = accent();
+    const color = st.color;
     for (let i = 0; i < 12; i++) {
       const r = R * (1.06 + (i % 4) * 0.06 + i * 0.008);
       const a0 = st.angle * (1 - (i % 4) * 0.1) + (i * Math.PI * 2) / 12;
@@ -215,7 +233,7 @@ function drawFx(s, dt, speed, braking, vis) {
   const k = dt * 60;
   if (vis > 0.5 && speed > 0.04) {
     const rate = braking ? 6 + speed * 22 : speed * 3;
-    const n = Math.floor(rate * k + Math.random());
+    const n = Math.min(MAX_SPARKS - st.sparks.length, Math.floor(rate * k + Math.random()));
     for (let i = 0; i < n; i++) {
       // Desde la parte baja de la llanta, hacia atrás del giro (izquierda) y hacia arriba
       const a = Math.PI + (Math.random() - 0.2) * 0.9;     // ángulo de salida
@@ -228,7 +246,7 @@ function drawFx(s, dt, speed, braking, vis) {
     }
     if (braking) {
       // Desde la pinza (a la derecha del centro), donde roza el disco: salen hacia abajo
-      const m = Math.floor((2 + speed * 9) * k + Math.random());
+      const m = Math.min(MAX_SPARKS - st.sparks.length, Math.floor((2 + speed * 9) * k + Math.random()));
       for (let i = 0; i < m; i++) {
         const v = 2 + Math.random() * 6 * (0.5 + speed);
         st.sparks.push({
@@ -240,11 +258,13 @@ function drawFx(s, dt, speed, braking, vis) {
     }
   }
 
-  if (!light) { ctx.shadowColor = 'rgba(255, 140, 40, 0.9)'; ctx.shadowBlur = 6; }
-  for (let i = st.sparks.length - 1; i >= 0; i--) {
-    const p = st.sparks[i];
+  // Física, y cada chispa se agrega al trazo de su tramo de vida
+  const paths = STYLES.map(() => new Path2D());
+  const list = st.sparks;
+  for (let i = list.length - 1; i >= 0; i--) {
+    const p = list[i];
     p.life += dt * 1000;
-    if (p.life > p.max) { st.sparks.splice(i, 1); continue; }
+    if (p.life > p.max) { list[i] = list[list.length - 1]; list.pop(); continue; }
     p.vy += 0.32 * k;
     p.vx *= Math.pow(0.985, k);
     const x0 = p.x, y0 = p.y;
@@ -253,18 +273,20 @@ function drawFx(s, dt, speed, braking, vis) {
     if (p.y > floor + 40 && p.vy > 0 && p.bounced < 2) {
       p.y = floor + 40; p.vy *= -0.38; p.vx *= 0.75; p.bounced++;
     }
-    const life = p.life / p.max;
-    ctx.globalAlpha = 1 - life * life;
-    ctx.strokeStyle = p.hot
-      ? `rgb(255, ${Math.round(245 - 90 * life)}, ${Math.round(200 - 160 * life)})`
-      : `rgb(255, ${Math.round(200 - 120 * life)}, ${Math.round(70 - 60 * life)})`;
-    ctx.lineWidth = p.hot ? 2.2 : 1.7;
-    ctx.beginPath();
-    ctx.moveTo(x0 - p.vx * 0.8, y0 - p.vy * 0.8);
-    ctx.lineTo(p.x, p.y);
-    ctx.stroke();
+    const path = paths[Math.min(BUCKETS - 1, (p.life / p.max * BUCKETS) | 0) + (p.hot ? BUCKETS : 0)];
+    path.moveTo(x0 - p.vx * 0.8, y0 - p.vy * 0.8);
+    path.lineTo(p.x, p.y);
   }
-  ctx.shadowBlur = 0;
+  // En oscuro, primero un trazo ancho y tenue (el brillo) y encima el núcleo
+  for (let pass = light ? 1 : 0; pass < 2; pass++) {
+    for (let j = 0; j < STYLES.length; j++) {
+      const sty = STYLES[j];
+      ctx.strokeStyle = sty.color;
+      ctx.globalAlpha = sty.alpha * (pass ? 1 : 0.22);
+      ctx.lineWidth = sty.width * (pass ? 1 : 3.2);
+      ctx.stroke(paths[j]);
+    }
+  }
   ctx.globalAlpha = 1;
   ctx.globalCompositeOperation = 'source-over';
 }
