@@ -360,7 +360,30 @@
   langListeners.push(updateCv);
 
   /* Año del footer */
-  $('#year').textContent = new Date().getFullYear();
+  $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+
+  /* Créditos: el pie es solo un botón; el panel sube desde abajo (dialog nativo:
+     atrapa el foco y se cierra con Esc). También se cierra al tocar fuera. */
+  const credits = $('#credits'), creditsBtn = $('.credits-btn');
+  if (credits && creditsBtn && credits.showModal) {
+    const closeCredits = () => {
+      if (!credits.open || credits.classList.contains('closing')) return;
+      credits.classList.add('closing');
+      setTimeout(() => { credits.classList.remove('closing'); credits.close(); }, reduceMotion ? 0 : 280);
+    };
+    creditsBtn.addEventListener('click', () => {
+      credits.showModal();
+      creditsBtn.setAttribute('aria-expanded', 'true');
+      if (window.lenis) window.lenis.stop();
+    });
+    credits.addEventListener('close', () => {
+      creditsBtn.setAttribute('aria-expanded', 'false');
+      if (window.lenis) window.lenis.start();
+    });
+    credits.addEventListener('cancel', (e) => { e.preventDefault(); closeCredits(); });   // Esc, con animación
+    $('.sheet-close', credits).addEventListener('click', closeCredits);
+    credits.addEventListener('click', (e) => { if (e.target === credits) closeCredits(); }); // fuera del panel
+  }
 
   /* ---------- Experiencia inmersiva (GSAP + ScrollTrigger) ---------- */
   const hasGsap = !!(window.gsap && window.ScrollTrigger);

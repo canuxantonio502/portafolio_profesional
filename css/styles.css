@@ -213,9 +213,6 @@ h1, h2, h3, p { margin: 0; }
 }
 /* Con el motor 3D activo, el SVG solo aporta la ventana de código final */
 .story.has-3d .eng-parts, .story.has-3d .eng-labels, .story.has-3d .eng-glyphs { display: none; }
-.credit { margin-top: 6px; font-size: .78rem; opacity: .8; }
-.credit a { text-decoration: underline; text-underline-offset: 2px; }
-.credit a:hover { color: var(--accent); }
 .gear { fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; fill-rule: evenodd; }
 .gear-alt { stroke: var(--muted); }
 .gear-hub { fill: none; stroke: var(--border); stroke-width: 2; stroke-dasharray: 4 6; }
@@ -438,7 +435,45 @@ input:focus, textarea:focus { outline: none; border-color: var(--accent); box-sh
 #form-status { margin-top: 12px; font-size: .9rem; color: var(--accent); }
 
 /* Footer y volver arriba */
-footer { padding: 28px 0; text-align: center; color: var(--muted); font-size: .88rem; border-top: 1px solid var(--border); }
+/* Pie mínimo: solo el botón de créditos */
+footer { padding: 14px 0; text-align: center; border-top: 1px solid var(--border); }
+.credits-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border: 1px solid var(--border); border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent); color: var(--muted); font: inherit; font-size: .8rem; cursor: pointer;
+  transition: color .2s, border-color .2s, background-color .2s;
+}
+.credits-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s; }
+.credits-btn:hover, .credits-btn:focus-visible { color: var(--text); border-color: var(--accent); outline: none; }
+.credits-btn:hover svg, .credits-btn:focus-visible svg { transform: translateY(-2px); }
+.credits-sep { opacity: .5; }
+
+/* Panel de créditos: sube desde abajo (dialog nativo) */
+.credits-sheet {
+  inset: auto 0 0 0; margin: 0 auto; width: min(640px, 100%); max-width: 100%; max-height: min(82vh, 600px);
+  padding: 0; border: 1px solid var(--border); border-bottom: 0; border-radius: 20px 20px 0 0;
+  background: var(--surface); color: var(--text); box-shadow: 0 -24px 60px var(--shadow-strong); overflow: auto; overscroll-behavior: contain;
+}
+.credits-sheet[open] { animation: sheet-up .4s cubic-bezier(.2, .9, .25, 1); }
+.credits-sheet.closing { animation: sheet-down .28s cubic-bezier(.5, 0, .9, .4) forwards; }
+.credits-sheet::backdrop { background: rgba(5, 9, 18, .55); backdrop-filter: blur(3px); animation: sheet-fade .3s; }
+.credits-sheet.closing::backdrop { animation: sheet-fade .28s reverse forwards; }
+@keyframes sheet-up { from { transform: translateY(100%); } }
+@keyframes sheet-down { to { transform: translateY(100%); } }
+@keyframes sheet-fade { from { opacity: 0; } }
+.sheet-inner { padding: 12px 24px 26px; }
+.sheet-inner::before { content: ""; display: block; width: 44px; height: 4px; margin: 0 auto 14px; border-radius: 99px; background: var(--border); }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.sheet-head h2 { margin: 0; font-size: 1.15rem; color: var(--heading); }
+.sheet-close { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--border); border-radius: 50%; background: transparent; color: var(--text); cursor: pointer; transition: border-color .2s, color .2s; }
+.sheet-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.sheet-close:hover, .sheet-close:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+.sheet-rights { margin: 0 0 18px; color: var(--muted); font-size: .9rem; }
+.sheet-label { margin: 0 0 10px; color: var(--muted); font-size: .85rem; }
+.credit-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.credit-list li { padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-alt); font-size: .9rem; }
+.credit-list small { display: block; margin-top: 2px; color: var(--muted); font-size: .78rem; }
+.credit-list a, .sheet-label a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.sheet-built { margin: 18px 0 0; color: var(--muted); font-size: .8rem; text-align: center; }
 /* Partículas de los márgenes (js/particles.js): detrás del contenido */
 .side-particles { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
@@ -555,7 +590,10 @@ html.lenis, html.lenis body { height: auto; }
   .chapter p:last-child { margin-inline: auto; }
   .tach { width: 60px; height: 60px; left: 12px; bottom: 12px; }
   .tach.has-3d { width: 92px; height: 92px; }
-  footer { padding-bottom: 116px; } /* que el tacómetro fijo no tape el pie */
+  /* En móvil el botón se acorta para caber entre el tacómetro y el engrane fijos */
+  footer { padding: 18px 0 26px; }
+  .credits-btn { padding: 6px 12px; font-size: .74rem; }
+  .credits-btn > span:first-child, .credits-sep { display: none; }
   .cv-modal { padding: 0; }
   .cv-dialog { height: 100%; border-radius: 0; border: 0; }
   .cv-head h2 { width: 100%; }

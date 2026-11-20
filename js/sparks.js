@@ -5,7 +5,7 @@
 (() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const IGNORE = 'a, button, input, textarea, select, label, summary, [role="dialog"], .card, .logo, .socials, .contact-form, .tach, .to-top, .menu-toggle, .nav, canvas.engine-canvas';
+  const IGNORE = 'dialog, a, button, input, textarea, select, label, summary, [role="dialog"], .card, .logo, .socials, .contact-form, .tach, .to-top, .menu-toggle, .nav, canvas.engine-canvas';
   const canvas = document.createElement('canvas');
   canvas.className = 'spark-layer';
   canvas.setAttribute('aria-hidden', 'true');
