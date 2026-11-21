@@ -379,6 +379,37 @@ const lazy = (el, fn, label) => {
 };
 if (hasWebGL && !saveData) {
   if (story && wrap) lazy(story, init, 'Motor 3D no disponible:');
-  // .goal está oculto hasta que carga: se observa la sección de contacto
-  if (goal && goalWrap) lazy(goal.closest('section') || goal, initGoal, 'Motor de la meta no disponible:');
+  if (goal && goalWrap) {
+    // El motor de la meta (contacto) es costoso de preparar: crea otro contexto WebGL y compila
+    // sus shaders. Si se esperara a que el contacto se acerque, coincidiría con el final de la
+    // galería de proyectos y la frenaría. Por eso se prepara en un momento tranquilo: cuando el
+    // scroll lleva un rato quieto. Si nunca hay pausa, se prepara al acercarse a Proyectos,
+    // antes de que la galería se fije.
+    let started = false, quiet = 0;
+    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
+    const startGoal = () => {
+      if (started) return;
+      started = true;
+      clearTimeout(quiet);
+      window.removeEventListener('scroll', arm);
+      initGoal().catch((err) => { console.warn('Motor de la meta no disponible:', err); });
+    };
+    function arm() {
+      clearTimeout(quiet);
+      quiet = setTimeout(() => idle(startGoal, { timeout: 1000 }), 900);
+    }
+    const begin = () => {
+      if (started) return;
+      window.addEventListener('scroll', arm, { passive: true });
+      arm();
+      const before = document.getElementById('proyectos') || goal.closest('section') || goal;
+      lazy(before, async () => startGoal(), 'Motor de la meta no disponible:');
+    };
+    // Mientras está la pantalla de arranque, se espera a que termine la entrada del sitio
+    if (document.documentElement.classList.contains('ignition-pending')) {
+      window.addEventListener('ignition:done', () => setTimeout(begin, 1200), { once: true });
+    } else {
+      begin();
+    }
+  }
 }
