@@ -41,8 +41,12 @@
 <body>
     <!-- El arranque: pantalla a oscuras con el botón ENGINE START/STOP.
          js/ignition.js lo controla y js/ignition3d.js dibuja el botón en 3D. -->
-    <div id="ignition" class="ignition" role="dialog" aria-modal="true" aria-labelledby="ign-name" aria-describedby="ign-hint">
-        <p id="ign-name" class="ign-name">Antonio Canux</p>
+    <div id="ignition" class="ignition" role="dialog" aria-modal="true" aria-labelledby="ign-title ign-name" aria-describedby="ign-hint">
+        <div class="ign-head">
+            <p id="ign-name" class="ign-name">Antonio Canux</p>
+            <p id="ign-title" class="ign-title" data-i18n="ign.title">Portafolio</p>
+            <span class="ign-rule" aria-hidden="true"></span>
+        </div>
         <div class="ign-stage">
             <button type="button" id="ign-btn" class="ign-btn" aria-label="Arrancar el sitio" data-i18n-attr="aria-label:ign.label">
                 <span class="ign-face" aria-hidden="true">

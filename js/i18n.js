@@ -133,6 +133,7 @@ window.I18N = {
     'toTop': 'Volver arriba',
     'toTopHint': 'Reversa',
     'hero.photoBtn': 'Girar la rueda',
+    'ign.title': 'Portafolio',
     'ign.label': 'Arrancar el sitio',
     'ign.hint': 'Presiona para arrancar',
 
@@ -277,6 +278,7 @@ window.I18N = {
     'toTop': 'Back to top',
     'toTopHint': 'Reverse',
     'hero.photoBtn': 'Spin the wheel',
+    'ign.title': 'Portfolio',
     'ign.label': 'Start the site',
     'ign.hint': 'Press to start the engine',
 
