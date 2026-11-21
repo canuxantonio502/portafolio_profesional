@@ -512,6 +512,24 @@ footer { padding: 14px 0; text-align: center; border-top: 1px solid var(--border
 .side-particles { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
 /* Chispas al hacer click (js/sparks.js): encima del contenido, sin bloquear clicks */
+/* Aura de luz del puntero sobre las tarjetas (js/main.js). Es una sola capa fija con el
+   degradado ya pintado: al mover el mouse solo cambia su transform (no se repinta nada). */
+.pointer-aura {
+  position: fixed; left: 0; top: 0; z-index: 89; width: 300px; height: 300px; margin: -150px 0 0 -150px;
+  border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity .35s ease; will-change: transform, opacity;
+  background: radial-gradient(circle,
+    color-mix(in srgb, #fff 24%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 34%, transparent) 14%,
+    color-mix(in srgb, var(--accent) 14%, transparent) 40%,
+    transparent 70%);
+}
+.pointer-aura.on { opacity: 1; }
+[data-theme="light"] .pointer-aura {
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--accent) 24%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 10%, transparent) 40%,
+    transparent 70%);
+}
 .spark-layer { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 95; pointer-events: none; }
 
 /* Volver arriba: engrane que gira con el scroll y flecha al centro */

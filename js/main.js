@@ -287,6 +287,36 @@
     counter.textContent = '0/' + msg.maxLength;
   });
 
+  /* Aura de luz: sigue al puntero mientras está sobre una tarjeta (proyectos, habilidades,
+     cifras, trayectoria) o sobre el texto de Sobre mí. Solo con mouse. */
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const AURA_ON = '.card, .logo, .stats > div, .manifesto, .chapter-card';
+    const aura = document.createElement('div');
+    aura.className = 'pointer-aura';
+    aura.setAttribute('aria-hidden', 'true');
+    document.body.append(aura);
+    let ax = -999, ay = -999, raf = 0, recheck = false;
+    const draw = () => {
+      raf = 0;
+      aura.style.transform = `translate3d(${ax}px, ${ay}px, 0)`;
+      if (recheck) {
+        // Al hacer scroll la tarjeta se mueve bajo el puntero quieto: se vuelve a mirar qué hay debajo
+        const under = document.elementFromPoint(ax, ay);
+        aura.classList.toggle('on', !!(under && under.closest(AURA_ON)));
+        recheck = false;
+      }
+    };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(draw); };
+    document.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      ax = e.clientX; ay = e.clientY;
+      aura.classList.toggle('on', !!e.target.closest(AURA_ON));
+      queue();
+    }, { passive: true });
+    window.addEventListener('scroll', () => { if (ax > -999) { recheck = true; queue(); } }, { passive: true });
+    document.documentElement.addEventListener('mouseleave', () => aura.classList.remove('on'));
+  }
+
   /* Tarjetas con dos caras (WTWT: descripción ↔ mi parte) */
   $$('[data-flip]').forEach((flip) => {
     const faces = $$('.flip-face', flip), dots = $$('.flip-dots button', flip);
