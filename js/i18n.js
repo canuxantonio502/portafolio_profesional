@@ -28,6 +28,9 @@ window.I18N = {
     'stats.projects': 'Proyectos destacados',
     'stats.tech': 'Tecnologías',
     'stats.areas': 'Áreas de desarrollo: web, APIs y móvil',
+    'stats.goProjects': 'Ver proyectos',
+    'stats.goSkills': 'Ver habilidades',
+    'stats.goAreas': 'Ver en proyectos',
 
     'about.title': 'Sobre mí',
     'about.manifesto': 'Soy Antonio, Técnico en Desarrollo de Software formado en Campuslands. Antes de escribir código *desarmaba motores*, y de ahí viene mi forma de trabajar: *diagnosticar, ordenar y probar* cada pieza hasta que todo funcione. Hoy aplico esa lógica a *interfaces, APIs y aplicaciones móviles*.',
@@ -169,6 +172,9 @@ window.I18N = {
     'stats.projects': 'Featured projects',
     'stats.tech': 'Technologies',
     'stats.areas': 'Development areas: web, APIs and mobile',
+    'stats.goProjects': 'See projects',
+    'stats.goSkills': 'See skills',
+    'stats.goAreas': 'See in projects',
 
     'about.title': 'About me',
     'about.manifesto': "I'm Antonio, a Software Development Technician trained at Campuslands. Before writing code I *took engines apart*, and that is where my way of working comes from: *diagnose, organize and test* every piece until everything works. Today I apply that logic to *interfaces, APIs and mobile apps*.",

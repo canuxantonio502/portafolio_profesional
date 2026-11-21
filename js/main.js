@@ -227,9 +227,13 @@
       if (!en.isIntersecting) return;
       const el = en.target, target = +el.dataset.count, start = performance.now();
       const dur = 900 + target * 60;
+      // Si la cifra tiene medidor, la aguja sube junto con el número
+      const card = el.closest('.stat'), max = card ? +card.dataset.max || target : 0;
       const step = (now) => {
         const p = reduceMotion ? 1 : Math.min((now - start) / dur, 1);
-        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        const v = target * (1 - Math.pow(1 - p, 3));
+        el.textContent = Math.round(v);
+        if (card) card.style.setProperty('--f', (v / max).toFixed(3));
         if (p < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
@@ -290,7 +294,7 @@
   /* Aura de luz: sigue al puntero mientras está sobre una tarjeta (proyectos, habilidades,
      cifras, trayectoria) o sobre el texto de Sobre mí. Solo con mouse. */
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    const AURA_ON = '.card, .logo, .stats > div, .manifesto, .chapter-card';
+    const AURA_ON = '.card, .logo, .stat, .manifesto, .chapter-card';
     const aura = document.createElement('div');
     aura.className = 'pointer-aura';
     aura.setAttribute('aria-hidden', 'true');

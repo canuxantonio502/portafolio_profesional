@@ -170,9 +170,34 @@ h1, h2, h3, p { margin: 0; }
 /* Efectos: lienzo más grande para que las chispas vuelen lejos (FX en js/wheel3d.js) */
 .wheel-fx { width: 260%; z-index: 3; }
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 56px; }
-.stats div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; }
-.stats strong { display: block; font-size: 2rem; color: var(--heading); }
-.stats span { color: var(--muted); font-size: .9rem; }
+/* Cifras: cada una es un enlace a su sección con un medidor como el del tablero.
+   --f (0 a 1) es la posición de la aguja; la mueve el contador al subir. */
+.stat {
+  --f: 0; position: relative; display: flex; align-items: center; gap: 14px; padding: 16px 18px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: inherit; text-decoration: none;
+  transition: border-color .2s, transform .25s ease, box-shadow .25s;
+}
+.stat:hover, .stat:focus-visible { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 12px 26px var(--shadow); }
+.stat-text { display: flex; flex-direction: column; min-width: 0; }
+.stat strong { font-size: 2rem; line-height: 1.1; color: var(--heading); }
+.stat-label { color: var(--muted); font-size: .9rem; line-height: 1.35; }
+.stat-go { margin-top: 4px; color: var(--accent); font-size: .8rem; font-weight: 600; opacity: 0; translate: -6px 0; transition: opacity .25s, translate .25s; }
+.stat:hover .stat-go, .stat:focus-visible .stat-go { opacity: 1; translate: 0 0; }
+@media (hover: none) { .stat-go { opacity: .85; translate: 0 0; } }
+.gauge { flex: 0 0 auto; width: 88px; overflow: visible; }
+.gauge path, .gauge line { fill: none; stroke-linecap: round; }
+.gauge-track { stroke: var(--border); stroke-width: 7; }
+.gauge-fill { stroke: var(--accent); stroke-width: 7; stroke-dasharray: 1 1; stroke-dashoffset: calc(1 - var(--f)); opacity: calc(.3 + var(--f)); }
+.gauge-red { stroke: #e0574f; stroke-width: 2.5; }
+.gauge-ticks { stroke: var(--muted); stroke-width: 1.5; opacity: .7; }
+.gauge-needle { stroke: var(--heading); stroke-width: 3; transform-box: view-box; transform-origin: 60px 62px; rotate: calc(-90deg + 180deg * var(--f)); }
+.gauge-hub { fill: var(--heading); stroke: var(--surface); stroke-width: 2; }
+/* Al pasar el mouse: acelerón hasta la zona roja y regresa */
+.stat:hover .gauge-needle, .stat:focus-visible .gauge-needle { animation: gauge-rev .9s cubic-bezier(.2, .8, .3, 1); }
+.stat:hover .gauge-fill, .stat:focus-visible .gauge-fill { animation: gauge-rev-fill .9s cubic-bezier(.2, .8, .3, 1); }
+@keyframes gauge-rev { 32% { rotate: 84deg; } }
+@keyframes gauge-rev-fill { 32% { stroke-dashoffset: .03; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .stat:hover .gauge-needle, .stat:hover .gauge-fill, .stat:focus-visible .gauge-needle, .stat:focus-visible .gauge-fill { animation: none; } }
 
 /* Invitación a hacer scroll */
 .scroll-cue { display: flex; align-items: center; justify-content: center; gap: 12px; width: fit-content; margin: 44px auto 0; color: var(--muted); font-size: .9rem; letter-spacing: .3px; transition: color .2s; }
