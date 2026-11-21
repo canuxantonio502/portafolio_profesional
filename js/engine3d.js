@@ -166,6 +166,21 @@ async function buildLaptop(size, accent) {
   const hinge = new THREE.Quaternion(), xAxis = new THREE.Vector3(1, 0, 0);
   return {
     group,
+    // Primera vez que se dibuja: subir texturas y geometría y compilar los shaders
+    // (opacos y transparentes) ahora, para que no se detenga al aparecer.
+    prewarm(renderer, scene, camera) {
+      paint(0, accent());
+      renderer.initTexture(tex);
+      root.traverse((o) => { if (o.isMesh && o.material.map) renderer.initTexture(o.material.map); });
+      group.visible = true;
+      [false, true].forEach((t) => {
+        mats.forEach((m) => { m.transparent = t; m.opacity = t ? 0 : 1; m.needsUpdate = true; });
+        renderer.compile(scene, camera);
+      });
+      screenMat.opacity = 0;
+      renderer.render(scene, camera);             // invisible (opacidad 0); sube la geometría
+      group.visible = false;
+    },
     // show: aparición (0-1) · open: apertura de la tapa (0-1) · type: código escrito (0-1)
     update(show, open, type) {
       group.visible = show > 0.001;
@@ -190,7 +205,9 @@ async function init() {
   scene.add(pivot);
 
   // Materiales: el metal se puede desvanecer y cada pieza tiene sus aristas
-  const accent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
+  const readAccent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
+  let accentNow = readAccent();
+  const accent = () => accentNow;
   const lineMat = new THREE.LineBasicMaterial({ color: new THREE.Color(accent()), transparent: true, opacity: 0, depthWrite: false });
   const metals = [];
   const meshes = [];
@@ -213,7 +230,7 @@ async function init() {
   };
   (window.requestIdleCallback || ((fn) => setTimeout(fn, 300)))(buildEdges);
 
-  new MutationObserver(() => { lineMat.color.set(accent()); draw(lastP); })
+  new MutationObserver(() => { accentNow = readAccent(); lineMat.color.set(accentNow); draw(lastP); })
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   wrap.prepend(canvas);
@@ -222,10 +239,15 @@ async function init() {
   // La laptop del último capítulo se carga después, sin retrasar el motor
   let laptop = null;
   buildLaptop(sizeA, accent).then((l) => {
-    laptop = l;
     scene.add(l.group);
-    story.classList.add('has-laptop');
-    draw(lastP);
+    // Se prepara en un momento libre; hasta entonces se muestra la ventana de código SVG
+    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
+    idle(() => {
+      try { l.prewarm(renderer, scene, camera); } catch (err) { console.warn('Laptop: precarga incompleta', err); }
+      laptop = l;
+      story.classList.add('has-laptop');
+      draw(lastP);
+    }, { timeout: 1500 });
   }).catch((err) => console.warn('Laptop 3D no disponible:', err));
 
   const resize = () => {

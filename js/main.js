@@ -651,6 +651,18 @@
     setActive(0);
   }
 
+  /* Las capturas de proyectos se decodifican por adelantado (en otro hilo) cuando la
+     sección se acerca, para que la galería no se detenga al llegar a cada una. */
+  const projImgs = $$('#proyectos .card img');
+  if (projImgs.length && 'IntersectionObserver' in window) {
+    const dio = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      dio.disconnect();
+      projImgs.forEach((img) => { if (img.decode) img.decode().catch(() => {}); });
+    }, { rootMargin: '150% 0px' });
+    dio.observe($('#proyectos'));
+  }
+
   /* Proyectos: galería horizontal fijada. Al bajar, las tarjetas pasan de lado.
      Solo en pantallas anchas y altas; en el resto queda la cuadrícula normal. */
   const projSection = $('#proyectos'), track = $('.projects');
