@@ -207,25 +207,28 @@
   if (marquees.length && !reduceMotion) {
     const LOOP_MS = 38000;                         // tiempo de una vuelta a velocidad normal
     const MAX_BOOST = 16;                          // tope: 17 veces la velocidad normal
-    let dir = 1, boost = 0, lastY = window.scrollY, lastT = performance.now(), lastPageScroll = 0;
+    let dir = 1, boost = 0, lastY = window.scrollY, lastT = performance.now();
     window.addEventListener('scroll', () => {
       const now = performance.now(), dy = window.scrollY - lastY, dt = Math.max(16, now - lastT);
       if (dy) {
         dir = dy > 0 ? 1 : -1;
         boost = Math.min(5, Math.max(boost, (Math.abs(dy) / dt) * 3));
-        lastPageScroll = now;
       }
       lastY = window.scrollY; lastT = now;
     }, { passive: true });
 
-    // Rueda sobre el carrusel. Si la página se estaba desplazando y el carrusel pasó por
-    // debajo del cursor, la rueda sigue moviendo la página: solo lo toma tras una pausa.
-    let lastWheel = 0;
+    // Rueda sobre el carrusel. Si el usuario venía girando la rueda para bajar la página y
+    // el carrusel pasó por debajo del cursor, ese mismo gesto sigue moviendo la página. Basta
+    // una pausa corta (sin rueda) para que el carrusel la tome; no hay que esperar a que la
+    // página termine de deslizarse.
+    const GESTURE_GAP = 150;                       // ms sin rueda que separan un gesto de otro
+    let lastWheel = 0, lastPageWheel = 0;
+    window.addEventListener('wheel', () => { lastPageWheel = performance.now(); }, { passive: true });
     const onWheel = (e) => {
       if (e.ctrlKey) return;
       const now = performance.now();
       const holding = now - lastWheel < 250;
-      if (!holding && now - lastPageScroll < 300) return;
+      if (!holding && now - lastPageWheel < GESTURE_GAP) { lastPageWheel = now; return; }
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       if (!d) return;
       e.preventDefault();
