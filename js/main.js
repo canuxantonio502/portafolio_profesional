@@ -663,42 +663,74 @@
     dio.observe($('#proyectos'));
   }
 
-  /* Proyectos: galería horizontal fijada. Al bajar, las tarjetas pasan de lado.
-     Solo en pantallas anchas y altas; en el resto queda la cuadrícula normal. */
+  /* Proyectos: carrusel horizontal en pantallas anchas (en las angostas, cuadrícula).
+     La página sigue de largo al hacer scroll; la rueda mueve el carrusel solo con el cursor
+     encima, y al llegar al primer o al último proyecto vuelve a mover la página. */
   const projSection = $('#proyectos'), track = $('.projects');
-  if (hasGsap && projSection && track) {
+  if (projSection && track) {
     const bar = document.createElement('div');
     bar.className = 'h-progress';
     bar.setAttribute('aria-hidden', 'true');
     bar.innerHTML = '<span></span>';
-    track.after(bar);
+    const hint = document.createElement('p');
+    hint.className = 'h-hint';
+    hint.dataset.i18n = 'projects.scrollHint';
+    track.after(bar, hint);
     const fill = $('span', bar);
-    const distance = () => Math.max(0, track.scrollWidth - track.parentElement.clientWidth);
-    let projST = null;
+    const wide = window.matchMedia('(min-width: 821px)');
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const max = () => Math.max(0, track.scrollWidth - track.clientWidth);
 
-    gsap.matchMedia().add('(min-width: 821px) and (min-height: 680px) and (prefers-reduced-motion: no-preference)', () => {
-      projSection.classList.add('is-h');
-      const tween = gsap.to(track, {
-        x: () => -distance(), ease: 'none',
-        scrollTrigger: {
-          trigger: projSection, start: 'top top', end: () => '+=' + distance(),
-          pin: true, scrub: 0.6, invalidateOnRefresh: true,
-          onUpdate: (self) => { fill.style.transform = `scaleX(${self.progress})`; }
-        }
-      });
-      const st = projST = tween.scrollTrigger;
-      // gsap.matchMedia ya revierte el tween al cambiar de tamaño: aquí solo se limpia lo propio
-      return () => { projSection.classList.remove('is-h'); projST = null; if (st) st.kill(); tween.kill(); gsap.set(track, { clearProps: 'transform' }); };
-    });
-    // Al filtrar cambia el ancho de la pista: se recalcula el recorrido y, si la
-    // galería estaba fijada, se vuelve a su inicio para ver el resultado desde el principio
+    // Avance, bordes desvanecidos y pista: se actualizan con la posición del carrusel
+    let painting = 0;
+    const paint = () => {
+      painting = 0;
+      const m = max(), x = track.scrollLeft;
+      fill.style.transform = `scaleX(${m ? x / m : 1})`;
+      track.classList.toggle('has-prev', x > 2);
+      track.classList.toggle('at-end', x >= m - 2);
+      hint.classList.toggle('is-hidden', !m || !fine.matches);
+    };
+    const queuePaint = () => { if (!painting) painting = requestAnimationFrame(paint); };
+    track.addEventListener('scroll', queuePaint, { passive: true });
+
+    // Rueda vertical → desplazamiento lateral suave mientras quede recorrido en esa dirección
+    let target = 0, glide = 0;
+    const step = () => {
+      const d = target - track.scrollLeft;
+      if (Math.abs(d) < 0.5 || reduceMotion) { track.scrollLeft = target; glide = 0; return; }
+      track.scrollLeft += d * 0.2;
+      glide = requestAnimationFrame(step);
+    };
+    track.addEventListener('wheel', (e) => {
+      if (!projSection.classList.contains('is-h') || e.ctrlKey) return;
+      // Desplazamiento lateral del touchpad: lo hace el navegador; la página no se mueve
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.stopPropagation(); return; }
+      const px = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? track.clientWidth : 1);
+      const m = max(), from = glide ? target : track.scrollLeft;
+      if ((px < 0 && from <= 0) || (px > 0 && from >= m - 1)) return;   // en el borde: sigue la página
+      e.preventDefault();
+      e.stopPropagation();                         // Lenis no mueve la página
+      target = Math.min(m, Math.max(0, from + px));
+      if (!glide) glide = requestAnimationFrame(step);
+    }, { passive: false });
+
+    const setMode = () => {
+      projSection.classList.toggle('is-h', wide.matches);
+      cancelAnimationFrame(glide); glide = 0;
+      track.scrollLeft = target = 0;
+      paint();
+      if (hasGsap) ScrollTrigger.refresh();
+    };
+    wide.addEventListener('change', setMode);
+    fine.addEventListener('change', paint);
+    window.addEventListener('resize', queuePaint);
+    setMode();
+    // Al filtrar cambia el número de tarjetas: el carrusel vuelve al inicio
     filters.forEach((btn) => btn.addEventListener('click', () => {
-      if (!projST) return;
-      const wasPinned = projST.isActive;
-      ScrollTrigger.refresh();
-      if (!wasPinned) return;
-      if (window.lenis) window.lenis.scrollTo(projST.start, { immediate: true });
-      else window.scrollTo({ top: projST.start, behavior: 'auto' });
+      cancelAnimationFrame(glide); glide = 0;
+      track.scrollLeft = target = 0;
+      requestAnimationFrame(paint);
     }));
   }
 

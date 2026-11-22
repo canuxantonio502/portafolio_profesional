@@ -422,11 +422,22 @@ h1, h2, h3, p { margin: 0; }
 /* Galería horizontal (main.js la activa en pantallas anchas): la sección se fija
    y la pista de tarjetas se desplaza de lado con el scroll */
 .h-progress { display: none; }
-#proyectos.is-h { overflow: hidden; height: 100vh; padding-block: 0; display: flex; align-items: center; }
-#proyectos.is-h > .container { padding-top: var(--header-h); }
-#proyectos.is-h .section-title { margin-bottom: 18px; }
-#proyectos.is-h .filters { margin-bottom: 18px; }
-#proyectos.is-h .projects { display: flex; gap: 24px; width: max-content; will-change: transform; }
+/* Carrusel de proyectos (pantallas anchas): la página pasa de largo; las tarjetas se desplazan
+   de lado solo con el cursor encima (js/main.js). Sin barra visible: los bordes se desvanecen
+   donde hay más tarjetas y la línea de abajo marca el avance. */
+#proyectos.is-h .projects {
+  --fade-l: 0px; --fade-r: 64px;
+  display: flex; gap: 24px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+  padding: 12px 4px 20px; margin: -12px -4px -20px;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+  mask: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+}
+#proyectos.is-h .projects::-webkit-scrollbar { display: none; }
+#proyectos.is-h .projects.has-prev { --fade-l: 64px; }
+#proyectos.is-h .projects.at-end { --fade-r: 0px; }
+.h-hint { display: none; }
+#proyectos.is-h .h-hint { display: block; margin: 10px 0 0; color: var(--muted); font-size: .82rem; }
+#proyectos.is-h .h-hint.is-hidden { visibility: hidden; }
 #proyectos.is-h .card { flex: 0 0 auto; width: clamp(380px, 40vw, 460px); }
 #proyectos.is-h .card > img, #proyectos.is-h .card > .ph { height: clamp(120px, 17vh, 190px); }
 #proyectos.is-h .card-body { padding: 18px 22px; gap: 10px; }
