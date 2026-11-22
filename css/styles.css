@@ -68,10 +68,10 @@ img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 ul { list-style: none; margin: 0; padding: 0; }
 h1, h2, h3, p { margin: 0; }
-/* Tipografía: títulos futuristas (Audiowide, un solo peso) y texto técnico y legible (Barlow) */
+/* Tipografía: títulos futuristas (Audiowide, un solo peso) y texto técnico de formas cuadradas que hace juego (Saira) */
 :root {
   --font-display: "Audiowide", "Segoe UI", system-ui, sans-serif;
-  --font-body: "Barlow", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  --font-body: "Saira", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
 }
 h1, h2, h3, .ign-title, .stat strong {
   font-family: var(--font-display); font-weight: 400; font-synthesis: none; letter-spacing: .02em;
