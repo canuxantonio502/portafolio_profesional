@@ -354,7 +354,8 @@ h1, h2, h3, .ign-title, .stat strong {
 .interests li, .tags li { font-size: .8rem; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--accent); }
 
 /* Habilidades */
-/* Carrusel infinito de logos: la pista se duplica en JS y se desplaza -50% */
+/* Carrusel infinito de logos: la pista se duplica en JS, que la mueve (js/main.js):
+   su sentido sigue al del scroll y acelera un poco al hacer scroll rápido */
 /* El espacio de arriba (compensado con margen negativo) deja sitio a la tarjeta
    flotante sin que el overflow la corte; solo los logos reciben el mouse */
 .marquee {
@@ -363,8 +364,7 @@ h1, h2, h3, .ign-title, .stat strong {
           mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
 .marquee-track { display: flex; width: max-content; }
-.marquee.is-running .marquee-track { animation: marquee 38s linear infinite; }
-@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee.is-running .marquee-track { will-change: transform; }
 .logo {
   flex: 0 0 auto; display: grid; place-items: center; width: 116px; height: 116px; margin-right: 22px;
   background: var(--surface); border: 1px solid var(--border); border-radius: 20px;

@@ -197,8 +197,48 @@
       $$('[id]', copy).forEach((el) => el.removeAttribute('id'));
       track.appendChild(copy);
     });
-    m.classList.add('is-running');
   });
+
+  /* El carrusel avanza solo; al bajar va hacia la izquierda y al subir gira hacia la
+     derecha. Un scroll rápido le da un empujón que se va apagando. Solo cambia su transform. */
+  const marquees = $$('.marquee');
+  if (marquees.length && !reduceMotion) {
+    const LOOP_MS = 38000;                         // tiempo de una vuelta a velocidad normal
+    let dir = 1, boost = 0, lastY = window.scrollY, lastT = performance.now();
+    window.addEventListener('scroll', () => {
+      const now = performance.now(), dy = window.scrollY - lastY, dt = Math.max(16, now - lastT);
+      if (dy) {
+        dir = dy > 0 ? 1 : -1;
+        boost = Math.min(5, Math.max(boost, (Math.abs(dy) / dt) * 3));
+      }
+      lastY = window.scrollY; lastT = now;
+    }, { passive: true });
+
+    marquees.forEach((m) => {
+      const track = $('.marquee-track', m);
+      let x = 0, half = 0, speed = 1, prev = 0, raf = 0, visible = false;
+      const measure = () => { half = track.scrollWidth / 2; };
+      const frame = (t) => {
+        const dt = prev ? Math.min(64, t - prev) : 16;
+        prev = t;
+        boost *= Math.pow(0.5, dt / 350);           // el empujón se apaga solo
+        speed += (dir * (1 + boost) - speed) * Math.min(1, dt / 260);   // giro suave
+        if (half) {
+          x = (x - speed * (half / LOOP_MS) * dt) % half;
+          if (x > 0) x -= half;
+          track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
+        }
+        raf = visible ? requestAnimationFrame(frame) : 0;
+      };
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        if (visible && !raf) { prev = 0; raf = requestAnimationFrame(frame); }
+      }).observe(m);
+      measure();
+      window.addEventListener('resize', measure);
+      m.classList.add('is-running');
+    });
+  }
 
   /* Texto que se escribe (se reinicia al cambiar de idioma) */
   const typed = $('#typed');
