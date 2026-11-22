@@ -199,20 +199,44 @@
     });
   });
 
-  /* El carrusel avanza solo; al bajar va hacia la izquierda y al subir gira hacia la
-     derecha. Un scroll rápido le da un empujón que se va apagando. Solo cambia su transform. */
+  /* El carrusel avanza solo; al bajar la página va hacia la izquierda y al subir gira
+     hacia la derecha. Con el cursor encima, la rueda lo maneja: hacia abajo lo lleva a la
+     izquierda, hacia arriba a la derecha, y mientras más rápido se gira, más rápido va.
+     Al soltar vuelve poco a poco a su velocidad normal. Solo cambia su transform. */
   const marquees = $$('.marquee');
   if (marquees.length && !reduceMotion) {
     const LOOP_MS = 38000;                         // tiempo de una vuelta a velocidad normal
-    let dir = 1, boost = 0, lastY = window.scrollY, lastT = performance.now();
+    const MAX_BOOST = 16;                          // tope: 17 veces la velocidad normal
+    let dir = 1, boost = 0, lastY = window.scrollY, lastT = performance.now(), lastPageScroll = 0;
     window.addEventListener('scroll', () => {
       const now = performance.now(), dy = window.scrollY - lastY, dt = Math.max(16, now - lastT);
       if (dy) {
         dir = dy > 0 ? 1 : -1;
         boost = Math.min(5, Math.max(boost, (Math.abs(dy) / dt) * 3));
+        lastPageScroll = now;
       }
       lastY = window.scrollY; lastT = now;
     }, { passive: true });
+
+    // Rueda sobre el carrusel. Si la página se estaba desplazando y el carrusel pasó por
+    // debajo del cursor, la rueda sigue moviendo la página: solo lo toma tras una pausa.
+    let lastWheel = 0;
+    const onWheel = (e) => {
+      if (e.ctrlKey) return;
+      const now = performance.now();
+      const holding = now - lastWheel < 250;
+      if (!holding && now - lastPageScroll < 300) return;
+      const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (!d) return;
+      e.preventDefault();
+      e.stopPropagation();                         // Lenis no mueve la página
+      lastWheel = now;
+      const px = Math.abs(d) * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1);
+      const newDir = d > 0 ? 1 : -1;
+      if (newDir !== dir) boost = 0;               // al cambiar de sentido, frena y gira
+      dir = newDir;
+      boost = Math.min(MAX_BOOST, boost + px / 45);
+    };
 
     marquees.forEach((m) => {
       const track = $('.marquee-track', m);
@@ -222,7 +246,7 @@
         const dt = prev ? Math.min(64, t - prev) : 16;
         prev = t;
         boost *= Math.pow(0.5, dt / 350);           // el empujón se apaga solo
-        speed += (dir * (1 + boost) - speed) * Math.min(1, dt / 260);   // giro suave
+        speed += (dir * (1 + boost) - speed) * Math.min(1, dt / 180);   // giro suave
         if (half) {
           x = (x - speed * (half / LOOP_MS) * dt) % half;
           if (x > 0) x -= half;
@@ -234,6 +258,7 @@
         visible = e.isIntersecting;
         if (visible && !raf) { prev = 0; raf = requestAnimationFrame(frame); }
       }).observe(m);
+      track.addEventListener('wheel', onWheel, { passive: false });
       measure();
       window.addEventListener('resize', measure);
       m.classList.add('is-running');
