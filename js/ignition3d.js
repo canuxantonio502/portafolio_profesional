@@ -13,7 +13,9 @@ const hasWebGL = (() => {
   try {
     const c = document.createElement('canvas');
     return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 })();
 
 // Canvas 2D → textura (rotulado y halo del LED)
@@ -41,7 +43,7 @@ function build() {
   const key = new THREE.DirectionalLight(0xffffff, 1.4);
   key.position.set(-3, 4, 5);
   const rim = new THREE.PointLight(0x9cc8f0, 2.5, 8);
-  rim.position.set(0, 1.6, 2.2);   // luz fría frontal para que el cromo brille
+  rim.position.set(0, 1.6, 2.2); // luz fría frontal para que el cromo brille
   scene.add(key, rim, new THREE.AmbientLight(0xffffff, 0.12));
 
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
@@ -51,13 +53,41 @@ function build() {
   // El botón se modela "acostado" (eje Y) y el grupo lo pone de frente a la cámara
   const button = new THREE.Group();
   scene.add(button);
-  const lathe = (pts, mat) => new THREE.Mesh(new THREE.LatheGeometry(pts.map(([x, y]) => new THREE.Vector2(x, y)), 96), mat);
+  const lathe = (pts, mat) =>
+    new THREE.Mesh(
+      new THREE.LatheGeometry(
+        pts.map(([x, y]) => new THREE.Vector2(x, y)),
+        96
+      ),
+      mat
+    );
 
   // Bisel cromado
-  const chrome = new THREE.MeshStandardMaterial({ color: 0xd0d5dc, metalness: 0.9, roughness: 0.26, side: THREE.DoubleSide });
-  button.add(lathe([[1.0, 0], [1.0, 0.2], [1.06, 0.29], [1.18, 0.32], [1.31, 0.29], [1.4, 0.18], [1.43, 0]], chrome));
+  const chrome = new THREE.MeshStandardMaterial({
+    color: 0xd0d5dc,
+    metalness: 0.9,
+    roughness: 0.26,
+    side: THREE.DoubleSide
+  });
+  button.add(
+    lathe(
+      [
+        [1.0, 0],
+        [1.0, 0.2],
+        [1.06, 0.29],
+        [1.18, 0.32],
+        [1.31, 0.29],
+        [1.4, 0.18],
+        [1.43, 0]
+      ],
+      chrome
+    )
+  );
   // Fondo del hueco
-  const pit = new THREE.Mesh(new THREE.CircleGeometry(1.0, 64), new THREE.MeshStandardMaterial({ color: 0x07090c, roughness: 0.8 }));
+  const pit = new THREE.Mesh(
+    new THREE.CircleGeometry(1.0, 64),
+    new THREE.MeshStandardMaterial({ color: 0x07090c, roughness: 0.8 })
+  );
   pit.rotation.x = -Math.PI / 2;
   pit.position.y = 0.01;
   button.add(pit);
@@ -74,9 +104,14 @@ function build() {
       grad.addColorStop(0.62, 'rgba(110,168,216,0)');
       grad.addColorStop(0.72, 'rgba(110,168,216,1)');
       grad.addColorStop(0.86, 'rgba(110,168,216,0)');
-      g.fillStyle = grad; g.fillRect(0, 0, s, s);
+      g.fillStyle = grad;
+      g.fillRect(0, 0, s, s);
     }),
-    transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, opacity: 0.5
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    toneMapped: false,
+    opacity: 0.5
   });
   const halo = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.6), haloMat);
   halo.rotation.x = -Math.PI / 2;
@@ -86,8 +121,19 @@ function build() {
   // Tapa de goma con el rotulado
   const cap = new THREE.Group();
   button.add(cap);
-  cap.add(lathe([[0, 0.3], [0.7, 0.3], [0.8, 0.285], [0.86, 0.23], [0.885, 0.12], [0.885, 0]],
-    new THREE.MeshStandardMaterial({ color: 0x101216, roughness: 0.62, metalness: 0.1 })));
+  cap.add(
+    lathe(
+      [
+        [0, 0.3],
+        [0.7, 0.3],
+        [0.8, 0.285],
+        [0.86, 0.23],
+        [0.885, 0.12],
+        [0.885, 0]
+      ],
+      new THREE.MeshStandardMaterial({ color: 0x101216, roughness: 0.62, metalness: 0.1 })
+    )
+  );
   const label = canvasTexture(512, (g, s) => {
     g.textAlign = 'center';
     g.textBaseline = 'middle';
@@ -99,12 +145,25 @@ function build() {
     g.fillText('START', s / 2, 362);
     g.fillText('STOP', s / 2, 420);
     // Ícono de encendido
-    g.strokeStyle = '#8fc0ea'; g.lineWidth = 14; g.lineCap = 'round';
-    g.beginPath(); g.arc(s / 2, 262, 50, -Math.PI / 2 + 0.75, -Math.PI / 2 - 0.75 + Math.PI * 2); g.stroke();
-    g.beginPath(); g.moveTo(s / 2, 196); g.lineTo(s / 2, 258); g.stroke();
+    g.strokeStyle = '#8fc0ea';
+    g.lineWidth = 14;
+    g.lineCap = 'round';
+    g.beginPath();
+    g.arc(s / 2, 262, 50, -Math.PI / 2 + 0.75, -Math.PI / 2 - 0.75 + Math.PI * 2);
+    g.stroke();
+    g.beginPath();
+    g.moveTo(s / 2, 196);
+    g.lineTo(s / 2, 258);
+    g.stroke();
   });
   const labelMat = new THREE.MeshStandardMaterial({
-    map: label, transparent: true, roughness: 0.6, emissive: 0xffffff, emissiveMap: label, emissiveIntensity: 0.25, depthWrite: false
+    map: label,
+    transparent: true,
+    roughness: 0.6,
+    emissive: 0xffffff,
+    emissiveMap: label,
+    emissiveIntensity: 0.25,
+    depthWrite: false
   });
   const face = new THREE.Mesh(new THREE.CircleGeometry(0.78, 64), labelMat);
   face.rotation.x = -Math.PI / 2;
@@ -132,7 +191,9 @@ function build() {
   };
   window.addEventListener('pointermove', onMove, { passive: true });
 
-  let pressAt = -1, raf = 0, running = true;
+  let pressAt = -1,
+    raf = 0,
+    running = true;
   const t0 = performance.now();
   const loop = (now) => {
     const t = (now - t0) / 1000;
@@ -164,16 +225,30 @@ function build() {
   };
   raf = requestAnimationFrame(loop);
 
-  window.addEventListener('ignition:press', () => { pressAt = performance.now(); }, { once: true });
-  window.addEventListener('ignition:done', () => {
-    running = false;
-    cancelAnimationFrame(raf);
-    window.removeEventListener('resize', resize);
-    window.removeEventListener('pointermove', onMove);
-    renderer.dispose();
-  }, { once: true });
+  window.addEventListener(
+    'ignition:press',
+    () => {
+      pressAt = performance.now();
+    },
+    { once: true }
+  );
+  window.addEventListener(
+    'ignition:done',
+    () => {
+      running = false;
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('pointermove', onMove);
+      renderer.dispose();
+    },
+    { once: true }
+  );
 }
 
 if (stage && root.classList.contains('ignition-pending') && hasWebGL) {
-  try { build(); } catch (err) { console.warn('Botón 3D no disponible:', err); }
+  try {
+    build();
+  } catch (err) {
+    console.warn('Botón 3D no disponible:', err);
+  }
 }

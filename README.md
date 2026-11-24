@@ -56,7 +56,7 @@ portafolio_profesional/
 ├── index.html        # Estructura de la página
 ├── css/
 │   ├── styles.css    # Estilos, temas y animaciones
-│   └── *.png/jpg/svg # Imágenes, íconos y capturas de proyectos
+│   └── *.webp/png/svg # Imágenes, íconos y capturas de proyectos
 ├── js/
 │   ├── i18n.js       # Textos en español e inglés
 │   ├── main.js       # Tema, idioma, scroll, animaciones, filtros, formulario y visor de CV
@@ -68,8 +68,19 @@ portafolio_profesional/
 │   ├── particles.js  # Partículas de los márgenes
 │   └── sparks.js     # Chispas al hacer click
 ├── models/           # Modelos 3D (.glb comprimidos y la laptop en glTF) y sus licencias
-└── cv/               # CV en PDF (español e inglés)
+├── cv/               # CV en PDF (español e inglés)
+└── .prettierrc.json  # Formato del código (Prettier)
 ```
+
+## Formato del código
+
+El HTML, el CSS y el JavaScript siguen el formato de [Prettier](https://prettier.io/) con la configuración de `.prettierrc.json` (2 espacios en CSS y JS, 4 en HTML, comillas simples). Para aplicarlo después de editar:
+
+```bash
+npx prettier@3.3.3 --write index.html css/styles.css "js/*.js"
+```
+
+Las líneas de código dibujadas en el SVG de la trayectoria usan `white-space: pre` y llevan un comentario `prettier-ignore` para que el formato no altere sus espacios.
 
 ## Créditos de los modelos 3D
 

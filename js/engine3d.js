@@ -22,7 +22,9 @@ const hasWebGL = (() => {
   try {
     const c = document.createElement('canvas');
     return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 })();
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -31,15 +33,23 @@ const smooth = (t) => t * t * (3 - 2 * t);
 const lerp = (a, b, t) => a + (b - a) * t;
 
 // Tiempos de la animación del modelo (segundos)
-const T_ASSEMBLED = 0.8, T_EXPLODED = 4.6, T_REBUILD_FROM = 6.4, T_REBUILT = 8.0;
+const T_ASSEMBLED = 0.8,
+  T_EXPLODED = 4.6,
+  T_REBUILD_FROM = 6.4,
+  T_REBUILT = 8.0;
 
 // El modelo se descarga una sola vez y lo comparten las dos vistas
 let gltfPromise = null;
-const loadModel = () => (gltfPromise ||= new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(MODEL_URL));
+const loadModel = () =>
+  (gltfPromise ||= new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(MODEL_URL));
 
 // Renderizador y escena con la misma iluminación para ambas vistas
 function makeStage(className) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+    powerPreference: 'high-performance'
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -71,7 +81,9 @@ function rig(model, clip) {
   const sizeA = boxAt(0).getSize(new THREE.Vector3()).length();
   const exploded = boxAt(T_EXPLODED);
   return {
-    pivot, mixer, sizeA,
+    pivot,
+    mixer,
+    sizeA,
     sizeE: exploded.getSize(new THREE.Vector3()).length(),
     centerE: exploded.getCenter(new THREE.Vector3())
   };
@@ -80,13 +92,28 @@ function rig(model, clip) {
 /* Laptop del capítulo final: aparece cerrada donde estaba el motor, abre la tapa
    y en su pantalla se escribe el código. Pantalla: textura de un canvas propio. */
 const LAPTOP_URL = './models/laptop/scene.gltf';
-const LID_CLOSED = -88;                          // grados respecto a la tapa abierta
-const SCREEN = { y: 10.69, z: -10.672, w: 29.4, h: 17.0 };  // pantalla, en unidades del modelo
+const LID_CLOSED = -88; // grados respecto a la tapa abierta
+const SCREEN = { y: 10.69, z: -10.672, w: 29.4, h: 17.0 }; // pantalla, en unidades del modelo
 const CODE = [
-  [['k', 'const'], ['t', ' antonio = {']],
-  [['t', '  from: '], ['s', "'engines'"], ['t', ',']],
-  [['t', '  to: '], ['s', "'code'"], ['t', ',']],
-  [['t', '  status: '], ['s', "'building'"], ['t', ',']],
+  [
+    ['k', 'const'],
+    ['t', ' antonio = {']
+  ],
+  [
+    ['t', '  from: '],
+    ['s', "'engines'"],
+    ['t', ',']
+  ],
+  [
+    ['t', '  to: '],
+    ['s', "'code'"],
+    ['t', ',']
+  ],
+  [
+    ['t', '  status: '],
+    ['s', "'building'"],
+    ['t', ',']
+  ],
   [['t', '};']]
 ];
 const CODE_CHARS = CODE.reduce((n, line) => n + line.reduce((m, [, s]) => m + s.length, 0), 0);
@@ -100,33 +127,54 @@ async function buildLaptop(size, accent) {
 
   // Pantalla: canvas con el editor y el código que se va escribiendo
   const cv = document.createElement('canvas');
-  cv.width = 1024; cv.height = Math.round(1024 * SCREEN.h / SCREEN.w);
+  cv.width = 1024;
+  cv.height = Math.round((1024 * SCREEN.h) / SCREEN.w);
   const g = cv.getContext('2d');
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
-  const screenMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0, toneMapped: false });
+  const screenMat = new THREE.MeshBasicMaterial({
+    map: tex,
+    transparent: true,
+    opacity: 0,
+    toneMapped: false
+  });
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN.w, SCREEN.h), screenMat);
   screen.position.set(0, SCREEN.y, SCREEN.z);
   root.add(screen);
-  lid.attach(screen);                            // la pantalla gira con la tapa
+  lid.attach(screen); // la pantalla gira con la tapa
 
   let typed = -1;
   const paint = (n, color) => {
     if (n === typed) return;
     typed = n;
-    const W = cv.width, H = cv.height;
-    g.fillStyle = '#0d1117'; g.fillRect(0, 0, W, H);
-    g.fillStyle = '#161b22'; g.fillRect(0, 0, W, 64);
-    ['#ff5f57', '#febc2e', '#28c840'].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(40 + i * 34, 32, 11, 0, Math.PI * 2); g.fill(); });
+    const W = cv.width,
+      H = cv.height;
+    g.fillStyle = '#0d1117';
+    g.fillRect(0, 0, W, H);
+    g.fillStyle = '#161b22';
+    g.fillRect(0, 0, W, 64);
+    ['#ff5f57', '#febc2e', '#28c840'].forEach((c, i) => {
+      g.fillStyle = c;
+      g.beginPath();
+      g.arc(40 + i * 34, 32, 11, 0, Math.PI * 2);
+      g.fill();
+    });
     g.font = '600 26px Consolas, "Cascadia Code", monospace';
-    g.fillStyle = '#8b949e'; g.fillText('antonio.js', 160, 41);
+    g.fillStyle = '#8b949e';
+    g.fillText('antonio.js', 160, 41);
     g.font = '600 44px Consolas, "Cascadia Code", monospace';
-    let left = n, cx = 110, cy = 140;           // cursor: justo después de lo escrito
+    let left = n,
+      cx = 110,
+      cy = 140; // cursor: justo después de lo escrito
     CODE.forEach((line, row) => {
       const y = 140 + row * 68;
-      g.fillStyle = '#3b4452'; g.fillText(String(row + 1), 36, y);
-      if (left > 0) { cx = 110; cy = y; }
+      g.fillStyle = '#3b4452';
+      g.fillText(String(row + 1), 36, y);
+      if (left > 0) {
+        cx = 110;
+        cy = y;
+      }
       let x = 110;
       line.forEach(([kind, text]) => {
         const shown = text.slice(0, Math.max(0, left));
@@ -135,10 +183,12 @@ async function buildLaptop(size, accent) {
         g.fillStyle = kind === 'k' ? color : kind === 's' ? '#7fb88a' : '#e6edf3';
         g.fillText(shown, x, y);
         x += g.measureText(shown).width;
-        cx = x; cy = y;
+        cx = x;
+        cy = y;
       });
     });
-    g.fillStyle = color; g.fillRect(cx + 4, cy - 36, 22, 44);
+    g.fillStyle = color;
+    g.fillRect(cx + 4, cy - 36, 22, 44);
     tex.needsUpdate = true;
   };
 
@@ -163,7 +213,8 @@ async function buildLaptop(size, accent) {
   group.visible = false;
 
   const lidOpen = lid.quaternion.clone();
-  const hinge = new THREE.Quaternion(), xAxis = new THREE.Vector3(1, 0, 0);
+  const hinge = new THREE.Quaternion(),
+    xAxis = new THREE.Vector3(1, 0, 0);
   return {
     group,
     // Primera vez que se dibuja: subir texturas y geometría y compilar los shaders
@@ -171,21 +222,31 @@ async function buildLaptop(size, accent) {
     prewarm(renderer, scene, camera) {
       paint(0, accent());
       renderer.initTexture(tex);
-      root.traverse((o) => { if (o.isMesh && o.material.map) renderer.initTexture(o.material.map); });
+      root.traverse((o) => {
+        if (o.isMesh && o.material.map) renderer.initTexture(o.material.map);
+      });
       group.visible = true;
       [false, true].forEach((t) => {
-        mats.forEach((m) => { m.transparent = t; m.opacity = t ? 0 : 1; m.needsUpdate = true; });
+        mats.forEach((m) => {
+          m.transparent = t;
+          m.opacity = t ? 0 : 1;
+          m.needsUpdate = true;
+        });
         renderer.compile(scene, camera);
       });
       screenMat.opacity = 0;
-      renderer.render(scene, camera);             // invisible (opacidad 0); sube la geometría
+      renderer.render(scene, camera); // invisible (opacidad 0); sube la geometría
       group.visible = false;
     },
     // show: aparición (0-1) · open: apertura de la tapa (0-1) · type: código escrito (0-1)
     update(show, open, type) {
       group.visible = show > 0.001;
       if (!group.visible) return;
-      mats.forEach((m) => { m.transparent = show < 1; m.opacity = show; m.depthWrite = show > 0.5; });
+      mats.forEach((m) => {
+        m.transparent = show < 1;
+        m.opacity = show;
+        m.depthWrite = show > 0.5;
+      });
       hinge.setFromAxisAngle(xAxis, THREE.MathUtils.degToRad(lerp(LID_CLOSED, 0, open)));
       lid.quaternion.copy(lidOpen).multiply(hinge);
       group.rotation.set(0, lerp(0.7, 0.28, show), 0);
@@ -205,17 +266,26 @@ async function init() {
   scene.add(pivot);
 
   // Materiales: el metal se puede desvanecer y cada pieza tiene sus aristas
-  const readAccent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
+  const readAccent = () =>
+    getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
   let accentNow = readAccent();
   const accent = () => accentNow;
-  const lineMat = new THREE.LineBasicMaterial({ color: new THREE.Color(accent()), transparent: true, opacity: 0, depthWrite: false });
+  const lineMat = new THREE.LineBasicMaterial({
+    color: new THREE.Color(accent()),
+    transparent: true,
+    opacity: 0,
+    depthWrite: false
+  });
   const metals = [];
   const meshes = [];
   model.traverse((o) => {
     if (!o.isMesh) return;
     meshes.push(o);
     const mats = Array.isArray(o.material) ? o.material : [o.material];
-    mats.forEach((m) => { m.transparent = true; metals.push(m); });
+    mats.forEach((m) => {
+      m.transparent = true;
+      metals.push(m);
+    });
   });
   // Las aristas se calculan después, sin bloquear la primera imagen
   let edgesReady = false;
@@ -230,25 +300,37 @@ async function init() {
   };
   (window.requestIdleCallback || ((fn) => setTimeout(fn, 300)))(buildEdges);
 
-  new MutationObserver(() => { accentNow = readAccent(); lineMat.color.set(accentNow); draw(lastP); })
-    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  new MutationObserver(() => {
+    accentNow = readAccent();
+    lineMat.color.set(accentNow);
+    draw(lastP);
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   wrap.prepend(canvas);
   story.classList.add('has-3d');
 
   // La laptop del último capítulo se carga después, sin retrasar el motor
   let laptop = null;
-  buildLaptop(sizeA, accent).then((l) => {
-    scene.add(l.group);
-    // Se prepara en un momento libre; hasta entonces se muestra la ventana de código SVG
-    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
-    idle(() => {
-      try { l.prewarm(renderer, scene, camera); } catch (err) { console.warn('Laptop: precarga incompleta', err); }
-      laptop = l;
-      story.classList.add('has-laptop');
-      draw(lastP);
-    }, { timeout: 1500 });
-  }).catch((err) => console.warn('Laptop 3D no disponible:', err));
+  buildLaptop(sizeA, accent)
+    .then((l) => {
+      scene.add(l.group);
+      // Se prepara en un momento libre; hasta entonces se muestra la ventana de código SVG
+      const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
+      idle(
+        () => {
+          try {
+            l.prewarm(renderer, scene, camera);
+          } catch (err) {
+            console.warn('Laptop: precarga incompleta', err);
+          }
+          laptop = l;
+          story.classList.add('has-laptop');
+          draw(lastP);
+        },
+        { timeout: 1500 }
+      );
+    })
+    .catch((err) => console.warn('Laptop 3D no disponible:', err));
 
   const resize = () => {
     const r = canvas.getBoundingClientRect();
@@ -258,9 +340,17 @@ async function init() {
     // En escritorio el canvas es más ancho (llega por detrás del texto):
     // setViewOffset dibuja ese recuadro en su sitio y usa el resto como margen.
     const w = wrap.getBoundingClientRect();
-    const fw = w.width * 1.12, fh = w.height * 1.12;
+    const fw = w.width * 1.12,
+      fh = w.height * 1.12;
     camera.aspect = fw / fh;
-    camera.setViewOffset(fw, fh, r.left - (w.left - w.width * 0.06), r.top - (w.top - w.height * 0.06), r.width, r.height);
+    camera.setViewOffset(
+      fw,
+      fh,
+      r.left - (w.left - w.width * 0.06),
+      r.top - (w.top - w.height * 0.06),
+      r.width,
+      r.height
+    );
     camera.updateProjectionMatrix();
     draw(lastP);
   };
@@ -270,15 +360,19 @@ async function init() {
   function draw(p) {
     lastP = p;
     // Animación del modelo según el capítulo
-    const ex = smooth(seg(p, 0.2, 0.42));     // despiece
-    const re = smooth(seg(p, 0.56, 0.7));     // rearmado como plano técnico
+    const ex = smooth(seg(p, 0.2, 0.42)); // despiece
+    const re = smooth(seg(p, 0.56, 0.7)); // rearmado como plano técnico
     const t = re > 0 ? lerp(T_REBUILD_FROM, T_REBUILT, re) : lerp(T_ASSEMBLED, T_EXPLODED, ex);
     mixer.setTime(t);
 
     // Del metal a las aristas, y salida final
     const bp = smooth(seg(p, 0.48, 0.6));
     const out = smooth(seg(p, 0.72, 0.82));
-    metals.forEach((m) => { m.opacity = 1 - bp; m.depthWrite = bp < 0.5; m.visible = bp < 0.999; });
+    metals.forEach((m) => {
+      m.opacity = 1 - bp;
+      m.depthWrite = bp < 0.5;
+      m.visible = bp < 0.999;
+    });
     lineMat.opacity = edgesReady ? bp * 0.9 * (1 - out) : 0;
     // Con la laptop el lienzo sigue visible; sin ella queda la ventana de código SVG
     canvas.style.opacity = laptop ? '1' : String(1 - out);
@@ -297,7 +391,11 @@ async function init() {
     renderer.render(scene, camera);
   }
 
-  window.engine3d = { update: (p) => { if (p !== lastP) draw(p); } };
+  window.engine3d = {
+    update: (p) => {
+      if (p !== lastP) draw(p);
+    }
+  };
   window.addEventListener('resize', resize);
   resize();
   draw(lastP);
@@ -319,7 +417,10 @@ async function initGoal() {
     else if (o.isMesh) {
       o.material = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();
       (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => {
-        m.transparent = false; m.opacity = 1; m.depthWrite = true; m.visible = true;
+        m.transparent = false;
+        m.opacity = 1;
+        m.depthWrite = true;
+        m.visible = true;
       });
     }
   });
@@ -335,7 +436,7 @@ async function initGoal() {
   const draw = (q) => {
     lastQ = q;
     const s = smooth(q);
-    mixer.setTime(lerp(T_REBUILD_FROM, T_REBUILT, s));   // de despiezado a armado
+    mixer.setTime(lerp(T_REBUILD_FROM, T_REBUILT, s)); // de despiezado a armado
     pivot.rotation.set(0.12, 0.6 - s * 1.3, 0);
     const dist = lerp(sizeE * 1.6, sizeA * 1.9, s);
     target.copy(centerE).multiplyScalar(1 - s);
@@ -358,7 +459,10 @@ async function initGoal() {
   if (window.gsap && window.ScrollTrigger && !reduce) {
     window.ScrollTrigger.create({
       // clamp(): el contacto está al final de la página; el armado debe terminar antes del fondo
-      trigger: goal, start: 'clamp(top 90%)', end: 'clamp(center 50%)', scrub: 0.6,
+      trigger: goal,
+      start: 'clamp(top 90%)',
+      end: 'clamp(center 50%)',
+      scrub: 0.6,
       onUpdate: (self) => draw(self.progress)
     });
     window.ScrollTrigger.refresh();
@@ -369,12 +473,17 @@ async function initGoal() {
 
 // Carga perezosa: cada vista empieza cuando su sección está a una pantalla de distancia
 const lazy = (el, fn, label) => {
-  const io = new IntersectionObserver((entries) => {
-    if (entries.some((e) => e.isIntersecting)) {
-      io.disconnect();
-      fn().catch((err) => { console.warn(label, err); });
-    }
-  }, { rootMargin: '100% 0px' });
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        fn().catch((err) => {
+          console.warn(label, err);
+        });
+      }
+    },
+    { rootMargin: '100% 0px' }
+  );
   io.observe(el);
 };
 if (hasWebGL && !saveData) {
@@ -385,14 +494,17 @@ if (hasWebGL && !saveData) {
     // galería de proyectos y la frenaría. Por eso se prepara en un momento tranquilo: cuando el
     // scroll lleva un rato quieto. Si nunca hay pausa, se prepara al acercarse a Proyectos,
     // antes de que la galería se fije.
-    let started = false, quiet = 0;
+    let started = false,
+      quiet = 0;
     const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
     const startGoal = () => {
       if (started) return;
       started = true;
       clearTimeout(quiet);
       window.removeEventListener('scroll', arm);
-      initGoal().catch((err) => { console.warn('Motor de la meta no disponible:', err); });
+      initGoal().catch((err) => {
+        console.warn('Motor de la meta no disponible:', err);
+      });
     };
     function arm() {
       clearTimeout(quiet);

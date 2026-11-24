@@ -15,9 +15,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const MODEL_URL = './models/wheel-web/scene.gltf';
-const SPINNING = ['tire-low', 'wheel-full', 'brake-disc'];   // la pinza ('brake-caliper') no gira
-const PAD = 0.3;      // lienzo 3D: 30% más grande por lado que la foto (160%)
-const FX = 2.6;       // lienzo de efectos: 2.6 veces la foto, para que las chispas vuelen lejos
+const SPINNING = ['tire-low', 'wheel-full', 'brake-disc']; // la pinza ('brake-caliper') no gira
+const PAD = 0.3; // lienzo 3D: 30% más grande por lado que la foto (160%)
+const FX = 2.6; // lienzo de efectos: 2.6 veces la foto, para que las chispas vuelen lejos
 
 const photo = document.querySelector('.hero-photo');
 const btn = photo && photo.querySelector('.photo-btn');
@@ -26,32 +26,39 @@ const hasWebGL = (() => {
   try {
     const c = document.createElement('canvas');
     return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 })();
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-const accent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
+const accent = () =>
+  getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6ea8d8';
 
 // Chispas: con tope, y dibujadas por lotes (8 trazos en vez de uno por chispa, sin shadowBlur)
 const MAX_SPARKS = 320;
-const BUCKETS = 4;   // tramos de vida: cada uno con su color y transparencia
-const sparkStyle = (hot, life) => (hot
-  ? `rgb(255, ${Math.round(245 - 90 * life)}, ${Math.round(200 - 160 * life)})`
-  : `rgb(255, ${Math.round(200 - 120 * life)}, ${Math.round(70 - 60 * life)})`);
-const STYLES = [false, true].flatMap((hot) => Array.from({ length: BUCKETS }, (_, b) => {
-  const life = (b + 0.5) / BUCKETS;
-  return { color: sparkStyle(hot, life), alpha: 1 - life * life, width: hot ? 2.2 : 1.7 };
-}));
+const BUCKETS = 4; // tramos de vida: cada uno con su color y transparencia
+const sparkStyle = (hot, life) =>
+  hot
+    ? `rgb(255, ${Math.round(245 - 90 * life)}, ${Math.round(200 - 160 * life)})`
+    : `rgb(255, ${Math.round(200 - 120 * life)}, ${Math.round(70 - 60 * life)})`;
+const STYLES = [false, true].flatMap((hot) =>
+  Array.from({ length: BUCKETS }, (_, b) => {
+    const life = (b + 0.5) / BUCKETS;
+    return { color: sparkStyle(hot, life), alpha: 1 - life * life, width: hot ? 2.2 : 1.7 };
+  })
+);
 
 // Giro al hacer click: acelera durante BOOST_MS (llega rápido a W_MAX) y luego frena
 const BOOST_MS = 780;
-const W_MAX = 30;     // rad/s a toda velocidad (~4.8 vueltas por segundo)
-const W_IDLE = 0.9;   // rodando despacio mientras se muestra
-const FLIP_MS = 420;  // foto → rueda (o al revés)
+const W_MAX = 30; // rad/s a toda velocidad (~4.8 vueltas por segundo)
+const W_IDLE = 0.9; // rodando despacio mientras se muestra
+const FLIP_MS = 420; // foto → rueda (o al revés)
 
-let stage = null, loading = null;
+let stage = null,
+  loading = null;
 
 async function buildStage() {
   const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
@@ -65,7 +72,7 @@ async function buildStage() {
   canvas.className = 'wheel-canvas';
   canvas.setAttribute('aria-hidden', 'true');
 
-  const fx = document.createElement('canvas');   // líneas de velocidad y chispas
+  const fx = document.createElement('canvas'); // líneas de velocidad y chispas
   fx.className = 'wheel-fx';
   fx.setAttribute('aria-hidden', 'true');
   const ctx = fx.getContext('2d');
@@ -86,8 +93,12 @@ async function buildStage() {
   let discMat = null;
   gltf.scene.traverse((o) => {
     if (!o.isMesh) return;
-    let p = o, name = '';
-    while (p && !name) { if (SPINNING.includes(p.name) || p.name === 'brake-caliper') name = p.name; p = p.parent; }
+    let p = o,
+      name = '';
+    while (p && !name) {
+      if (SPINNING.includes(p.name) || p.name === 'brake-caliper') name = p.name;
+      p = p.parent;
+    }
     if (name === 'brake-disc') {
       // Material propio para el disco: brilla al rojo vivo sin afectar al rin
       o.material = o.material.clone();
@@ -97,7 +108,7 @@ async function buildStage() {
     }
     if (SPINNING.includes(name)) spinner.attach(o);
   });
-  const box = new THREE.Box3().setFromObject(wheelSpace);   // incluye las piezas que se movieron al spinner
+  const box = new THREE.Box3().setFromObject(wheelSpace); // incluye las piezas que se movieron al spinner
   const size = box.getSize(new THREE.Vector3());
   const tireD = Math.max(size.y, size.z);
 
@@ -111,36 +122,56 @@ async function buildStage() {
 
   let fxSize = 0;
   const resize = () => {
-    const r = canvas.getBoundingClientRect(), f = fx.getBoundingClientRect();
+    const r = canvas.getBoundingClientRect(),
+      f = fx.getBoundingClientRect();
     if (!r.width) return;
     renderer.setSize(r.width, r.height, false);
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    fx.width = f.width * dpr; fx.height = f.height * dpr;
+    fx.width = f.width * dpr;
+    fx.height = f.height * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     fxSize = f.width;
   };
   resize();
   window.addEventListener('resize', resize);
 
-  return { renderer, scene, camera, wheelSpace, spinner, discMat, canvas, fx, ctx, resize, fxSize: () => fxSize };
+  return {
+    renderer,
+    scene,
+    camera,
+    wheelSpace,
+    spinner,
+    discMat,
+    canvas,
+    fx,
+    ctx,
+    resize,
+    fxSize: () => fxSize
+  };
 }
 
-const load = () => (loading ||= buildStage().then((s) => (stage = s)).catch((err) => {
-  console.warn('Rueda 3D no disponible:', err);
-  stage = false;
-}));
+const load = () =>
+  (loading ||= buildStage()
+    .then((s) => (stage = s))
+    .catch((err) => {
+      console.warn('Rueda 3D no disponible:', err);
+      stage = false;
+    }));
 
 /* ---------- Estado y bucle de dibujo ---------- */
 const img = () => photo.querySelector('img, .ph');
 const st = {
-  hover: false,       // mouse o foco encima
-  face: 0,            // 0 = foto, 0.5 = de canto, 1 = rueda de frente
-  boostUntil: 0,      // hasta cuándo acelera (último click + BOOST_MS)
-  w: 0,               // velocidad del giro (rad/s)
-  angle: 0, heat: 0,
+  hover: false, // mouse o foco encima
+  face: 0, // 0 = foto, 0.5 = de canto, 1 = rueda de frente
+  boostUntil: 0, // hasta cuándo acelera (último click + BOOST_MS)
+  w: 0, // velocidad del giro (rad/s)
+  angle: 0,
+  heat: 0,
   sparks: [],
-  color: '#6ea8d8', light: false,
-  raf: 0, last: 0
+  color: '#6ea8d8',
+  light: false,
+  raf: 0,
+  last: 0
 };
 const spinning = (now) => now < st.boostUntil || st.w > W_IDLE + 0.3;
 
@@ -153,7 +184,7 @@ function setPhoto() {
     return;
   }
   el.style.transition = 'none';
-  const a = Math.min(st.face, 0.5) * 2 * 90;       // 0 → 90° (queda de canto)
+  const a = Math.min(st.face, 0.5) * 2 * 90; // 0 → 90° (queda de canto)
   el.style.transform = `perspective(700px) rotateY(${a}deg)`;
   el.style.visibility = st.face >= 0.5 ? 'hidden' : '';
 }
@@ -178,11 +209,11 @@ function frame(now) {
   const speed = st.w / W_MAX;
   const braking = !boosting && st.w > W_IDLE + 0.5;
   st.angle += st.w * dt;
-  s.spinner.rotation.x = -st.angle;               // en pantalla gira en sentido horario
+  s.spinner.rotation.x = -st.angle; // en pantalla gira en sentido horario
 
   // Volteo: de canto (face 0.5) a de frente (face 1)
   const wf = easeInOut(clamp((st.face - 0.5) * 2));
-  s.wheelSpace.rotation.set(0.08, -Math.PI / 2 + (1 - wf) * Math.PI / 2, 0);
+  s.wheelSpace.rotation.set(0.08, -Math.PI / 2 + ((1 - wf) * Math.PI) / 2, 0);
   s.wheelSpace.visible = st.face > 0.5;
   s.canvas.style.opacity = s.fx.style.opacity = st.face > 0.5 || st.sparks.length ? '1' : '0';
 
@@ -207,7 +238,9 @@ const wake = () => {
 /* ---------- Efectos 2D: líneas de velocidad y chispas ---------- */
 function drawFx(s, dt, speed, braking, vis) {
   const { ctx } = s;
-  const S = s.fxSize(), c = S / 2, R = S / FX / 2;   // R: radio de la llanta (= radio de la foto)
+  const S = s.fxSize(),
+    c = S / 2,
+    R = S / FX / 2; // R: radio de la llanta (= radio de la foto)
   const floor = c + R * 1.02;
   const { light } = st;
   ctx.clearRect(0, 0, S, S);
@@ -236,12 +269,17 @@ function drawFx(s, dt, speed, braking, vis) {
     const n = Math.min(MAX_SPARKS - st.sparks.length, Math.floor(rate * k + Math.random()));
     for (let i = 0; i < n; i++) {
       // Desde la parte baja de la llanta, hacia atrás del giro (izquierda) y hacia arriba
-      const a = Math.PI + (Math.random() - 0.2) * 0.9;     // ángulo de salida
+      const a = Math.PI + (Math.random() - 0.2) * 0.9; // ángulo de salida
       const v = (3 + Math.random() * 9) * (0.55 + speed);
       st.sparks.push({
-        x: c + (Math.random() - 0.35) * R * 0.5, y: floor - 2,
-        vx: Math.cos(a) * v, vy: -Math.abs(Math.sin(a)) * v * 0.9 - Math.random() * 2,
-        life: 0, max: 380 + Math.random() * 620, hot: Math.random() < 0.3, bounced: 0
+        x: c + (Math.random() - 0.35) * R * 0.5,
+        y: floor - 2,
+        vx: Math.cos(a) * v,
+        vy: -Math.abs(Math.sin(a)) * v * 0.9 - Math.random() * 2,
+        life: 0,
+        max: 380 + Math.random() * 620,
+        hot: Math.random() < 0.3,
+        bounced: 0
       });
     }
     if (braking) {
@@ -250,9 +288,14 @@ function drawFx(s, dt, speed, braking, vis) {
       for (let i = 0; i < m; i++) {
         const v = 2 + Math.random() * 6 * (0.5 + speed);
         st.sparks.push({
-          x: c + R * (0.46 + Math.random() * 0.12), y: c + (Math.random() - 0.5) * R * 0.3,
-          vx: v * (0.3 + Math.random() * 0.6), vy: v * (0.6 + Math.random() * 0.6),
-          life: 0, max: 260 + Math.random() * 420, hot: Math.random() < 0.5, bounced: 0
+          x: c + R * (0.46 + Math.random() * 0.12),
+          y: c + (Math.random() - 0.5) * R * 0.3,
+          vx: v * (0.3 + Math.random() * 0.6),
+          vy: v * (0.6 + Math.random() * 0.6),
+          life: 0,
+          max: 260 + Math.random() * 420,
+          hot: Math.random() < 0.5,
+          bounced: 0
         });
       }
     }
@@ -264,16 +307,25 @@ function drawFx(s, dt, speed, braking, vis) {
   for (let i = list.length - 1; i >= 0; i--) {
     const p = list[i];
     p.life += dt * 1000;
-    if (p.life > p.max) { list[i] = list[list.length - 1]; list.pop(); continue; }
+    if (p.life > p.max) {
+      list[i] = list[list.length - 1];
+      list.pop();
+      continue;
+    }
     p.vy += 0.32 * k;
     p.vx *= Math.pow(0.985, k);
-    const x0 = p.x, y0 = p.y;
-    p.x += p.vx * k; p.y += p.vy * k;
+    const x0 = p.x,
+      y0 = p.y;
+    p.x += p.vx * k;
+    p.y += p.vy * k;
     // Rebote en el piso imaginario bajo la llanta
     if (p.y > floor + 40 && p.vy > 0 && p.bounced < 2) {
-      p.y = floor + 40; p.vy *= -0.38; p.vx *= 0.75; p.bounced++;
+      p.y = floor + 40;
+      p.vy *= -0.38;
+      p.vx *= 0.75;
+      p.bounced++;
     }
-    const path = paths[Math.min(BUCKETS - 1, (p.life / p.max * BUCKETS) | 0) + (p.hot ? BUCKETS : 0)];
+    const path = paths[Math.min(BUCKETS - 1, ((p.life / p.max) * BUCKETS) | 0) + (p.hot ? BUCKETS : 0)];
     path.moveTo(x0 - p.vx * 0.8, y0 - p.vy * 0.8);
     path.lineTo(p.x, p.y);
   }
@@ -297,8 +349,12 @@ const fallbackSpin = () => {
   const el = img();
   if (!el || fallbackBusy) return;
   fallbackBusy = true;
-  el.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(720deg)' }],
-    { duration: 1100, easing: 'cubic-bezier(.2,.7,.2,1)' }).onfinish = () => { fallbackBusy = false; };
+  el.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(720deg)' }], {
+    duration: 1100,
+    easing: 'cubic-bezier(.2,.7,.2,1)'
+  }).onfinish = () => {
+    fallbackBusy = false;
+  };
 };
 
 if (btn && !reduce) {
@@ -306,12 +362,24 @@ if (btn && !reduce) {
     st.hover = true;
     if (!hasWebGL) return;
     await load();
-    if (stage && st.hover) { stage.resize(); wake(); }
+    if (stage && st.hover) {
+      stage.resize();
+      wake();
+    }
   };
-  const leave = () => { st.hover = false; wake(); };
-  btn.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') enter(); });
-  btn.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') leave(); });
-  btn.addEventListener('focus', () => { if (btn.matches(':focus-visible')) enter(); });
+  const leave = () => {
+    st.hover = false;
+    wake();
+  };
+  btn.addEventListener('pointerenter', (e) => {
+    if (e.pointerType === 'mouse') enter();
+  });
+  btn.addEventListener('pointerleave', (e) => {
+    if (e.pointerType === 'mouse') leave();
+  });
+  btn.addEventListener('focus', () => {
+    if (btn.matches(':focus-visible')) enter();
+  });
   btn.addEventListener('blur', leave);
   btn.addEventListener('click', async () => {
     if (!hasWebGL) return fallbackSpin();

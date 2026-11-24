@@ -6,11 +6,24 @@
   /* Idioma (ES / EN): los textos viven en js/i18n.js */
   const DICT = window.I18N || { es: {} };
   const store = {
-    get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
-    set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* sin almacenamiento */ } }
+    get: (k) => {
+      try {
+        return localStorage.getItem(k);
+      } catch {
+        return null;
+      }
+    },
+    set: (k, v) => {
+      try {
+        localStorage.setItem(k, v);
+      } catch {
+        /* sin almacenamiento */
+      }
+    }
   };
   let lang = store.get('lang');
-  if (!DICT[lang]) lang = (navigator.language || 'es').toLowerCase().startsWith('en') && DICT.en ? 'en' : 'es';
+  if (!DICT[lang])
+    lang = (navigator.language || 'es').toLowerCase().startsWith('en') && DICT.en ? 'en' : 'es';
   const t = (key, vars = {}) => {
     const v = (DICT[lang] && DICT[lang][key]) ?? DICT.es[key] ?? key;
     return typeof v === 'string' ? v.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '') : v;
@@ -18,7 +31,9 @@
   const langListeners = [];
   const applyLang = () => {
     document.documentElement.lang = lang;
-    $$('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    $$('[data-i18n]').forEach((el) => {
+      el.textContent = t(el.dataset.i18n);
+    });
     $$('[data-i18n-attr]').forEach((el) => {
       el.dataset.i18nAttr.split(';').forEach((pair) => {
         const [attr, key] = pair.split(':').map((x) => x.trim());
@@ -38,7 +53,8 @@
   });
 
   /* Tema claro / oscuro (el tema inicial lo aplica el script del <head>) */
-  const root = document.documentElement, themeBtn = $('#theme-toggle');
+  const root = document.documentElement,
+    themeBtn = $('#theme-toggle');
   const themeMeta = $('meta[name="theme-color"]');
   const systemLight = window.matchMedia('(prefers-color-scheme: light)');
   const applyTheme = (theme) => {
@@ -81,17 +97,20 @@
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   // El arranque (js/ignition.js): si el sitio empieza a oscuras, las entradas esperan al encendido
   const ignitionPending = document.documentElement.classList.contains('ignition-pending');
-  const afterIgnition = (fn) => (ignitionPending ? window.addEventListener('ignition:start', fn, { once: true }) : fn());
+  const afterIgnition = (fn) =>
+    ignitionPending ? window.addEventListener('ignition:start', fn, { once: true }) : fn();
 
   /* Tacómetro: la aguja sube con el scroll y llega a la zona roja al final */
-  const tach = $('#tach'), needle = $('.tach-needle', tach);
+  const tach = $('#tach'),
+    needle = $('.tach-needle', tach);
   const SVGNS = 'http://www.w3.org/2000/svg';
   const polar = (deg, r) => {
     const a = (deg * Math.PI) / 180;
     return [50 + r * Math.sin(a), 50 - r * Math.cos(a)].map((n) => +n.toFixed(2));
   };
   const arc = (from, to, r) => {
-    const [x1, y1] = polar(from, r), [x2, y2] = polar(to, r);
+    const [x1, y1] = polar(from, r),
+      [x2, y2] = polar(to, r);
     return `M${x1} ${y1}A${r} ${r} 0 ${to - from > 180 ? 1 : 0} 1 ${x2} ${y2}`;
   };
   // 0 a 8 (x1000 rpm) repartidos en 240°, de -120° a +120°
@@ -100,19 +119,23 @@
   $('.tach-red', tach).setAttribute('d', arc(rpmToDeg(6.5), 120, 42));
   const ticks = $('.tach-ticks', tach);
   for (let i = 0; i <= 8; i++) {
-    const [x1, y1] = polar(rpmToDeg(i), 38), [x2, y2] = polar(rpmToDeg(i), 33);
+    const [x1, y1] = polar(rpmToDeg(i), 38),
+      [x2, y2] = polar(rpmToDeg(i), 33);
     const line = document.createElementNS(SVGNS, 'line');
     Object.entries({ x1, y1, x2, y2 }).forEach(([k, v]) => line.setAttribute(k, v));
     ticks.appendChild(line);
     if (i % 2 === 0) {
       const [tx, ty] = polar(rpmToDeg(i), 26);
       const label = document.createElementNS(SVGNS, 'text');
-      label.setAttribute('x', tx); label.setAttribute('y', ty);
+      label.setAttribute('x', tx);
+      label.setAttribute('y', ty);
       label.textContent = i;
       ticks.appendChild(label);
     }
   }
-  let needleTarget = -120, needleNow = -120, needleRaf = 0;
+  let needleTarget = -120,
+    needleNow = -120,
+    needleRaf = 0;
   const drawNeedle = () => {
     needleNow += (needleTarget - needleNow) * (reduceMotion ? 1 : 0.12);
     needle.setAttribute('transform', `rotate(${needleNow.toFixed(2)} 50 50)`);
@@ -124,8 +147,10 @@
   };
 
   /* Header, tacómetro, botón volver arriba */
-  const header = $('#header'), toTop = $('#to-top'), cue = $('.scroll-cue');
-  let revving = false;   // acelerón del arranque: el tacómetro aparece y la aguja sube
+  const header = $('#header'),
+    toTop = $('#to-top'),
+    cue = $('.scroll-cue');
+  let revving = false; // acelerón del arranque: el tacómetro aparece y la aguja sube
   const onScroll = () => {
     const y = window.scrollY;
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -140,23 +165,36 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
   if (ignitionPending && !reduceMotion) {
-    window.addEventListener('ignition:start', () => {
-      revving = true;
-      needleTarget = rpmToDeg(7.4);
-      onScroll();
-      setTimeout(() => { revving = false; onScroll(); }, 900);
-    }, { once: true });
+    window.addEventListener(
+      'ignition:start',
+      () => {
+        revving = true;
+        needleTarget = rpmToDeg(7.4);
+        onScroll();
+        setTimeout(() => {
+          revving = false;
+          onScroll();
+        }, 900);
+      },
+      { once: true }
+    );
   }
   toTop.addEventListener('click', () => {
     // Reversa: la flecha sale disparada y el engrane gira hacia atrás mientras sube
-    toTop.classList.remove('reversing'); void toTop.offsetWidth; toTop.classList.add('reversing');
+    toTop.classList.remove('reversing');
+    void toTop.offsetWidth;
+    toTop.classList.add('reversing');
     if (window.lenis) window.lenis.scrollTo(0);
     else window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   });
 
   /* Menú móvil */
-  const toggle = $('#menu-toggle'), nav = $('#nav');
-  const closeMenu = () => { nav.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); };
+  const toggle = $('#menu-toggle'),
+    nav = $('#nav');
+  const closeMenu = () => {
+    nav.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  };
   toggle.addEventListener('click', () => {
     const open = nav.classList.toggle('open');
     toggle.setAttribute('aria-expanded', open);
@@ -166,24 +204,36 @@
 
   /* Enlace activo según la sección visible */
   const links = $$('a', nav);
-  const secObserver = new IntersectionObserver((entries) => {
-    entries.forEach((en) => {
-      if (en.isIntersecting) {
-        links.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === '#' + en.target.id));
-      }
-    });
-  }, { rootMargin: '-45% 0px -50% 0px' });
+  const secObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          links.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === '#' + en.target.id));
+        }
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px' }
+  );
   $$('main section[id]').forEach((s) => secObserver.observe(s));
 
   /* Aparición al hacer scroll */
   const reveals = $$('.reveal');
   if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries, obs) => {
-      entries.forEach((en) => {
-        if (en.isIntersecting) { en.target.classList.add('visible'); obs.unobserve(en.target); }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach((el, i) => { el.style.transitionDelay = (i % 4) * 80 + 'ms'; io.observe(el); });
+    const io = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            en.target.classList.add('visible');
+            obs.unobserve(en.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    reveals.forEach((el, i) => {
+      el.style.transitionDelay = (i % 4) * 80 + 'ms';
+      io.observe(el);
+    });
   } else {
     reveals.forEach((el) => el.classList.add('visible'));
   }
@@ -205,51 +255,78 @@
      Al soltar vuelve poco a poco a su velocidad normal. Solo cambia su transform. */
   const marquees = $$('.marquee');
   if (marquees.length && !reduceMotion) {
-    const LOOP_MS = 38000;                         // tiempo de una vuelta a velocidad normal
-    const MAX_BOOST = 16;                          // tope: 17 veces la velocidad normal
-    let dir = 1, boost = 0, lastY = window.scrollY, lastT = performance.now();
-    window.addEventListener('scroll', () => {
-      const now = performance.now(), dy = window.scrollY - lastY, dt = Math.max(16, now - lastT);
-      if (dy) {
-        dir = dy > 0 ? 1 : -1;
-        boost = Math.min(5, Math.max(boost, (Math.abs(dy) / dt) * 3));
-      }
-      lastY = window.scrollY; lastT = now;
-    }, { passive: true });
+    const LOOP_MS = 38000; // tiempo de una vuelta a velocidad normal
+    const MAX_BOOST = 16; // tope: 17 veces la velocidad normal
+    let dir = 1,
+      boost = 0,
+      lastY = window.scrollY,
+      lastT = performance.now();
+    window.addEventListener(
+      'scroll',
+      () => {
+        const now = performance.now(),
+          dy = window.scrollY - lastY,
+          dt = Math.max(16, now - lastT);
+        if (dy) {
+          dir = dy > 0 ? 1 : -1;
+          boost = Math.min(5, Math.max(boost, (Math.abs(dy) / dt) * 3));
+        }
+        lastY = window.scrollY;
+        lastT = now;
+      },
+      { passive: true }
+    );
 
     // Rueda sobre el carrusel. Si el usuario venía girando la rueda para bajar la página y
     // el carrusel pasó por debajo del cursor, ese mismo gesto sigue moviendo la página. Basta
     // una pausa corta (sin rueda) para que el carrusel la tome; no hay que esperar a que la
     // página termine de deslizarse.
-    const GESTURE_GAP = 150;                       // ms sin rueda que separan un gesto de otro
-    let lastWheel = 0, lastPageWheel = 0;
-    window.addEventListener('wheel', () => { lastPageWheel = performance.now(); }, { passive: true });
+    const GESTURE_GAP = 150; // ms sin rueda que separan un gesto de otro
+    let lastWheel = 0,
+      lastPageWheel = 0;
+    window.addEventListener(
+      'wheel',
+      () => {
+        lastPageWheel = performance.now();
+      },
+      { passive: true }
+    );
     const onWheel = (e) => {
       if (e.ctrlKey) return;
       const now = performance.now();
       const holding = now - lastWheel < 250;
-      if (!holding && now - lastPageWheel < GESTURE_GAP) { lastPageWheel = now; return; }
+      if (!holding && now - lastPageWheel < GESTURE_GAP) {
+        lastPageWheel = now;
+        return;
+      }
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       if (!d) return;
       e.preventDefault();
-      e.stopPropagation();                         // Lenis no mueve la página
+      e.stopPropagation(); // Lenis no mueve la página
       lastWheel = now;
       const px = Math.abs(d) * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1);
       const newDir = d > 0 ? 1 : -1;
-      if (newDir !== dir) boost = 0;               // al cambiar de sentido, frena y gira
+      if (newDir !== dir) boost = 0; // al cambiar de sentido, frena y gira
       dir = newDir;
       boost = Math.min(MAX_BOOST, boost + px / 45);
     };
 
     marquees.forEach((m) => {
       const track = $('.marquee-track', m);
-      let x = 0, half = 0, speed = 1, prev = 0, raf = 0, visible = false;
-      const measure = () => { half = track.scrollWidth / 2; };
+      let x = 0,
+        half = 0,
+        speed = 1,
+        prev = 0,
+        raf = 0,
+        visible = false;
+      const measure = () => {
+        half = track.scrollWidth / 2;
+      };
       const frame = (t) => {
         const dt = prev ? Math.min(64, t - prev) : 16;
         prev = t;
-        boost *= Math.pow(0.5, dt / 350);           // el empujón se apaga solo
-        speed += (dir * (1 + boost) - speed) * Math.min(1, dt / 180);   // giro suave
+        boost *= Math.pow(0.5, dt / 350); // el empujón se apaga solo
+        speed += (dir * (1 + boost) - speed) * Math.min(1, dt / 180); // giro suave
         if (half) {
           x = (x - speed * (half / LOOP_MS) * dt) % half;
           if (x > 0) x -= half;
@@ -259,7 +336,10 @@
       };
       new IntersectionObserver(([e]) => {
         visible = e.isIntersecting;
-        if (visible && !raf) { prev = 0; raf = requestAnimationFrame(frame); }
+        if (visible && !raf) {
+          prev = 0;
+          raf = requestAnimationFrame(frame);
+        }
       }).observe(m);
       track.addEventListener('wheel', onWheel, { passive: false });
       measure();
@@ -274,13 +354,25 @@
   const startTyping = () => {
     clearTimeout(typedTimer);
     const roles = t('hero.roles');
-    if (reduceMotion) { typed.textContent = roles[0]; return; }
-    let r = 0, c = 0, del = false;
+    if (reduceMotion) {
+      typed.textContent = roles[0];
+      return;
+    }
+    let r = 0,
+      c = 0,
+      del = false;
     const tick = () => {
       const word = roles[r];
       typed.textContent = word.slice(0, c);
-      if (!del && c === word.length) { del = true; typedTimer = setTimeout(tick, 1800); return; }
-      if (del && c === 0) { del = false; r = (r + 1) % roles.length; }
+      if (!del && c === word.length) {
+        del = true;
+        typedTimer = setTimeout(tick, 1800);
+        return;
+      }
+      if (del && c === 0) {
+        del = false;
+        r = (r + 1) % roles.length;
+      }
       c += del ? -1 : 1;
       typedTimer = setTimeout(tick, del ? 35 : 70);
     };
@@ -290,41 +382,55 @@
 
   /* Contadores: suben con frenado suave al aparecer (al instante con movimiento reducido) */
   const counters = $$('[data-count]');
-  const cio = new IntersectionObserver((entries, obs) => {
-    entries.forEach((en) => {
-      if (!en.isIntersecting) return;
-      const el = en.target, target = +el.dataset.count, start = performance.now();
-      const dur = 900 + target * 60;
-      // Si la cifra tiene medidor, la aguja sube junto con el número
-      const card = el.closest('.stat'), max = card ? +card.dataset.max || target : 0;
-      const step = (now) => {
-        const p = reduceMotion ? 1 : Math.min((now - start) / dur, 1);
-        const v = target * (1 - Math.pow(1 - p, 3));
-        el.textContent = Math.round(v);
-        if (card) card.style.setProperty('--f', (v / max).toFixed(3));
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-      obs.unobserve(el);
-    });
-  }, { threshold: 0.6 });
+  const cio = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        const el = en.target,
+          target = +el.dataset.count,
+          start = performance.now();
+        const dur = 900 + target * 60;
+        // Si la cifra tiene medidor, la aguja sube junto con el número
+        const card = el.closest('.stat'),
+          max = card ? +card.dataset.max || target : 0;
+        const step = (now) => {
+          const p = reduceMotion ? 1 : Math.min((now - start) / dur, 1);
+          const v = target * (1 - Math.pow(1 - p, 3));
+          el.textContent = Math.round(v);
+          if (card) card.style.setProperty('--f', (v / max).toFixed(3));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+        obs.unobserve(el);
+      });
+    },
+    { threshold: 0.6 }
+  );
   afterIgnition(() => counters.forEach((c) => cio.observe(c)));
 
   /* Filtro de proyectos */
-  const filters = $$('.filter'), cards = $$('.card');
-  filters.forEach((btn) => btn.addEventListener('click', () => {
-    filters.forEach((b) => b.classList.toggle('active', b === btn));
-    const f = btn.dataset.filter;
-    cards.forEach((card) => card.classList.toggle('hide', f !== 'all' && card.dataset.cat !== f));
-  }));
+  const filters = $$('.filter'),
+    cards = $$('.card');
+  filters.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      filters.forEach((b) => b.classList.toggle('active', b === btn));
+      const f = btn.dataset.filter;
+      cards.forEach((card) => card.classList.toggle('hide', f !== 'all' && card.dataset.cat !== f));
+    })
+  );
 
   /* Formulario: validación y envío por WhatsApp */
-  const form = $('#contact-form'), status = $('#form-status');
-  const msg = $('#message'), counter = $('#counter');
-  msg.addEventListener('input', () => { counter.textContent = `${msg.value.length}/${msg.maxLength}`; });
+  const form = $('#contact-form'),
+    status = $('#form-status');
+  const msg = $('#message'),
+    counter = $('#counter');
+  msg.addEventListener('input', () => {
+    counter.textContent = `${msg.value.length}/${msg.maxLength}`;
+  });
 
   const validate = (input) => {
-    const field = input.closest('.field'), err = $('.error', field);
+    const field = input.closest('.field'),
+      err = $('.error', field);
     let text = '';
     if (input.validity.valueMissing) text = t('form.required');
     else if (input.validity.typeMismatch) text = t('form.invalidEmail');
@@ -344,15 +450,23 @@
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const ok = $$('input, textarea', form).map(validate).every(Boolean);
-    if (!ok) { status.textContent = ''; return; }
+    if (!ok) {
+      status.textContent = '';
+      return;
+    }
     const d = new FormData(form);
-    const name = d.get('name'), text = `${t('form.whatsapp', { name, email: d.get('_replyto') })}\n\n${d.get('message')}`;
+    const name = d.get('name'),
+      text = `${t('form.whatsapp', { name, email: d.get('_replyto') })}\n\n${d.get('message')}`;
     if (e.submitter && e.submitter.dataset.via === 'whatsapp') {
       window.open('https://wa.me/50231007720?text=' + encodeURIComponent(text), '_blank', 'noopener');
       status.textContent = t('form.opening');
     } else {
       // Por defecto (Enter o "Enviar por correo"): abre el correo con todo listo
-      location.href = 'mailto:canuxantonio77@gmail.com?subject=' + encodeURIComponent(t('form.emailSubject', { name })) + '&body=' + encodeURIComponent(text);
+      location.href =
+        'mailto:canuxantonio77@gmail.com?subject=' +
+        encodeURIComponent(t('form.emailSubject', { name })) +
+        '&body=' +
+        encodeURIComponent(text);
       status.textContent = t('form.openingEmail');
     }
     form.reset();
@@ -367,7 +481,10 @@
     aura.className = 'pointer-aura';
     aura.setAttribute('aria-hidden', 'true');
     document.body.append(aura);
-    let ax = -999, ay = -999, raf = 0, recheck = false;
+    let ax = -999,
+      ay = -999,
+      raf = 0,
+      recheck = false;
     const draw = () => {
       raf = 0;
       aura.style.transform = `translate3d(${ax}px, ${ay}px, 0)`;
@@ -378,42 +495,87 @@
         recheck = false;
       }
     };
-    const queue = () => { if (!raf) raf = requestAnimationFrame(draw); };
-    document.addEventListener('pointermove', (e) => {
-      if (e.pointerType !== 'mouse') return;
-      ax = e.clientX; ay = e.clientY;
-      aura.classList.toggle('on', !!e.target.closest(AURA_ON));
-      queue();
-    }, { passive: true });
-    window.addEventListener('scroll', () => { if (ax > -999) { recheck = true; queue(); } }, { passive: true });
+    const queue = () => {
+      if (!raf) raf = requestAnimationFrame(draw);
+    };
+    document.addEventListener(
+      'pointermove',
+      (e) => {
+        if (e.pointerType !== 'mouse') return;
+        ax = e.clientX;
+        ay = e.clientY;
+        aura.classList.toggle('on', !!e.target.closest(AURA_ON));
+        queue();
+      },
+      { passive: true }
+    );
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ax > -999) {
+          recheck = true;
+          queue();
+        }
+      },
+      { passive: true }
+    );
     document.documentElement.addEventListener('mouseleave', () => aura.classList.remove('on'));
   }
 
   /* Tarjetas con dos caras (WTWT: descripción ↔ mi parte) */
   $$('[data-flip]').forEach((flip) => {
-    const faces = $$('.flip-face', flip), dots = $$('.flip-dots button', flip);
+    const faces = $$('.flip-face', flip),
+      dots = $$('.flip-dots button', flip);
     const card = flip.closest('.card') || flip;
-    let i = 0, timer = 0, visible = false, paused = false;
+    let i = 0,
+      timer = 0,
+      visible = false,
+      paused = false;
     const show = (n) => {
       i = n;
       faces.forEach((f, k) => f.classList.toggle('is-on', k === n));
-      dots.forEach((d, k) => { d.classList.toggle('is-on', k === n); d.setAttribute('aria-pressed', String(k === n)); });
+      dots.forEach((d, k) => {
+        d.classList.toggle('is-on', k === n);
+        d.setAttribute('aria-pressed', String(k === n));
+      });
     };
     const run = () => {
       clearInterval(timer);
       if (visible && !paused) timer = setInterval(() => show((i + 1) % faces.length), 6000);
     };
-    dots.forEach((d, k) => d.addEventListener('click', () => { show(k); run(); }));
-    card.addEventListener('pointerenter', () => { paused = true; run(); });
-    card.addEventListener('pointerleave', () => { paused = false; run(); });
-    card.addEventListener('focusin', () => { paused = true; run(); });
-    card.addEventListener('focusout', () => { paused = false; run(); });
-    new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(); }).observe(card);
+    dots.forEach((d, k) =>
+      d.addEventListener('click', () => {
+        show(k);
+        run();
+      })
+    );
+    card.addEventListener('pointerenter', () => {
+      paused = true;
+      run();
+    });
+    card.addEventListener('pointerleave', () => {
+      paused = false;
+      run();
+    });
+    card.addEventListener('focusin', () => {
+      paused = true;
+      run();
+    });
+    card.addEventListener('focusout', () => {
+      paused = false;
+      run();
+    });
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      run();
+    }).observe(card);
   });
 
   /* CV: visor y descarga.
      Usa el PDF del idioma actual; si no existe, el del otro idioma. */
-  const cvModal = $('#cv-modal'), cvFrame = $('#cv-frame'), cvMissing = $('#cv-missing');
+  const cvModal = $('#cv-modal'),
+    cvFrame = $('#cv-frame'),
+    cvMissing = $('#cv-missing');
   const cvCache = {};
   const cvExists = (url) => {
     if (location.protocol === 'file:') return Promise.resolve(true);
@@ -428,7 +590,7 @@
   const resolveCv = async () => {
     const other = DICT[lang === 'es' ? 'en' : 'es'];
     for (const url of [t('cv.file'), other && other['cv.file']]) {
-      if (url && await cvExists(url)) return url;
+      if (url && (await cvExists(url))) return url;
     }
     return null;
   };
@@ -461,7 +623,7 @@
     closeMenu();
     cvModal.hidden = false;
     document.body.classList.add('modal-open');
-    if (window.lenis) window.lenis.stop();   // el fondo no se mueve con el visor abierto
+    if (window.lenis) window.lenis.stop(); // el fondo no se mueve con el visor abierto
     loadCvFrame();
     $('.cv-close', cvModal).focus();
   };
@@ -474,32 +636,53 @@
   };
   $$('[data-cv-open]').forEach((b) => b.addEventListener('click', openCv));
   $$('[data-cv-close]', cvModal).forEach((b) => b.addEventListener('click', closeCv));
-  $$('[data-cv-download], [data-cv-newtab]').forEach((a) => a.addEventListener('click', (e) => {
-    if (!cvUrl) { e.preventDefault(); if (cvModal.hidden) openCv(); }
-  }));
+  $$('[data-cv-download], [data-cv-newtab]').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      if (!cvUrl) {
+        e.preventDefault();
+        if (cvModal.hidden) openCv();
+      }
+    })
+  );
   document.addEventListener('keydown', (e) => {
     if (cvModal.hidden) return;
     if (e.key === 'Escape') closeCv();
-    if (e.key === 'Tab') { // mantener el foco dentro del visor
+    if (e.key === 'Tab') {
+      // mantener el foco dentro del visor
       const f = $$('a[href], button, iframe', cvModal).filter((el) => !el.hidden && el.offsetParent);
-      const first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      const first = f[0],
+        last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   });
   langListeners.push(updateCv);
 
   /* Año del footer */
-  $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+  $$('[data-year]').forEach((el) => {
+    el.textContent = new Date().getFullYear();
+  });
 
   /* Créditos: el pie es solo un botón; el panel sube desde abajo (dialog nativo:
      atrapa el foco y se cierra con Esc). También se cierra al tocar fuera. */
-  const credits = $('#credits'), creditsBtn = $('.credits-btn');
+  const credits = $('#credits'),
+    creditsBtn = $('.credits-btn');
   if (credits && creditsBtn && credits.showModal) {
     const closeCredits = () => {
       if (!credits.open || credits.classList.contains('closing')) return;
       credits.classList.add('closing');
-      setTimeout(() => { credits.classList.remove('closing'); credits.close(); }, reduceMotion ? 0 : 280);
+      setTimeout(
+        () => {
+          credits.classList.remove('closing');
+          credits.close();
+        },
+        reduceMotion ? 0 : 280
+      );
     };
     creditsBtn.addEventListener('click', () => {
       credits.showModal();
@@ -510,9 +693,14 @@
       creditsBtn.setAttribute('aria-expanded', 'false');
       if (window.lenis) window.lenis.start();
     });
-    credits.addEventListener('cancel', (e) => { e.preventDefault(); closeCredits(); });   // Esc, con animación
+    credits.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      closeCredits();
+    }); // Esc, con animación
     $('.sheet-close', credits).addEventListener('click', closeCredits);
-    credits.addEventListener('click', (e) => { if (e.target === credits) closeCredits(); }); // fuera del panel
+    credits.addEventListener('click', (e) => {
+      if (e.target === credits) closeCredits();
+    }); // fuera del panel
   }
 
   /* ---------- Experiencia inmersiva (GSAP + ScrollTrigger) ---------- */
@@ -523,7 +711,8 @@
     // tamaño a media página. Se apaga y los enlaces internos se desplazan suave por JS.
     document.documentElement.style.scrollBehavior = 'auto';
     // Al retirar la pantalla del arranque cambia el desbordamiento de html: se vuelven a medir los disparadores
-    if (ignitionPending) window.addEventListener('ignition:done', () => ScrollTrigger.refresh(), { once: true });
+    if (ignitionPending)
+      window.addEventListener('ignition:done', () => ScrollTrigger.refresh(), { once: true });
 
     // Scroll suave con inercia (Lenis), sincronizado con el reloj de GSAP.
     // En táctiles Lenis deja el scroll nativo; con movimiento reducido no se activa.
@@ -535,7 +724,10 @@
       // La página cambia de alto (galería fijada, motor de la meta): Lenis recalcula su límite
       ScrollTrigger.addEventListener('refresh', () => lenis.resize());
       window.lenis = lenis;
-      if (ignitionPending) { lenis.stop(); afterIgnition(() => lenis.start()); }
+      if (ignitionPending) {
+        lenis.stop();
+        afterIgnition(() => lenis.start());
+      }
     }
 
     document.addEventListener('click', (e) => {
@@ -545,7 +737,11 @@
       e.preventDefault();
       const offset = -(header ? header.offsetHeight : 0);
       if (window.lenis) window.lenis.scrollTo(target, { offset });
-      else window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY + offset, behavior: reduceMotion ? 'auto' : 'smooth' });
+      else
+        window.scrollTo({
+          top: target.getBoundingClientRect().top + window.scrollY + offset,
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
       history.pushState(null, '', a.getAttribute('href'));
     });
   }
@@ -555,22 +751,33 @@
   if (h1) {
     const name = h1.textContent.trim();
     h1.setAttribute('aria-label', name);
-    h1.innerHTML = name.split(' ').map((w) =>
-      `<span class="word" aria-hidden="true" style="display:inline-block;white-space:nowrap">${[...w].map((c) => `<span class="ch">${c}</span>`).join('')}</span>`
-    ).join(' ');
+    h1.innerHTML = name
+      .split(' ')
+      .map(
+        (w) =>
+          `<span class="word" aria-hidden="true" style="display:inline-block;white-space:nowrap">${[...w].map((c) => `<span class="ch">${c}</span>`).join('')}</span>`
+      )
+      .join(' ');
   }
   /* Aura del nombre: las letras cerca del mouse se encienden con un degradado de color
      (acento → violeta → chispa). En pantallas táctiles, un toque la pasa de lado a lado. */
   if (h1) {
     const chars = $$('.ch', h1);
-    const stops = [[110, 168, 216], [139, 124, 246], [255, 154, 60]];   // acento, violeta, chispa
+    const stops = [
+      [110, 168, 216],
+      [139, 124, 246],
+      [255, 154, 60]
+    ]; // acento, violeta, chispa
     chars.forEach((ch, i) => {
       const t = chars.length > 1 ? i / (chars.length - 1) : 0;
-      const k = t < 0.5 ? t * 2 : (t - 0.5) * 2, [a, b] = t < 0.5 ? [stops[0], stops[1]] : [stops[1], stops[2]];
+      const k = t < 0.5 ? t * 2 : (t - 0.5) * 2,
+        [a, b] = t < 0.5 ? [stops[0], stops[1]] : [stops[1], stops[2]];
       ch.style.setProperty('--aura', `rgb(${a.map((v, j) => Math.round(v + (b[j] - v) * k)).join(', ')})`);
     });
-    const R = 130;   // radio del aura en px
-    let raf = 0, px = 0, py = 0;
+    const R = 130; // radio del aura en px
+    let raf = 0,
+      px = 0,
+      py = 0;
     const paint = () => {
       raf = 0;
       chars.forEach((ch) => {
@@ -579,20 +786,39 @@
         ch.style.setProperty('--p', Math.max(0, 1 - d / R).toFixed(3));
       });
     };
-    const at = (x, y) => { px = x; py = y; if (!raf) raf = requestAnimationFrame(paint); };
-    const off = () => { cancelAnimationFrame(raf); raf = 0; chars.forEach((ch) => ch.style.setProperty('--p', '0')); };
-    h1.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') at(e.clientX, e.clientY); });
-    h1.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') off(); });
+    const at = (x, y) => {
+      px = x;
+      py = y;
+      if (!raf) raf = requestAnimationFrame(paint);
+    };
+    const off = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      chars.forEach((ch) => ch.style.setProperty('--p', '0'));
+    };
+    h1.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'mouse') at(e.clientX, e.clientY);
+    });
+    h1.addEventListener('pointerleave', (e) => {
+      if (e.pointerType === 'mouse') off();
+    });
     // Toque: el aura recorre el nombre una vez
     let sweeping = false;
     h1.addEventListener('pointerdown', (e) => {
       if (e.pointerType === 'mouse' || sweeping) return;
-      const box = h1.getBoundingClientRect(), y = box.top + box.height / 2, t0 = performance.now(), dur = reduceMotion ? 0 : 1100;
+      const box = h1.getBoundingClientRect(),
+        y = box.top + box.height / 2,
+        t0 = performance.now(),
+        dur = reduceMotion ? 0 : 1100;
       sweeping = true;
       const step = (now) => {
         const t = dur ? Math.min(1, (now - t0) / dur) : 1;
         at(box.left - R + (box.width + 2 * R) * t, y);
-        if (t < 1) requestAnimationFrame(step); else { sweeping = false; setTimeout(off, 60); }
+        if (t < 1) requestAnimationFrame(step);
+        else {
+          sweeping = false;
+          setTimeout(off, 60);
+        }
       };
       requestAnimationFrame(step);
     });
@@ -623,22 +849,38 @@
     if (!mani) return;
     const text = t(mani.dataset.manifesto);
     let hl = false;
-    const words = text.split(/\s+/).map((tok) => {
-      if (tok.startsWith('*')) { hl = true; tok = tok.slice(1); }
-      const ends = tok.includes('*');
-      const html = `<span class="w${hl ? ' hl' : ''}">${esc(tok.replace('*', ''))}</span>`;
-      if (ends) hl = false;
-      return html;
-    }).join(' ');
+    const words = text
+      .split(/\s+/)
+      .map((tok) => {
+        if (tok.startsWith('*')) {
+          hl = true;
+          tok = tok.slice(1);
+        }
+        const ends = tok.includes('*');
+        const html = `<span class="w${hl ? ' hl' : ''}">${esc(tok.replace('*', ''))}</span>`;
+        if (ends) hl = false;
+        return html;
+      })
+      .join(' ');
     // Texto completo para lectores de pantalla; las palabras sueltas son decorativas
     mani.innerHTML = `<span class="sr-only">${esc(text.replace(/\*/g, ''))}</span><span aria-hidden="true">${words}</span>`;
-    if (maniTween) { maniTween.scrollTrigger.kill(); maniTween.kill(); maniTween = null; }
+    if (maniTween) {
+      maniTween.scrollTrigger.kill();
+      maniTween.kill();
+      maniTween = null;
+    }
     if (hasGsap && !reduceMotion) {
       mani.classList.add('is-live');
-      maniTween = gsap.fromTo($$('.w', mani), { opacity: 0.14 }, {
-        opacity: 1, ease: 'none', stagger: 0.08,
-        scrollTrigger: { trigger: mani, start: 'top 82%', end: 'bottom 48%', scrub: 0.4 }
-      });
+      maniTween = gsap.fromTo(
+        $$('.w', mani),
+        { opacity: 0.14 },
+        {
+          opacity: 1,
+          ease: 'none',
+          stagger: 0.08,
+          scrollTrigger: { trigger: mani, start: 'top 82%', end: 'bottom 48%', scrub: 0.4 }
+        }
+      );
     }
   };
   langListeners.push(buildManifesto);
@@ -648,11 +890,19 @@
   if (story) {
     const svg = $('.engine', story);
     const el = (s) => $(s, svg);
-    const gBig = el('#g-big'), gSmall = el('#g-small'), gPiston = el('#g-piston');
-    const pHead = el('#p-head'), pRod = el('#p-rod'), pPin = el('#p-pin');
-    const parts = el('.eng-parts'), labels = el('.eng-labels');
-    const braces = el('#glyph-braces'), tag = el('#glyph-tag');
-    const code = el('.eng-code'), frame = el('#code-frame'), lines = $$('.code-lines text', svg);
+    const gBig = el('#g-big'),
+      gSmall = el('#g-small'),
+      gPiston = el('#g-piston');
+    const pHead = el('#p-head'),
+      pRod = el('#p-rod'),
+      pPin = el('#p-pin');
+    const parts = el('.eng-parts'),
+      labels = el('.eng-labels');
+    const braces = el('#glyph-braces'),
+      tag = el('#glyph-tag');
+    const code = el('.eng-code'),
+      frame = el('#code-frame'),
+      lines = $$('.code-lines text', svg);
     const seg = (p, a, b) => clamp((p - a) / (b - a));
     const smooth = (t) => t * t * (3 - 2 * t);
     const scaleAt = (x, y, s) => `translate(${x} ${y}) scale(${s}) translate(${-x} ${-y})`;
@@ -662,19 +912,29 @@
       window.__storyP = p;
       if (window.engine3d) window.engine3d.update(p);
       const rot = p * 720;
-      const ex = smooth(seg(p, 0.22, 0.36));            // vista despiezada
-      const mo = smooth(seg(p, 0.5, 0.66));             // piezas -> símbolos
-      const co = seg(p, 0.72, 0.9);                     // símbolos -> código
-      gBig.setAttribute('transform', `translate(${150 - 34 * ex} ${205 - 14 * ex}) rotate(${rot}) scale(${1 - 0.3 * mo})`);
-      gSmall.setAttribute('transform', `translate(${247 + 26 * ex} ${149 - 26 * ex}) rotate(${-rot * 1.5 + 11})`);
+      const ex = smooth(seg(p, 0.22, 0.36)); // vista despiezada
+      const mo = smooth(seg(p, 0.5, 0.66)); // piezas -> símbolos
+      const co = seg(p, 0.72, 0.9); // símbolos -> código
+      gBig.setAttribute(
+        'transform',
+        `translate(${150 - 34 * ex} ${205 - 14 * ex}) rotate(${rot}) scale(${1 - 0.3 * mo})`
+      );
+      gSmall.setAttribute(
+        'transform',
+        `translate(${247 + 26 * ex} ${149 - 26 * ex}) rotate(${-rot * 1.5 + 11})`
+      );
       // Biela y pistón: el cigüeñal da 6 vueltas en todo el recorrido
       const th = (p * 360 * 6 * Math.PI) / 180;
-      const pinX = 310 + 18 * Math.sin(th), pinY = 340 - 18 * Math.cos(th);
+      const pinX = 310 + 18 * Math.sin(th),
+        pinY = 340 - 18 * Math.cos(th);
       const wristY = pinY - Math.sqrt(70 * 70 - (pinX - 310) ** 2);
       pHead.setAttribute('y', (wristY - 26).toFixed(2));
-      pRod.setAttribute('x1', 310); pRod.setAttribute('y1', wristY.toFixed(2));
-      pRod.setAttribute('x2', pinX.toFixed(2)); pRod.setAttribute('y2', pinY.toFixed(2));
-      pPin.setAttribute('cx', pinX.toFixed(2)); pPin.setAttribute('cy', pinY.toFixed(2));
+      pRod.setAttribute('x1', 310);
+      pRod.setAttribute('y1', wristY.toFixed(2));
+      pRod.setAttribute('x2', pinX.toFixed(2));
+      pRod.setAttribute('y2', pinY.toFixed(2));
+      pPin.setAttribute('cx', pinX.toFixed(2));
+      pPin.setAttribute('cy', pinY.toFixed(2));
       gPiston.setAttribute('transform', `translate(${30 * ex} ${22 * ex})`);
       parts.style.opacity = 1 - mo;
       labels.style.opacity = seg(p, 0.27, 0.4) * (1 - seg(p, 0.5, 0.58));
@@ -692,8 +952,9 @@
       });
     };
 
-    const chapters = $$('.chapter', story), dots = $$('.story-dots li', story);
-    const STATES = [0.1, 0.42, 0.66, 1];   // estado del motor para cada capítulo
+    const chapters = $$('.chapter', story),
+      dots = $$('.story-dots li', story);
+    const STATES = [0.1, 0.42, 0.66, 1]; // estado del motor para cada capítulo
     const setActive = (i) => {
       chapters.forEach((c, k) => c.classList.toggle('active', k === i));
       dots.forEach((d, k) => d.classList.toggle('active', k === i));
@@ -704,7 +965,10 @@
 
     if (hasGsap && !reduceMotion) {
       ScrollTrigger.create({
-        trigger: '.story-inner', start: 'top top', end: 'bottom bottom', scrub: 0.6,
+        trigger: '.story-inner',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.6,
         onUpdate: (self) => render(self.progress)
       });
     }
@@ -712,9 +976,14 @@
     // (en móvil el motor ocupa la parte de arriba, así que la línea baja)
     const mobile = window.matchMedia('(max-width: 820px)').matches;
     const line = mobile ? '-68% 0px -32% 0px' : '-50% 0px -50% 0px';
-    const chIO = new IntersectionObserver((entries) => {
-      entries.forEach((en) => { if (en.isIntersecting) setActive(chapters.indexOf(en.target)); });
-    }, { rootMargin: line });
+    const chIO = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) setActive(chapters.indexOf(en.target));
+        });
+      },
+      { rootMargin: line }
+    );
     chapters.forEach((c) => chIO.observe(c));
     setActive(0);
   }
@@ -723,18 +992,24 @@
      sección se acerca, para que la galería no se detenga al llegar a cada una. */
   const projImgs = $$('#proyectos .card img');
   if (projImgs.length && 'IntersectionObserver' in window) {
-    const dio = new IntersectionObserver((entries) => {
-      if (!entries.some((e) => e.isIntersecting)) return;
-      dio.disconnect();
-      projImgs.forEach((img) => { if (img.decode) img.decode().catch(() => {}); });
-    }, { rootMargin: '150% 0px' });
+    const dio = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        dio.disconnect();
+        projImgs.forEach((img) => {
+          if (img.decode) img.decode().catch(() => {});
+        });
+      },
+      { rootMargin: '150% 0px' }
+    );
     dio.observe($('#proyectos'));
   }
 
   /* Proyectos: carrusel horizontal en pantallas anchas (en las angostas, cuadrícula).
      La página sigue de largo al hacer scroll; la rueda mueve el carrusel solo con el cursor
      encima, y al llegar al primer o al último proyecto vuelve a mover la página. */
-  const projSection = $('#proyectos'), track = $('.projects');
+  const projSection = $('#proyectos'),
+    track = $('.projects');
   if (projSection && track) {
     const bar = document.createElement('div');
     bar.className = 'h-progress';
@@ -753,39 +1028,56 @@
     let painting = 0;
     const paint = () => {
       painting = 0;
-      const m = max(), x = track.scrollLeft;
+      const m = max(),
+        x = track.scrollLeft;
       fill.style.transform = `scaleX(${m ? x / m : 1})`;
       track.classList.toggle('has-prev', x > 2);
       track.classList.toggle('at-end', x >= m - 2);
       hint.classList.toggle('is-hidden', !m || !fine.matches);
     };
-    const queuePaint = () => { if (!painting) painting = requestAnimationFrame(paint); };
+    const queuePaint = () => {
+      if (!painting) painting = requestAnimationFrame(paint);
+    };
     track.addEventListener('scroll', queuePaint, { passive: true });
 
     // Rueda vertical → desplazamiento lateral suave mientras quede recorrido en esa dirección
-    let target = 0, glide = 0;
+    let target = 0,
+      glide = 0;
     const step = () => {
       const d = target - track.scrollLeft;
-      if (Math.abs(d) < 0.5 || reduceMotion) { track.scrollLeft = target; glide = 0; return; }
+      if (Math.abs(d) < 0.5 || reduceMotion) {
+        track.scrollLeft = target;
+        glide = 0;
+        return;
+      }
       track.scrollLeft += d * 0.2;
       glide = requestAnimationFrame(step);
     };
-    track.addEventListener('wheel', (e) => {
-      if (!projSection.classList.contains('is-h') || e.ctrlKey) return;
-      // Desplazamiento lateral del touchpad: lo hace el navegador; la página no se mueve
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.stopPropagation(); return; }
-      const px = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? track.clientWidth : 1);
-      const m = max(), from = glide ? target : track.scrollLeft;
-      if ((px < 0 && from <= 0) || (px > 0 && from >= m - 1)) return;   // en el borde: sigue la página
-      e.preventDefault();
-      e.stopPropagation();                         // Lenis no mueve la página
-      target = Math.min(m, Math.max(0, from + px));
-      if (!glide) glide = requestAnimationFrame(step);
-    }, { passive: false });
+    track.addEventListener(
+      'wheel',
+      (e) => {
+        if (!projSection.classList.contains('is-h') || e.ctrlKey) return;
+        // Desplazamiento lateral del touchpad: lo hace el navegador; la página no se mueve
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+          e.stopPropagation();
+          return;
+        }
+        const px = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? track.clientWidth : 1);
+        const m = max(),
+          from = glide ? target : track.scrollLeft;
+        if ((px < 0 && from <= 0) || (px > 0 && from >= m - 1)) return; // en el borde: sigue la página
+        e.preventDefault();
+        e.stopPropagation(); // Lenis no mueve la página
+        target = Math.min(m, Math.max(0, from + px));
+        if (!glide) glide = requestAnimationFrame(step);
+      },
+      { passive: false }
+    );
 
     const setMode = () => {
       projSection.classList.toggle('is-h', wide.matches);
-      cancelAnimationFrame(glide); glide = 0;
+      cancelAnimationFrame(glide);
+      glide = 0;
       track.scrollLeft = target = 0;
       paint();
       if (hasGsap) ScrollTrigger.refresh();
@@ -795,11 +1087,14 @@
     window.addEventListener('resize', queuePaint);
     setMode();
     // Al filtrar cambia el número de tarjetas: el carrusel vuelve al inicio
-    filters.forEach((btn) => btn.addEventListener('click', () => {
-      cancelAnimationFrame(glide); glide = 0;
-      track.scrollLeft = target = 0;
-      requestAnimationFrame(paint);
-    }));
+    filters.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        cancelAnimationFrame(glide);
+        glide = 0;
+        track.scrollLeft = target = 0;
+        requestAnimationFrame(paint);
+      })
+    );
   }
 
   applyLang();

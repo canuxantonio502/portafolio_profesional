@@ -4,7 +4,8 @@
 window.I18N = {
   es: {
     'meta.title': 'Antonio Canux | Técnico en Desarrollo de Software',
-    'meta.description': 'Portafolio de Antonio Canux, Técnico en Desarrollo de Software: HTML, CSS, JavaScript, Node.js, Express, MySQL, Docker y automatización con n8n.',
+    'meta.description':
+      'Portafolio de Antonio Canux, Técnico en Desarrollo de Software: HTML, CSS, JavaScript, Node.js, Express, MySQL, Docker y automatización con n8n.',
     'nav.label': 'Principal',
     'nav.homeLabel': 'Inicio - Antonio Canux',
     'nav.menu': 'Abrir menú',
@@ -19,8 +20,14 @@ window.I18N = {
 
     'hero.hi': 'Hola, soy',
     'hero.scroll': 'Desliza para arrancar el motor',
-    'hero.roles': ['Técnico en Desarrollo de Software', 'APIs REST con Node.js y MySQL', 'Aplicaciones web con JavaScript', 'Entusiasta de la automatización'],
-    'hero.lead': 'Desarrollo sitios y aplicaciones web funcionales, claros y bien cuidados, desde la idea hasta el resultado final.',
+    'hero.roles': [
+      'Técnico en Desarrollo de Software',
+      'APIs REST con Node.js y MySQL',
+      'Aplicaciones web con JavaScript',
+      'Entusiasta de la automatización'
+    ],
+    'hero.lead':
+      'Desarrollo sitios y aplicaciones web funcionales, claros y bien cuidados, desde la idea hasta el resultado final.',
     'hero.projects': 'Ver proyectos',
     'hero.cv': 'Ver mi CV',
     'hero.contact': 'Contáctame',
@@ -33,7 +40,8 @@ window.I18N = {
     'stats.goAreas': 'Ver en proyectos',
 
     'about.title': 'Sobre mí',
-    'about.manifesto': 'Soy Antonio, Técnico en Desarrollo de Software formado en Campuslands. Antes de escribir código *desarmaba motores*, y de ahí viene mi forma de trabajar: *diagnosticar, ordenar y probar* cada pieza hasta que todo funcione. Hoy aplico esa lógica a *interfaces, APIs y aplicaciones móviles*.',
+    'about.manifesto':
+      'Soy Antonio, Técnico en Desarrollo de Software formado en Campuslands. Antes de escribir código *desarmaba motores*, y de ahí viene mi forma de trabajar: *diagnosticar, ordenar y probar* cada pieza hasta que todo funcione. Hoy aplico esa lógica a *interfaces, APIs y aplicaciones móviles*.',
     'about.outside': 'Fuera del código:',
     'about.music': 'Música',
     'about.photo': 'Fotografía',
@@ -45,15 +53,19 @@ window.I18N = {
     'story.lbl3': 'Pistón',
     'story.lbl4': 'Cigüeñal',
     'story.c1.title': 'Aprendí a desarmar motores',
-    'story.c1.text': 'Me formé como Técnico en Mecánica Automotriz: diagnosticar fallas, desarmar sistemas y entender cómo encaja cada pieza para que todo funcione.',
+    'story.c1.text':
+      'Me formé como Técnico en Mecánica Automotriz: diagnosticar fallas, desarmar sistemas y entender cómo encaja cada pieza para que todo funcione.',
     'story.c2.place': 'Docente',
     'story.c2.title': 'Aprendí a explicarlos',
-    'story.c2.text': 'Como docente de Mecánica Automotriz enseñé teoría y práctica, planifiqué contenidos y coordiné equipos en el taller. Explicar cada pieza me enseñó a comunicar y a liderar.',
+    'story.c2.text':
+      'Como docente de Mecánica Automotriz enseñé teoría y práctica, planifiqué contenidos y coordiné equipos en el taller. Explicar cada pieza me enseñó a comunicar y a liderar.',
     'story.c3.title': 'Cambié el motor por el código',
-    'story.c3.text': 'Me formé como Técnico en Desarrollo de Software: JavaScript, Node.js, Express, MySQL y React Native, trabajando en equipo con Scrum, Git y GitHub.',
+    'story.c3.text':
+      'Me formé como Técnico en Desarrollo de Software: JavaScript, Node.js, Express, MySQL y React Native, trabajando en equipo con Scrum, Git y GitHub.',
     'story.c4.when': 'Hoy',
     'story.c4.title': 'Construyo sistemas que funcionan',
-    'story.c4.text': 'La lógica del taller sigue conmigo: diagnosticar, ordenar y probar. Ahora la aplico a interfaces, APIs y aplicaciones móviles.',
+    'story.c4.text':
+      'La lógica del taller sigue conmigo: diagnosticar, ordenar y probar. Ahora la aplico a interfaces, APIs y aplicaciones móviles.',
     'skills.title': 'Habilidades',
     'skills.carousel': 'Tecnologías que uso',
     'skills.cat.html': 'Estructura de páginas web',
@@ -79,18 +91,23 @@ window.I18N = {
     'projects.live': 'Ver proyecto',
     'projects.demo': 'Ver demo',
     'projects.p5.alt': 'Captura del catálogo de WTWT Movie Explorer',
-    'projects.p5.desc': 'Plataforma full stack para explorar, reseñar y rankear películas, animes y series. API REST con autenticación JWT, roles de usuario y administrador, ranking ponderado y documentación con Swagger. Proyecto en equipo con SCRUM.',
+    'projects.p5.desc':
+      'Plataforma full stack para explorar, reseñar y rankear películas, animes y series. API REST con autenticación JWT, roles de usuario y administrador, ranking ponderado y documentación con Swagger. Proyecto en equipo con SCRUM.',
     'projects.p6.alt': 'Menú principal de AlwayStrong en la terminal',
     'projects.p6.title': 'AlwayStrong · Gestión de gimnasio (CLI)',
-    'projects.p6.desc': 'Aplicación de consola para administrar clientes, planes de entrenamiento, contratos automáticos, seguimiento físico, nutrición y finanzas. Aplica POO, principios SOLID, patrones Repository y Factory, y transacciones reales en MySQL.',
+    'projects.p6.desc':
+      'Aplicación de consola para administrar clientes, planes de entrenamiento, contratos automáticos, seguimiento físico, nutrición y finanzas. Aplica POO, principios SOLID, patrones Repository y Factory, y transacciones reales en MySQL.',
     'projects.p1.alt': 'Captura de Gestión de CampusParking',
     'projects.p1.title': 'Gestión de CampusParking',
-    'projects.p1.desc': 'Sistema web de gestión y control de parqueo: administración de vehículos, control dinámico de espacios y cálculo automático de cobros en tiempo real.',
+    'projects.p1.desc':
+      'Sistema web de gestión y control de parqueo: administración de vehículos, control dinámico de espacios y cálculo automático de cobros en tiempo real.',
     'projects.p2.alt': 'Captura de Campus Movie Explorer',
-    'projects.p2.desc': 'Aplicación interactiva para explorar películas populares, buscar por nombre, navegar por categorías y ver el detalle de cada una en un modal dinámico.',
+    'projects.p2.desc':
+      'Aplicación interactiva para explorar películas populares, buscar por nombre, navegar por categorías y ver el detalle de cada una en un modal dinámico.',
     'projects.p3.alt': 'Captura de la página del festival de música',
     'projects.p3.title': 'Página para festival de música',
-    'projects.p3.desc': 'Presenta line-up, horarios, ubicación y venta de entradas de forma clara y atractiva, con una experiencia de usuario fluida.',
+    'projects.p3.desc':
+      'Presenta line-up, horarios, ubicación y venta de entradas de forma clara y atractiva, con una experiencia de usuario fluida.',
 
     'contact.title': 'Contacto',
     'contact.kicker': 'La meta',
@@ -107,11 +124,15 @@ window.I18N = {
     'form.openingEmail': 'Abriendo tu correo con el mensaje…',
     'form.emailSubject': 'Contacto desde el portafolio: {name}',
     'projects.roleLabel': 'Mi parte:',
-    'projects.p5.role': 'Hice la mayor parte del backend (75 de 94 commits): login JWT con roles, rate limiting, títulos con transacciones, votos de reseñas, ranking ponderado, Swagger y despliegue.',
+    'projects.p5.role':
+      'Hice la mayor parte del backend (75 de 94 commits): login JWT con roles, rate limiting, títulos con transacciones, votos de reseñas, ranking ponderado, Swagger y despliegue.',
     'projects.descLabel': 'Descripción',
-    'projects.p7.alt': 'Ilustración de KidFit: inicio con actividad del día e hidratación, y sesión con detección de movimiento por cámara',
-    'projects.p7.desc': 'App móvil infantil que fomenta la actividad física: los niveles se juegan con la cámara y MediaPipe detecta la pose en el teléfono para contar repeticiones. Incluye hidratación con avisos, rachas, logros y progreso que funciona sin conexión.',
-    'projects.p7.role': 'En un equipo de 10: sincronización offline-first con Firestore y reintentos al volver la conexión, avisos de agua con Notifee, tarjeta de hidratación, contador de la sesión, estrellas por tiempo sostenido y pruebas del almacenamiento.',
+    'projects.p7.alt':
+      'Ilustración de KidFit: inicio con actividad del día e hidratación, y sesión con detección de movimiento por cámara',
+    'projects.p7.desc':
+      'App móvil infantil que fomenta la actividad física: los niveles se juegan con la cámara y MediaPipe detecta la pose en el teléfono para contar repeticiones. Incluye hidratación con avisos, rachas, logros y progreso que funciona sin conexión.',
+    'projects.p7.role':
+      'En un equipo de 10: sincronización offline-first con Firestore y reintentos al volver la conexión, avisos de agua con Notifee, tarjeta de hidratación, contador de la sesión, estrellas por tiempo sostenido y pruebas del almacenamiento.',
     'projects.p7.status': 'En desarrollo · repositorio privado',
     'projects.roleShort': 'Mi parte',
     'projects.flipLabel': 'Ver descripción o mi parte',
@@ -131,8 +152,8 @@ window.I18N = {
     'footer.useLaptop': 'Laptop del último capítulo',
     'footer.useWheel': 'Rueda de la foto',
     'footer.built': 'Hecho a mano con HTML, CSS y JavaScript, con Three.js, GSAP y Lenis.',
-    'toTop': 'Volver arriba',
-    'toTopHint': 'Reversa',
+    toTop: 'Volver arriba',
+    toTopHint: 'Reversa',
     'hero.photoBtn': 'Girar la rueda',
     'ign.title': 'Portafolio',
     'ign.label': 'Arrancar el sitio',
@@ -150,7 +171,8 @@ window.I18N = {
 
   en: {
     'meta.title': 'Antonio Canux | Software Development Technician',
-    'meta.description': 'Portfolio of Antonio Canux, Software Development Technician: HTML, CSS, JavaScript, Node.js, Express, MySQL, Docker and automation with n8n.',
+    'meta.description':
+      'Portfolio of Antonio Canux, Software Development Technician: HTML, CSS, JavaScript, Node.js, Express, MySQL, Docker and automation with n8n.',
     'nav.label': 'Main',
     'nav.homeLabel': 'Home - Antonio Canux',
     'nav.menu': 'Open menu',
@@ -165,8 +187,14 @@ window.I18N = {
 
     'hero.hi': "Hi, I'm",
     'hero.scroll': 'Scroll to start the engine',
-    'hero.roles': ['Software Development Technician', 'REST APIs with Node.js and MySQL', 'Web apps with JavaScript', 'Automation enthusiast'],
-    'hero.lead': 'I build functional, clean and well-crafted websites and web apps, from the first idea to the final result.',
+    'hero.roles': [
+      'Software Development Technician',
+      'REST APIs with Node.js and MySQL',
+      'Web apps with JavaScript',
+      'Automation enthusiast'
+    ],
+    'hero.lead':
+      'I build functional, clean and well-crafted websites and web apps, from the first idea to the final result.',
     'hero.projects': 'View projects',
     'hero.cv': 'View my resume',
     'hero.contact': 'Contact me',
@@ -179,7 +207,8 @@ window.I18N = {
     'stats.goAreas': 'See in projects',
 
     'about.title': 'About me',
-    'about.manifesto': "I'm Antonio, a Software Development Technician trained at Campuslands. Before writing code I *took engines apart*, and that is where my way of working comes from: *diagnose, organize and test* every piece until everything works. Today I apply that logic to *interfaces, APIs and mobile apps*.",
+    'about.manifesto':
+      "I'm Antonio, a Software Development Technician trained at Campuslands. Before writing code I *took engines apart*, and that is where my way of working comes from: *diagnose, organize and test* every piece until everything works. Today I apply that logic to *interfaces, APIs and mobile apps*.",
     'about.outside': 'Outside of code:',
     'about.music': 'Music',
     'about.photo': 'Photography',
@@ -191,15 +220,19 @@ window.I18N = {
     'story.lbl3': 'Piston',
     'story.lbl4': 'Crankshaft',
     'story.c1.title': 'I learned to take engines apart',
-    'story.c1.text': 'I trained as an Automotive Mechanics Technician: diagnosing faults, taking systems apart and understanding how every part fits so the whole thing runs.',
+    'story.c1.text':
+      'I trained as an Automotive Mechanics Technician: diagnosing faults, taking systems apart and understanding how every part fits so the whole thing runs.',
     'story.c2.place': 'Teacher',
     'story.c2.title': 'Then I learned to explain them',
-    'story.c2.text': 'As an Automotive Mechanics teacher I taught theory and practice, planned lessons and coordinated teams in the workshop. Explaining every part taught me to communicate and to lead.',
+    'story.c2.text':
+      'As an Automotive Mechanics teacher I taught theory and practice, planned lessons and coordinated teams in the workshop. Explaining every part taught me to communicate and to lead.',
     'story.c3.title': 'I swapped the engine for code',
-    'story.c3.text': 'I trained as a Software Development Technician: JavaScript, Node.js, Express, MySQL and React Native, working in teams with Scrum, Git and GitHub.',
+    'story.c3.text':
+      'I trained as a Software Development Technician: JavaScript, Node.js, Express, MySQL and React Native, working in teams with Scrum, Git and GitHub.',
     'story.c4.when': 'Today',
     'story.c4.title': 'I build systems that work',
-    'story.c4.text': 'The workshop mindset stays with me: diagnose, organize and test. Now I apply it to interfaces, APIs and mobile apps.',
+    'story.c4.text':
+      'The workshop mindset stays with me: diagnose, organize and test. Now I apply it to interfaces, APIs and mobile apps.',
     'skills.title': 'Skills',
     'skills.carousel': 'Technologies I use',
     'skills.cat.html': 'Web page structure',
@@ -225,18 +258,23 @@ window.I18N = {
     'projects.live': 'View project',
     'projects.demo': 'Watch demo',
     'projects.p5.alt': 'Screenshot of the WTWT Movie Explorer catalog',
-    'projects.p5.desc': 'Full-stack platform to explore, review and rank movies, anime and series. REST API with JWT authentication, user and admin roles, weighted ranking and Swagger documentation. Team project using SCRUM.',
+    'projects.p5.desc':
+      'Full-stack platform to explore, review and rank movies, anime and series. REST API with JWT authentication, user and admin roles, weighted ranking and Swagger documentation. Team project using SCRUM.',
     'projects.p6.alt': 'AlwayStrong main menu in the terminal',
     'projects.p6.title': 'AlwayStrong · Gym management (CLI)',
-    'projects.p6.desc': 'Console app to manage clients, training plans, automatic contracts, physical progress, nutrition and finances. Applies OOP, SOLID principles, Repository and Factory patterns, and real MySQL transactions.',
+    'projects.p6.desc':
+      'Console app to manage clients, training plans, automatic contracts, physical progress, nutrition and finances. Applies OOP, SOLID principles, Repository and Factory patterns, and real MySQL transactions.',
     'projects.p1.alt': 'Screenshot of CampusParking Management',
     'projects.p1.title': 'CampusParking Management',
-    'projects.p1.desc': 'Web system for parking management and control: vehicle administration, dynamic space tracking and automatic real-time fee calculation.',
+    'projects.p1.desc':
+      'Web system for parking management and control: vehicle administration, dynamic space tracking and automatic real-time fee calculation.',
     'projects.p2.alt': 'Screenshot of Campus Movie Explorer',
-    'projects.p2.desc': 'Interactive app to explore popular movies, search by title, browse by category and see each movie’s details in a dynamic modal.',
+    'projects.p2.desc':
+      'Interactive app to explore popular movies, search by title, browse by category and see each movie’s details in a dynamic modal.',
     'projects.p3.alt': 'Screenshot of the music festival website',
     'projects.p3.title': 'Music festival website',
-    'projects.p3.desc': 'Presents the line-up, schedule, location and ticket sales in a clear and attractive way, with a smooth user experience.',
+    'projects.p3.desc':
+      'Presents the line-up, schedule, location and ticket sales in a clear and attractive way, with a smooth user experience.',
 
     'contact.title': 'Contact',
     'contact.kicker': 'The finish line',
@@ -253,11 +291,15 @@ window.I18N = {
     'form.openingEmail': 'Opening your email app with the message…',
     'form.emailSubject': 'Contact from the portfolio: {name}',
     'projects.roleLabel': 'My part:',
-    'projects.p5.role': 'I built most of the backend (75 of 94 commits): JWT login with roles, rate limiting, titles with transactions, review votes, weighted ranking, Swagger and deployment.',
+    'projects.p5.role':
+      'I built most of the backend (75 of 94 commits): JWT login with roles, rate limiting, titles with transactions, review votes, weighted ranking, Swagger and deployment.',
     'projects.descLabel': 'Description',
-    'projects.p7.alt': 'KidFit illustration: home with the activity of the day and hydration, and a session with camera motion detection',
-    'projects.p7.desc': 'Kids’ mobile app that encourages physical activity: levels are played with the camera and MediaPipe detects the pose on the phone to count reps. Includes hydration with reminders, streaks, achievements and progress that works offline.',
-    'projects.p7.role': 'In a team of 10: offline-first sync with Firestore and retries when the connection returns, water reminders with Notifee, hydration card, session counter, stars for held time and storage tests.',
+    'projects.p7.alt':
+      'KidFit illustration: home with the activity of the day and hydration, and a session with camera motion detection',
+    'projects.p7.desc':
+      'Kids’ mobile app that encourages physical activity: levels are played with the camera and MediaPipe detects the pose on the phone to count reps. Includes hydration with reminders, streaks, achievements and progress that works offline.',
+    'projects.p7.role':
+      'In a team of 10: offline-first sync with Firestore and retries when the connection returns, water reminders with Notifee, hydration card, session counter, stars for held time and storage tests.',
     'projects.p7.status': 'In development · private repository',
     'projects.roleShort': 'My part',
     'projects.flipLabel': 'Show description or my part',
@@ -277,8 +319,8 @@ window.I18N = {
     'footer.useLaptop': 'Laptop in the last chapter',
     'footer.useWheel': 'Wheel in the photo',
     'footer.built': 'Handmade with HTML, CSS and JavaScript, using Three.js, GSAP and Lenis.',
-    'toTop': 'Back to top',
-    'toTopHint': 'Reverse',
+    toTop: 'Back to top',
+    toTopHint: 'Reverse',
     'hero.photoBtn': 'Spin the wheel',
     'ign.title': 'Portfolio',
     'ign.label': 'Start the site',

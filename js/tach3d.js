@@ -10,9 +10,9 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 // Comprimido con gltf-transform (meshopt), 130 KB
 const MODEL_URL = './models/tach.glb';
-const NEEDLE = 'Circle010';           // aguja del cuentarrevoluciones
-const DEG_AT_0 = 213.5;               // ángulo de la marca "0" (grados, antihorario desde +X)
-const DEG_PER_K = -30.45;             // grados por cada 1000 rpm
+const NEEDLE = 'Circle010'; // aguja del cuentarrevoluciones
+const DEG_AT_0 = 213.5; // ángulo de la marca "0" (grados, antihorario desde +X)
+const DEG_PER_K = -30.45; // grados por cada 1000 rpm
 const REDLINE = 6.5;
 
 const tach = document.getElementById('tach');
@@ -21,7 +21,9 @@ const hasWebGL = (() => {
   try {
     const c = document.createElement('canvas');
     return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 })();
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -47,7 +49,8 @@ async function init() {
   const pivot = needle.getWorldPosition(new THREE.Vector3());
 
   // Ángulo actual de la aguja: el vértice más lejano del eje
-  let tip = 0, far = 0;
+  let tip = 0,
+    far = 0;
   const v = new THREE.Vector3();
   needle.traverse((o) => {
     if (!o.isMesh) return;
@@ -55,7 +58,10 @@ async function init() {
     for (let i = 0; i < pos.count; i++) {
       v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld);
       const d = Math.hypot(v.x - pivot.x, v.y - pivot.y);
-      if (d > far) { far = d; tip = Math.atan2(v.y - pivot.y, v.x - pivot.x); }
+      if (d > far) {
+        far = d;
+        tip = Math.atan2(v.y - pivot.y, v.x - pivot.x);
+      }
     }
   });
   const baseQ = needle.quaternion.clone();
@@ -65,11 +71,15 @@ async function init() {
   // Solo el cuentarrevoluciones: oculta el resto del tablero
   // y separa los materiales que brillan para la zona roja
   const reds = [];
-  const box = new THREE.Box3(), c = new THREE.Vector3();
+  const box = new THREE.Box3(),
+    c = new THREE.Vector3();
   model.traverse((o) => {
     if (!o.isMesh) return;
     box.setFromObject(o).getCenter(c);
-    if (Math.hypot(c.x - pivot.x, c.y - pivot.y) > 0.75) { o.visible = false; return; }
+    if (Math.hypot(c.x - pivot.x, c.y - pivot.y) > 0.75) {
+      o.visible = false;
+      return;
+    }
     const m = o.material;
     if (m.emissive && m.emissive.r > 0.2 && m.emissive.g < 0.05 && !reds.includes(m)) {
       reds.push(m);
@@ -84,7 +94,8 @@ async function init() {
   tach.prepend(canvas);
   tach.classList.add('has-3d');
 
-  let rpm = window.__tachRpm || 0, glow = -1;
+  let rpm = window.__tachRpm || 0,
+    glow = -1;
   const draw = () => {
     const deg = DEG_AT_0 + DEG_PER_K * rpm;
     spin.setFromAxisAngle(zAxis, (deg * Math.PI) / 180 - tip);
@@ -93,7 +104,9 @@ async function init() {
     const g = clamp((rpm - (REDLINE - 0.8)) / 1.3);
     if (g !== glow) {
       glow = g;
-      reds.forEach((m) => { m.emissiveIntensity = m.userData.base * (1 + g * 2.5); });
+      reds.forEach((m) => {
+        m.emissiveIntensity = m.userData.base * (1 + g * 2.5);
+      });
     }
     renderer.render(scene, camera);
   };
@@ -107,16 +120,24 @@ async function init() {
     draw();
   };
 
-  window.tach3d = { update: (next) => { if (next !== rpm) { rpm = next; draw(); } } };
+  window.tach3d = {
+    update: (next) => {
+      if (next !== rpm) {
+        rpm = next;
+        draw();
+      }
+    }
+  };
   window.addEventListener('resize', resize);
   resize();
 }
 
 if (tach && hasWebGL && !saveData) {
   // Se carga cuando la página ya terminó, sin competir con lo importante
-  const start = () => (window.requestIdleCallback || ((fn) => setTimeout(fn, 600)))(() => {
-    init().catch((err) => console.warn('Tacómetro 3D no disponible:', err));
-  });
+  const start = () =>
+    (window.requestIdleCallback || ((fn) => setTimeout(fn, 600)))(() => {
+      init().catch((err) => console.warn('Tacómetro 3D no disponible:', err));
+    });
   if (document.readyState === 'complete') start();
   else window.addEventListener('load', start, { once: true });
 }
